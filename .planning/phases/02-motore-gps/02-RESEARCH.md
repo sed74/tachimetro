@@ -372,22 +372,25 @@ class GpsSpeedProvider(context: Context) {
 | A3 | `LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L).setMinUpdateIntervalMillis(1000L)` reliably yields ~1 update/sec on real hardware (not throttled slower by the OS/chipset under Doze-adjacent states while foregrounded) | Phase Requirements (GPS-01) | Low — app only runs updates while visible (D-07), which is outside Doze/standby restrictions; foregrounded apps are not throttled this way. Real-device cadence should still be confirmed during human verification (D-10) |
 | A4 | AGP 9.1.1's built-in Kotlin bundles exactly Kotlin 2.2.10 | Standard Stack (Version verification) | Low — sourced from WebSearch cross-referencing AGP 9.1 release notes rather than a single primary citation with a fetched page; does not change any code recommendation in this document, only the compatibility risk note in A2 |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Exact accuracy threshold value (30m vs 50m, or a different point in the locked range)**
    - What we know: D-05 locks a *range* (~30-50m), not an exact number.
    - What's unclear: which end of the range gives the best subjective result (too strict → drops good readings often near obstructions/tunnels-adjacent driving; too lenient → still passes noisy readings).
    - Recommendation: implement with an easily-changeable constant (as in the Code Examples sketch) and let the human verification pass (D-10, route playback) decide if it needs tuning — do not over-engineer this into a user-facing setting (out of scope, `UI-04` forbids extra controls).
+   - RESOLVED: plan 02-02 implements this as a tunable constant (50m) in `mapSpeedToKmh`, per the recommendation.
 
 2. **Where exactly does the "no signal" ticker/timestamp-tracking logic live — inside `GpsSpeedProvider` or as a second collaborator class?**
    - What we know: Decisions leave "struttura interna delle classi/file del motore GPS" to Claude's discretion.
    - What's unclear: whether splitting "raw Flow filtering" and "no-signal timeout" into two classes improves testability enough to be worth the extra file, versus one cohesive `GpsSpeedProvider`.
    - Recommendation: planner's call; either is consistent with this research. A single class is likely sufficient for this phase's scope (no ViewModel/DI framework in this project).
+   - RESOLVED: plan 02-02 keeps a single `GpsSpeedProvider` class, per the recommendation.
 
 3. **Should the GPS engine explicitly check `GoogleApiAvailability.isGooglePlayServicesAvailable()` before starting?**
    - What we know: `PROJECT.md` already accepts "richiede un device con Google Play Services installato" as a constraint (i.e., devices without GMS are out of scope). If GMS is genuinely absent, `requestLocationUpdates()`'s underlying task simply never completes/fires — which surfaces identically to "no signal" (D-02's 5s timeout) with no crash.
    - What's unclear: whether that graceful-degradation-by-coincidence is good enough for v1, or whether an explicit check-and-message is worth the extra (out-of-scope-leaning) UI surface.
    - Recommendation: skip an explicit check for this phase — the timeout-based "no signal" state already covers this failure mode without additional code, consistent with `UI-04`'s "no unnecessary elements" and the project's minimal-surface philosophy. Flag to user only if it becomes an issue during real-device testing.
+   - RESOLVED: no explicit check added, per the recommendation.
 
 ## Environment Availability
 
