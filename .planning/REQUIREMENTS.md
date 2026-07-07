@@ -35,12 +35,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Permessi
 
-- [ ] **PERM-01**: L'app richiede solo il permesso ACCESS_FINE_LOCATION necessario per leggere il GPS
-- [ ] **PERM-02**: L'app gestisce correttamente sia la concessione sia il rifiuto del permesso GPS, mostrando un messaggio appropriato in caso di rifiuto
+- [x] **PERM-01**: L'app richiede solo il permesso ACCESS_FINE_LOCATION necessario per leggere il GPS
+- [x] **PERM-02**: L'app gestisce correttamente sia la concessione sia il rifiuto del permesso GPS, mostrando un messaggio appropriato in caso di rifiuto
 
 ### Comportamento App
 
-- [ ] **APP-01**: L'app si apre direttamente sulla schermata della velocità, senza schermate iniziali o menu
+- [x] **APP-01**: L'app si apre direttamente sulla schermata della velocità, senza schermate iniziali o menu
 
 ## v2 Requirements
 
@@ -75,9 +75,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCRN-01 | Phase 5 | Pending |
 | SCRN-02 | Phase 5 | Pending |
 | SCRN-03 | Phase 5 | Pending |
-| PERM-01 | Phase 1 | Pending |
-| PERM-02 | Phase 1 | Pending |
-| APP-01 | Phase 1 | Pending |
+| PERM-01 | Phase 1 | Complete |
+| PERM-02 | Phase 1 | Complete |
+| APP-01 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 17 total

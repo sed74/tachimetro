@@ -105,7 +105,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Fondamenta, Permessi e Avvio | 2/2 | Complete   | 2026-07-07 |
+| 1. Fondamenta, Permessi e Avvio | 2/2 | Complete    | 2026-07-07 |
 | 2. Motore GPS | 0/? | Not started | - |
 | 3. Interfaccia Tachimetro | 0/? | Not started | - |
 | 4. Velocità Massima e Persistenza | 0/? | Not started | - |
