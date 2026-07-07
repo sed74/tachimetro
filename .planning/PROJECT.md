@@ -14,15 +14,15 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 - ✓ App che apre direttamente la schermata principale, nessuna schermata iniziale/menu — Fase 1
 - ✓ Richiesta del permesso ACCESS_FINE_LOCATION con gestione corretta di concessione/rifiuto/rifiuto permanente — Fase 1
+- ✓ Lettura della velocità via GPS usando FusedLocationProviderClient (Google Play Services) — Fase 2
+- ✓ Aggiornamento della velocità a schermo 1 volta al secondo — Fase 2
+- ✓ Messaggio semplice quando manca il segnale GPS (es. "Ricerca segnale GPS...") — Fase 2
 
 ### Active
 
 - [ ] Mostrare la velocità attuale in km/h con un numero enorme, sempre centrato, elemento dominante dello schermo
 - [ ] Sfondo nero, testo ad alto contrasto, font di sistema in versione Bold/Black
 - [ ] Supporto completo portrait e landscape, con il numero che si adatta e resta il più grande possibile
-- [ ] Lettura della velocità via GPS usando FusedLocationProviderClient (Google Play Services)
-- [ ] Aggiornamento della velocità a schermo 1 volta al secondo
-- [ ] Messaggio semplice quando manca il segnale GPS (es. "Ricerca segnale GPS...")
 - [ ] Area secondaria con la velocità massima raggiunta dall'ultimo azzeramento
 - [ ] Pulsante "Azzera massimo" che azzera il valore e avvia una nuova misurazione
 - [ ] Velocità massima persistente su disco (sopravvive a chiusura app e riavvio del telefono)
@@ -39,6 +39,7 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 ## Context
 
+- Fase 2 completa (2026-07-07): motore GPS implementato (SpeedState, mapSpeedToKmh con 7 unit test, GpsSpeedProvider via callbackFlow/StateFlow), collegato a MainActivity, verificato su emulatore con Route Playback. Filtro accuratezza (~50m), soglia rumore (~2 km/h), timeout "nessun segnale" 5s
 - Fase 1 completa (2026-07-07): scaffold portato sotto controllo versione, Kotlin abilitato via supporto built-in AGP 9.1.1 (non il plugin classico, incompatibile con questa versione AGP), MainActivity LAUNCHER con flusso permesso GPS completo, verificato su emulatore reale
 - Progetto Android Studio inizializzato (`com.sed.tachimetro`); vedi `.planning/codebase/` per la mappatura pre-esistente
 - minSdk 30, targetSdk 36, AGP 9.1.1, Gradle 9.3.1, Kotlin DSL per i build script
@@ -59,9 +60,10 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 | Kotlin invece di Java | Standard moderno per Android, build script già in Kotlin DSL | ✓ Good |
 | Kotlin abilitato via supporto built-in AGP 9.1.1 (non plugin separato) | Il plugin `org.jetbrains.kotlin.android` classico è incompatibile con AGP 9.1.1 (conflitto verificato) | ✓ Good |
 | Layout XML invece di Jetpack Compose | Schermata singola e statica, meno overhead di setup, coerente con AppCompat esistente | ✓ Good |
-| FusedLocationProviderClient invece di LocationManager nativo | Più efficiente e preciso, accettato il vincolo di richiedere Google Play Services | — Pending |
+| FusedLocationProviderClient invece di LocationManager nativo | Più efficiente e preciso, accettato il vincolo di richiedere Google Play Services | ✓ Good |
+| Velocità esposta via Kotlin Flow/StateFlow (callbackFlow manuale, non kotlinx-coroutines-play-services) | kotlinx-coroutines-play-services non offre un adapter Flow per aggiornamenti continui (verificato in ricerca Fase 2) | ✓ Good |
 | Velocità massima persistente (SharedPreferences) | L'utente vuole confrontare sessioni di guida diverse senza perdere il record | — Pending |
-| Aggiornamento GPS 1/sec | Bilancia fluidità e battery drain per uso prolungato in auto/moto | — Pending |
+| Aggiornamento GPS 1/sec | Bilancia fluidità e battery drain per uso prolungato in auto/moto | ✓ Good |
 | Solo km/h, nessun toggle unità | Riduce complessità UI, non richiesto per v1 | — Pending |
 
 ## Evolution
@@ -82,4 +84,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-07 after Phase 1 completion*
+*Last updated: 2026-07-07 after Phase 2 completion*
