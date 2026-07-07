@@ -17,6 +17,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 import com.sed.tachimetro.gps.GpsSpeedProvider
@@ -28,8 +30,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var retryButton: Button
     private lateinit var gpsSpeedProvider: GpsSpeedProvider
 
+    // CR-01: reactive permission state, refreshed from every place permission state can
+    // change (checkAndRequestPermission(), requestPermissionLauncher callback, onResume()),
+    // so the collector below reacts to a grant immediately -- independent of whether the
+    // system permission dialog happens to drive the activity through a STOP/START cycle.
+    private val permissionGranted = MutableStateFlow(false)
+
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            refreshPermissionState()
             if (granted) {
                 showReady()
             } else {
@@ -50,13 +59,14 @@ class MainActivity : AppCompatActivity() {
         // manual onStart()/onStop() overrides call collect/cancel by hand (see 02-PATTERNS.md).
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // Only collect once the Phase-1 permission flow has confirmed the grant;
-                // the denied UI (showDenied()) remains the single source of truth otherwise.
-                if (ContextCompat.checkSelfPermission(
-                        this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    gpsSpeedProvider.state.collect { state -> updatePlaceholder(state) }
+                // CR-01: collectLatest on the reactive permissionGranted flow instead of a
+                // one-shot check -- a grant that arrives without a STOP/START cycle (e.g. the
+                // system permission dialog only triggering onPause()/onResume()) now restarts
+                // gpsSpeedProvider.state.collect() as soon as refreshPermissionState() fires.
+                permissionGranted.collectLatest { granted ->
+                    if (granted) {
+                        gpsSpeedProvider.state.collect { state -> updatePlaceholder(state) }
+                    }
                 }
             }
         }
@@ -71,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         // by openAppSettings()). Without this, granting the permission
         // externally leaves the UI stuck on the "denied" screen until the
         // app is force-killed and relaunched.
+        refreshPermissionState()
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
@@ -83,10 +94,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkAndRequestPermission() {
-        val granted = ContextCompat.checkSelfPermission(
+    // CR-01: single source of truth that pushes the current permission state into
+    // permissionGranted, so the STARTED-scoped collector above can react to it.
+    private fun refreshPermissionState() {
+        permissionGranted.value = ContextCompat.checkSelfPermission(
             this, Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun checkAndRequestPermission() {
+        refreshPermissionState()
+        val granted = permissionGranted.value
 
         // Note: shouldShowRequestPermissionRationale() is intentionally not
         // checked here -- both the "show rationale" and "first ask" cases
