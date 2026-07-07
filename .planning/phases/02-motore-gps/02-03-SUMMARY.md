@@ -14,6 +14,7 @@ provides:
   - "MainActivity wired to GpsSpeedProvider via lifecycleScope.launch { repeatOnLifecycle(STARTED) { ... } }, gated on permission grant"
   - "updatePlaceholder(SpeedState) rendering Searching/NoSignal as the Italian searching_gps_signal string and Reading as '<N> km/h'"
   - "New Italian string resource searching_gps_signal"
+  - "Human-confirmed live GPS speed path via emulator Route Playback (D-10) -- GPS-01/GPS-02 validated end-to-end"
 affects: [03-ui-tachimetro]
 
 # Tech tracking
@@ -35,26 +36,26 @@ key-decisions:
 
 patterns-established: []
 
-requirements-completed: []  # GPS-01/GPS-02 remain pending until the Task 2 human-verify checkpoint is approved on a Route Playback emulator session
+requirements-completed: [GPS-01, GPS-02]
 
 # Metrics
-duration: pending (Task 2 checkpoint not yet resolved)
+duration: ~20 min (Task 1 code + Task 2 human verification)
 completed: 2026-07-07
 ---
 
 # Phase 2 Plan 3: MainActivity GPS Wiring Summary
 
-**MainActivity now instantiates GpsSpeedProvider and collects its StateFlow<SpeedState> through a lifecycle-scoped repeatOnLifecycle(STARTED) block, rendering the Phase-1 black placeholder as "Ricerca segnale GPS..." or "<N> km/h"; live Route Playback verification on an emulator is the one remaining step (Task 2 checkpoint).**
+**MainActivity now instantiates GpsSpeedProvider and collects its StateFlow<SpeedState> through a lifecycle-scoped repeatOnLifecycle(STARTED) block, rendering the Phase-1 black placeholder as "Ricerca segnale GPS..." or "<N> km/h"; live Route Playback verification on a Pixel 10 Pro AVD emulator confirmed the full GPS speed path end-to-end.**
 
-## Status: IN PROGRESS -- Task 1 complete, Task 2 (checkpoint:human-verify) awaiting user verification
+## Status: COMPLETE -- both tasks done, checkpoint approved by user
 
-Task 1 (`type="auto"`) is implemented, build/lint-verified, and committed. Task 2 is a `checkpoint:human-verify` gate requiring a human to run the app on a Play-Store emulator image and drive an Extended Controls Route Playback session -- this cannot be automated or fabricated by the executor (per plan and worktree instructions) and is returned to the orchestrator as a checkpoint.
+Task 1 (`type="auto"`) is implemented, build/lint-verified, and committed. Task 2 (`checkpoint:human-verify`, `gate="blocking"`) was verified by the user on a running Pixel 10 Pro AVD emulator via Extended Controls Route Playback: the response was "approvato" (approved), confirming speed tracks the route with varying whole-number km/h ~1/sec, shows "0 km/h" when stopped, and reverts to "Ricerca segnale GPS..." on signal loss.
 
 ## Performance
 
-- **Duration (Task 1 only):** ~15 min
+- **Duration:** ~20 min (Task 1 implementation + Task 2 human verification)
 - **Started:** 2026-07-07 (worktree setup + context read)
-- **Tasks:** 1 of 2 completed (Task 2 pending human verification)
+- **Tasks:** 2 of 2 completed
 - **Files modified:** 2
 
 ## Accomplishments
@@ -67,15 +68,14 @@ Task 1 (`type="auto"`) is implemented, build/lint-verified, and committed. Task 
 - `showReady()`, `showDenied()`, `onResume()`, `checkAndRequestPermission()`, `onRetryClicked()`, `openAppSettings()` all left untouched -- Phase-1 permission flow logic is unmodified
 - `AndroidManifest.xml` unchanged -- no new permissions added
 - `./gradlew.bat assembleDebug lintDebug` -> BUILD SUCCESSFUL (both tasks green)
+- **Live Route Playback verification (Task 2, D-10):** app installed and run on a Pixel 10 Pro AVD (Play Store image). User confirmed via Extended Controls -> Location -> Routes -> Play Route: speed tracks the simulated route with varying whole-number km/h (~1 update/sec), reads "0 km/h" when stopped, and reverts to "Ricerca segnale GPS..." on signal loss/startup. GPS-01 and GPS-02 are now validated end-to-end.
 
 ## Task Commits
 
 Each task was committed atomically:
 
 1. **Task 1: Add no-signal string + wire GpsSpeedProvider collector into MainActivity** - `4016d6e` (feat)
-2. **Task 2: Verify live speed on emulator Route Playback (D-10)** - checkpoint:human-verify, no code commit (awaiting user verification, see Checkpoint below)
-
-**Plan metadata:** not yet finalized -- will be completed once Task 2 is approved (per worktree policy, this executor does not touch STATE.md/ROADMAP.md; the orchestrator finalizes plan metadata after merge).
+2. **Task 2: Verify live speed on emulator Route Playback (D-10)** - checkpoint:human-verify, no code commit (verification-only task; approved by user with "approvato" via Extended Controls Route Playback on a Pixel 10 Pro AVD)
 
 ## Files Created/Modified
 - `app/src/main/res/values/strings.xml` - Added `searching_gps_signal` Italian string ("Ricerca segnale GPS...")
@@ -88,37 +88,45 @@ Each task was committed atomically:
 
 ## Deviations from Plan
 
-None - Task 1 executed exactly as written. No auto-fixes, no bugs found, no missing critical functionality, no blocking issues, and no architectural changes were required. `AndroidManifest.xml` was left untouched as required; no new permissions were added.
+None - both tasks executed exactly as written. No auto-fixes, no bugs found, no missing critical functionality, no blocking issues, and no architectural changes were required. `AndroidManifest.xml` was left untouched as required; no new permissions were added.
 
 One environment-only action (not a plan deviation, consistent with how 02-02 and 01-02 handled the same file): `local.properties` (gitignored, machine-local SDK path) was created in this fresh worktree, copied from the main repo's `local.properties`, so `./gradlew.bat assembleDebug lintDebug` could run. It remains untracked/ignored and was never committed.
 
 ## Issues Encountered
 
-None for Task 1.
+None.
 
 ## User Setup Required
 
-None - no external service configuration required. Task 2 requires the user (not this executor) to run a live emulator Route Playback verification session -- see Checkpoint below.
+None. Task 2's checkpoint required a human to run a live emulator Route Playback verification session -- this was completed by the user directly on a Pixel 10 Pro AVD, with the outcome "approvato" (approved).
+
+## Checkpoint: Task 2 Resolution
+
+- **Type:** checkpoint:human-verify (gate="blocking")
+- **What was verified:** Live speed reading via GPS on an emulator Route Playback session, per D-10.
+- **Environment:** Pixel 10 Pro AVD (Play Store system image), app installed and run.
+- **Method:** Extended Controls -> Location -> Routes tab -> Play Route.
+- **Outcome:** User response "approvato". Confirmed: speed tracks the route (varying whole-number km/h ~1/sec), shows "0 km/h" when stopped (not a noise value), and reverts to "Ricerca segnale GPS..." on signal loss/startup.
+- **Result:** GPS-01 and GPS-02 requirements validated end-to-end; checkpoint resolved, no code changes required.
 
 ## Threat Flags
 
 None. This plan's own `<threat_model>` (T-02-ID, T-02-EP, T-02-D) was reviewed against the implementation:
 - T-02-ID (Information Disclosure): confirmed -- `updatePlaceholder` only ever receives `SpeedState` (derived `Int` km/h or a sealed marker), never raw `Location`/lat-lng. No `Log.*` calls were added anywhere in `MainActivity.kt`.
 - T-02-EP (Elevation of Privilege): confirmed -- `AndroidManifest.xml` is byte-for-byte unchanged; only the pre-existing `ACCESS_FINE_LOCATION` permission is checked, no coarse/background scope requested.
-- T-02-D (Denial of Service / battery): confirmed -- collection is scoped entirely inside `repeatOnLifecycle(Lifecycle.State.STARTED)`, so `GpsSpeedProvider`'s `callbackFlow`/`awaitClose { removeLocationUpdates(...) }` teardown fires automatically once the Activity leaves `STARTED`. Full confirmation of this (background -> foreground behavior) is part of the Task 2 checkpoint's optional step 8.
+- T-02-D (Denial of Service / battery): confirmed -- collection is scoped entirely inside `repeatOnLifecycle(Lifecycle.State.STARTED)`, so `GpsSpeedProvider`'s `callbackFlow`/`awaitClose { removeLocationUpdates(...) }` teardown fires automatically once the Activity leaves `STARTED`. The Route Playback checkpoint session confirmed a working live GPS path consistent with this lifecycle scoping.
 
 No new/undocumented threat surface was introduced.
 
 ## Next Phase Readiness
 
-- Task 1 is code-complete, build/lint-verified, and committed (`4016d6e`).
-- Task 2 (`checkpoint:human-verify`, `gate="blocking"`) requires a human to launch a Play-Store-image emulator (API 30+), grant the location permission, and drive an Extended Controls -> Location -> Routes "Play Route" session to confirm: startup shows "Ricerca segnale GPS...", the display then switches to varying whole-number "<N> km/h" tracking the simulated route (~1 update/sec), reads "0 km/h" when stopped (not a small noise value), reverts to "Ricerca segnale GPS..." after >5s of signal loss, and (optionally) that GPS updates stop while the app is backgrounded and resume on return.
-- This is NOT verifiable by the executor -- it requires a running Android emulator with Google Play Services and manual interaction with the Extended Controls UI, which is out of scope for this agent per the plan's own design (D-10) and the parallel-execution instructions.
-- Requirements GPS-01/GPS-02 are implemented in code but remain **unconfirmed** until Task 2's checkpoint is approved; do not mark them complete in REQUIREMENTS.md until that happens.
+- Both tasks are code-complete, build/lint-verified, human-verified, and committed (`4016d6e`).
+- Requirements GPS-01/GPS-02 are now fully implemented and confirmed by live Route Playback verification.
+- Phase 2 (motore-gps) is complete and ready to hand off to Phase 3 (ui-tachimetro), which will build the real full-screen UI on top of the now-verified `SpeedState`-driven placeholder wiring.
 
 ---
 *Phase: 02-motore-gps*
-*Completed: pending Task 2 checkpoint approval*
+*Completed: 2026-07-07*
 
 ## Self-Check: PASSED
 
@@ -126,3 +134,4 @@ No new/undocumented threat surface was introduced.
 - FOUND: app/src/main/java/com/sed/tachimetro/MainActivity.kt (contains `repeatOnLifecycle`, `GpsSpeedProvider`, `updatePlaceholder`, `km/h`)
 - FOUND commit: 4016d6e (feat(02-03): wire GpsSpeedProvider into MainActivity)
 - `./gradlew.bat assembleDebug lintDebug` -> BUILD SUCCESSFUL
+- Task 2 checkpoint approved by user ("approvato") via Pixel 10 Pro AVD Route Playback session
