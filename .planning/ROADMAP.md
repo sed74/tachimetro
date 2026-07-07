@@ -62,7 +62,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — Motore GPS: SpeedState + funzione pura mapSpeedToKmh (test) + GpsSpeedProvider (callbackFlow → StateFlow<SpeedState>)
+- [x] 02-02-PLAN.md — Motore GPS: SpeedState + funzione pura mapSpeedToKmh (test) + GpsSpeedProvider (callbackFlow → StateFlow<SpeedState>)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -118,7 +118,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Fondamenta, Permessi e Avvio | 2/2 | Complete    | 2026-07-07 |
-| 2. Motore GPS | 1/3 | In Progress|  |
+| 2. Motore GPS | 2/3 | In Progress|  |
 | 3. Interfaccia Tachimetro | 0/? | Not started | - |
 | 4. Velocità Massima e Persistenza | 0/? | Not started | - |
 | 5. Gestione Schermo | 0/? | Not started | - |
