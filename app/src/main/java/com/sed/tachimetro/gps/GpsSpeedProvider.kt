@@ -102,14 +102,24 @@ class GpsSpeedProvider(context: Context) {
         acceptedKmh.map { it as Int? }.onStart { emit(null) }, // null until first fix (D-01)
         ticker,
     ) { lastKmh, now ->
-        when {
-            lastKmh == null -> SpeedState.Searching // D-01: no accepted fix yet
-            now - lastAcceptedUpdateAtMs > 5000L -> SpeedState.NoSignal // D-02
-            else -> SpeedState.Reading(lastKmh)
-        }
+        deriveSpeedState(lastKmh, now, lastAcceptedUpdateAtMs)
     }.stateIn(
         scope = scope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = SpeedState.Searching,
     )
+}
+
+/**
+ * WR-02: pure, unit-testable extraction of the [GpsSpeedProvider.state] decision logic
+ * (D-01/D-02), independent of Flow/`combine`/coroutines machinery.
+ *
+ * @param lastKmh the latest accepted km/h reading, or `null` if no fix has been accepted yet.
+ * @param now the current monotonic timestamp ([android.os.SystemClock.elapsedRealtime]).
+ * @param lastAcceptedAtMs the monotonic timestamp of the last accepted reading.
+ */
+fun deriveSpeedState(lastKmh: Int?, now: Long, lastAcceptedAtMs: Long): SpeedState = when {
+    lastKmh == null -> SpeedState.Searching // D-01: no accepted fix yet
+    now - lastAcceptedAtMs > 5000L -> SpeedState.NoSignal // D-02
+    else -> SpeedState.Reading(lastKmh)
 }
