@@ -54,7 +54,9 @@ class MainActivity : AppCompatActivity() {
         retryButton = findViewById(R.id.retryButton)
         retryButton.setOnClickListener { onRetryClicked() }
 
-        gpsSpeedProvider = GpsSpeedProvider(this)
+        // WR-04: pass applicationContext, not the Activity, so GpsSpeedProvider (and the
+        // FusedLocationProviderClient it wraps) never retains an Activity reference.
+        gpsSpeedProvider = GpsSpeedProvider(applicationContext)
         // D-07: start/stop is entirely driven by repeatOnLifecycle(STARTED) below -- no
         // manual onStart()/onStop() overrides call collect/cancel by hand (see 02-PATTERNS.md).
         lifecycleScope.launch {
@@ -92,6 +94,16 @@ class MainActivity : AppCompatActivity() {
             // "can ask again" state changed while we were away.
             showDenied()
         }
+    }
+
+    override fun onDestroy() {
+        // WR-04: tear down gpsSpeedProvider's own CoroutineScope for symmetry/defensiveness
+        // when this Activity instance is going away for good (e.g. a configuration change
+        // recreates it with a fresh GpsSpeedProvider). D-07's repeatOnLifecycle(STARTED)
+        // already stops collection on stop, so this is a secondary safety net, not the
+        // primary stop/start mechanism.
+        gpsSpeedProvider.close()
+        super.onDestroy()
     }
 
     // CR-01: single source of truth that pushes the current permission state into

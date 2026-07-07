@@ -14,6 +14,7 @@ import com.google.android.gms.location.Priority
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +39,10 @@ import kotlinx.coroutines.flow.stateIn
  */
 class GpsSpeedProvider(context: Context) {
 
-    private val client = LocationServices.getFusedLocationProviderClient(context)
+    // WR-04: FusedLocationProviderClient doesn't need an Activity context; use
+    // applicationContext defensively so this provider never retains/leaks an Activity,
+    // regardless of what the caller passes in.
+    private val client = LocationServices.getFusedLocationProviderClient(context.applicationContext)
 
     private val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L)
         .setMinUpdateIntervalMillis(1000L)
@@ -108,6 +112,16 @@ class GpsSpeedProvider(context: Context) {
         started = SharingStarted.WhileSubscribed(),
         initialValue = SpeedState.Searching,
     )
+
+    // WR-04: explicit teardown for the provider's own scope, for symmetry/defensiveness.
+    // D-07 already has repeatOnLifecycle(STARTED) stop collecting `state` on
+    // onStop()/activity destroy, which (via WhileSubscribed()) stops the upstream location
+    // updates; this additionally cancels the SupervisorJob scope itself. Call from
+    // MainActivity.onDestroy() when the Activity (and this provider instance) is being torn
+    // down for good, e.g. on a configuration change that recreates the Activity.
+    fun close() {
+        scope.cancel()
+    }
 }
 
 /**
