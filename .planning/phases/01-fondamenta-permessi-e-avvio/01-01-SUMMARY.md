@@ -122,3 +122,13 @@ None - no external service configuration required. Note: `local.properties` (con
 ---
 *Phase: 01-fondamenta-permessi-e-avvio*
 *Completed: 2026-07-07*
+
+## Self-Check: PASSED
+
+- FOUND: gradle/libs.versions.toml
+- FOUND: app/build.gradle.kts
+- FOUND: .planning/phases/01-fondamenta-permessi-e-avvio/01-01-SUMMARY.md
+- FOUND commit: c49b9f6 (chore: commit existing Android scaffold)
+- FOUND commit: 49e2a16 (feat: declare Kotlin plugin and ConstraintLayout in version catalog)
+- FOUND commit: 05b7bc9 (fix: enable Kotlin via AGP built-in support)
+- FOUND commit: 51a9ad5 (docs: add plan 01-01 summary)
