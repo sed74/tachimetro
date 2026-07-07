@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Phase 3 context gathered
-last_updated: "2026-07-07T19:00:51.181Z"
+stopped_at: Phase 3 UI-SPEC approved
+last_updated: "2026-07-07T19:08:14.088Z"
 last_activity: 2026-07-07
 progress:
   total_phases: 5
@@ -81,6 +81,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-07T19:00:51.166Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-interfaccia-tachimetro/03-CONTEXT.md
+Last session: 2026-07-07T19:08:14.074Z
+Stopped at: Phase 3 UI-SPEC approved
+Resume file: .planning/phases/03-interfaccia-tachimetro/03-UI-SPEC.md
