@@ -54,7 +54,19 @@ Plans:
   2. Il valore di velocità disponibile si aggiorna una volta al secondo
   3. Quando il GPS non ha ancora un segnale valido, è disponibile un messaggio di stato (es. "Ricerca segnale GPS...") anziché un valore numerico errato
 
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Dipendenze GPS via version catalog (play-services-location, kotlinx-coroutines-core, lifecycle-runtime-ktx) + gate compatibilità build
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — Motore GPS: SpeedState + funzione pura mapSpeedToKmh (test) + GpsSpeedProvider (callbackFlow → StateFlow<SpeedState>)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02-03-PLAN.md — Wiring MainActivity (collector lifecycle-scoped, placeholder "N km/h" / "Ricerca segnale GPS...") + checkpoint Route Playback emulatore
 
 ### Phase 3: Interfaccia Tachimetro
 
@@ -106,7 +118,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Fondamenta, Permessi e Avvio | 2/2 | Complete    | 2026-07-07 |
-| 2. Motore GPS | 0/? | Not started | - |
+| 2. Motore GPS | 0/3 | Not started | - |
 | 3. Interfaccia Tachimetro | 0/? | Not started | - |
 | 4. Velocità Massima e Persistenza | 0/? | Not started | - |
 | 5. Gestione Schermo | 0/? | Not started | - |
