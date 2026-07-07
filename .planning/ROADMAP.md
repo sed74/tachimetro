@@ -81,7 +81,11 @@ Plans:
   4. Non sono presenti menu, animazioni o elementi grafici non necessari
   5. Tutti i testi e i messaggi visibili nell'app sono in italiano
 
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Auto-size dominante di messageText in activity_main.xml (0dp box, uniform 12/300/4sp, centratura, font weight 900) + checkpoint verifica visiva portrait/landscape × 1/2/3 cifre
 **UI hint**: yes
 
 ### Phase 4: Velocità Massima e Persistenza
@@ -119,6 +123,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Fondamenta, Permessi e Avvio | 2/2 | Complete    | 2026-07-07 |
 | 2. Motore GPS | 3/3 | Complete    | 2026-07-07 |
-| 3. Interfaccia Tachimetro | 0/? | Not started | - |
+| 3. Interfaccia Tachimetro | 0/1 | Not started | - |
 | 4. Velocità Massima e Persistenza | 0/? | Not started | - |
 | 5. Gestione Schermo | 0/? | Not started | - |
