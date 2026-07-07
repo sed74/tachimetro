@@ -34,7 +34,7 @@ key-decisions:
 patterns-established:
   - "First Activity/layout precedent for the app: single LAUNCHER activity, ConstraintLayout-based View XML (no Compose), Italian-only strings via getString(R.string.*), android.* then androidx.* import grouping."
 
-requirements-completed: []  # NOT marked complete - Task 3 (human-verify checkpoint) has not been approved yet. See "Status" below.
+requirements-completed: [APP-01, PERM-01, PERM-02]
 
 # Metrics
 duration: 18min
@@ -43,18 +43,18 @@ completed: 2026-07-07
 
 # Phase 1 Plan 2: MainActivity + ACCESS_FINE_LOCATION Permission Flow Summary
 
-**MainActivity registered as the app's LAUNCHER activity with a complete ACCESS_FINE_LOCATION permission flow (grant/deny/deny-permanently) and a black "Pronto" placeholder screen, verified to compile via `./gradlew.bat assembleDebug` — BUILD SUCCESSFUL. Awaiting human device verification (Task 3 checkpoint).**
+**MainActivity registered as the app's LAUNCHER activity with a complete ACCESS_FINE_LOCATION permission flow (grant/deny/deny-permanently) and a black "Pronto" placeholder screen, verified to compile via `./gradlew.bat assembleDebug` and confirmed working on a real Android emulator (Pixel 10 Pro AVD) by human device verification.**
 
-## Status: PAUSED AT CHECKPOINT
+## Status: COMPLETE
 
-Tasks 1 and 2 (both `type="auto"`) are complete, committed, and build-verified. Task 3 is a `type="checkpoint:human-verify"` (`gate="blocking"`) that requires installing the app on a real Android device/emulator to exercise the runtime permission popup — this cannot be verified from a build alone and was not fabricated. See "Checkpoint Details" below for exact verification steps. This plan is **not** complete; requirements APP-01/PERM-01/PERM-02 are implemented but not yet human-confirmed, so `requirements-completed` is intentionally left empty in this summary.
+All three tasks are done. Tasks 1 and 2 (`type="auto"`) were completed, committed, and build-verified. Task 3 (`type="checkpoint:human-verify"`, `gate="blocking"`) was manually verified by the user by installing the app via `./gradlew.bat installDebug` on an Android emulator (Pixel 10 Pro AVD) from the merged main checkout. The user confirmed: direct launch with no menu, immediate GPS permission popup, grant flow shows the black "Pronto" screen, deny flow shows the Italian message + "Riprova" button, permanent denial opens Settings, restart with granted permission skips re-prompting, and all visible text is in Italian. The user responded "approvato" (approved), satisfying the checkpoint's resume signal. Requirements APP-01, PERM-01, PERM-02 are now confirmed complete.
 
 ## Performance
 
-- **Duration:** 18 min (Task 1 + Task 2, up to the checkpoint)
+- **Duration:** 18 min (Task 1 + Task 2 implementation; Task 3 verification performed separately by the user)
 - **Started:** 2026-07-07T13:52:37Z
-- **Completed (up to checkpoint):** 2026-07-07T14:10:00Z (approx)
-- **Tasks:** 2 of 3 completed (Task 3 is the pending checkpoint)
+- **Completed:** 2026-07-07
+- **Tasks:** 3 of 3 completed
 - **Files modified:** 4 (2 modified, 2 created)
 
 ## Accomplishments
@@ -63,6 +63,7 @@ Tasks 1 and 2 (both `type="auto"`) are complete, committed, and build-verified. 
 - `activity_main.xml` created: black `ConstraintLayout` placeholder with `messageText` (TextView) and `retryButton` (Button, hidden by default)
 - `MainActivity.kt` created: full permission flow using `registerForActivityResult(ActivityResultContracts.RequestPermission())`, `ContextCompat.checkSelfPermission`, `shouldShowRequestPermissionRationale`, and `Settings.ACTION_APPLICATION_DETAILS_SETTINGS` for the permanently-denied recovery path
 - `./gradlew.bat assembleDebug` → BUILD SUCCESSFUL, with `:app:compileDebugKotlin` actually executing (proving `MainActivity.kt` compiles and all `R.*` references resolve against Task 1's manifest/strings/layout)
+- Human device verification (Task 3) confirmed on a Pixel 10 Pro AVD: direct launch with no menu (APP-01), immediate GPS permission popup, grant → black "Pronto" screen, deny → Italian message + "Riprova" button, permanent denial → "Apri impostazioni" opening app Settings, restart-with-granted-permission skips re-prompting, all visible text in Italian (UI-05)
 
 ## Task Commits
 
@@ -70,10 +71,9 @@ Each task was committed atomically:
 
 1. **Task 1: Registrare permesso + LAUNCHER activity e definire stringhe e layout placeholder** - `cc38cc8` (feat)
 2. **Task 2: Implementare MainActivity con il flusso completo del permesso** - `48f16ae` (feat)
+3. **Task 3: checkpoint:human-verify** - no code commit (verification-only task); approved by user response "approvato" after installing and testing on a Pixel 10 Pro AVD emulator
 
-**Task 3 (checkpoint:human-verify) not yet reached/approved** - no commit; awaiting device verification.
-
-**Plan metadata:** deferred (SUMMARY committed by this agent per worktree policy; orchestrator handles STATE.md/ROADMAP.md/REQUIREMENTS.md updates after wave completion and, for this plan, after checkpoint approval)
+**Plan metadata:** finalized by this agent per worktree policy; orchestrator handles STATE.md/ROADMAP.md/REQUIREMENTS.md updates after merge.
 
 ## Files Created/Modified
 - `app/src/main/AndroidManifest.xml` - Added `<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />` and registered `.MainActivity` as the exported LAUNCHER activity with a MAIN/LAUNCHER intent-filter
@@ -86,7 +86,7 @@ None beyond the plan's locked decisions — followed `01-CONTEXT.md`/`01-PATTERN
 
 ## Deviations from Plan
 
-None - plan executed exactly as written for Tasks 1 and 2. No auto-fixes, no bugs found, no missing critical functionality, no blocking issues, and no architectural changes were required. The Kotlin-enablement deviation documented in `01-01-SUMMARY.md` (AGP built-in Kotlin support instead of the classic plugin) was already in effect and required no action here — `MainActivity.kt` compiled without any additional plugin setup, confirming that summary's "Next Phase Readiness" note.
+None - plan executed exactly as written for Tasks 1 and 2, and Task 3 was verified as-specified with no deviations found on device. No auto-fixes, no bugs found, no missing critical functionality, no blocking issues, and no architectural changes were required. The Kotlin-enablement deviation documented in `01-01-SUMMARY.md` (AGP built-in Kotlin support instead of the classic plugin) was already in effect and required no action here — `MainActivity.kt` compiled without any additional plugin setup, confirming that summary's "Next Phase Readiness" note.
 
 One environment-only action (not a plan deviation): `local.properties` (gitignored, machine-local SDK path) was copied from the main working directory into this fresh worktree so that `./gradlew.bat assembleDebug` could run for verification. It remains untracked/ignored and was never committed, consistent with how Plan 01-01 handled the same file.
 
@@ -100,14 +100,13 @@ None - no external service configuration required.
 
 ## Next Phase Readiness
 
-- Tasks 1 and 2 are complete, committed, and build-verified (`BUILD SUCCESSFUL`, `:app:compileDebugKotlin` executed).
-- **This plan is not complete.** Task 3 is a blocking human-verify checkpoint requiring a real Android 11+ (API 30+) device or emulator to confirm the runtime permission popup behavior end-to-end: direct app launch (APP-01), immediate permission popup, grant → "Pronto" screen, deny → Italian message + "Riprova", permanent deny → "Apri impostazioni" opening the app's Settings page, and persistence of the granted state across app restarts (PERM-02). None of this is verifiable from `assembleDebug` alone.
-- A fresh agent (per GSD checkpoint protocol) should resume from Task 3 using the `## CHECKPOINT REACHED` details below once a device/emulator is available and the user has completed the verification steps.
-- All code needed for GPS-phase and UI-phase work builds on `MainActivity.kt`'s permission-granted path (`showReady()`); no further permission-handling changes are expected in those phases per PERM-01/PERM-02 scope.
+- All three tasks are complete, committed (where applicable), build-verified, and human-verified on a real Android emulator.
+- `MainActivity.kt`'s permission-granted path (`showReady()`) is the integration point for GPS-phase and UI-phase work; no further permission-handling changes are expected in those phases per PERM-01/PERM-02 scope.
+- Requirements APP-01, PERM-01, PERM-02 are fully satisfied and ready to be marked complete in REQUIREMENTS.md by the orchestrator.
 
 ---
 *Phase: 01-fondamenta-permessi-e-avvio*
-*Completed: paused at checkpoint, 2026-07-07*
+*Completed: 2026-07-07*
 
 ## Self-Check: PASSED
 
