@@ -61,29 +61,29 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GPS-01 | TBD | Pending |
-| GPS-02 | TBD | Pending |
-| GPS-03 | TBD | Pending |
-| UI-01 | TBD | Pending |
-| UI-02 | TBD | Pending |
-| UI-03 | TBD | Pending |
-| UI-04 | TBD | Pending |
-| UI-05 | TBD | Pending |
-| MAX-01 | TBD | Pending |
-| MAX-02 | TBD | Pending |
-| MAX-03 | TBD | Pending |
-| SCRN-01 | TBD | Pending |
-| SCRN-02 | TBD | Pending |
-| SCRN-03 | TBD | Pending |
-| PERM-01 | TBD | Pending |
-| PERM-02 | TBD | Pending |
-| APP-01 | TBD | Pending |
+| GPS-01 | Phase 2 | Pending |
+| GPS-02 | Phase 2 | Pending |
+| GPS-03 | Phase 2 | Pending |
+| UI-01 | Phase 3 | Pending |
+| UI-02 | Phase 3 | Pending |
+| UI-03 | Phase 3 | Pending |
+| UI-04 | Phase 3 | Pending |
+| UI-05 | Phase 3 | Pending |
+| MAX-01 | Phase 4 | Pending |
+| MAX-02 | Phase 4 | Pending |
+| MAX-03 | Phase 4 | Pending |
+| SCRN-01 | Phase 5 | Pending |
+| SCRN-02 | Phase 5 | Pending |
+| SCRN-03 | Phase 5 | Pending |
+| PERM-01 | Phase 1 | Pending |
+| PERM-02 | Phase 1 | Pending |
+| APP-01 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 17 total
-- Mapped to phases: 0
-- Unmapped: 17 ⚠️ (da completare durante la creazione della roadmap)
+- Mapped to phases: 17
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-07-07*
-*Last updated: 2026-07-07 after initial definition*
+*Last updated: 2026-07-07 after roadmap creation*
