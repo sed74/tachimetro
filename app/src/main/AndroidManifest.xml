@@ -2,7 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Deliberately fine-only: this app needs precise instantaneous speed for a
+         speedometer display, so coarse-only location would not satisfy the core
+         requirement. Not adding ACCESS_COARSE_LOCATION is an explicit project
+         constraint (Phase 2 threat model T-02-EP: no additional permission scope). -->
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        tools:ignore="CoarseFineLocation" />
 
     <application
         android:allowBackup="true"
