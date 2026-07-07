@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         messageText.text = when (state) {
             is SpeedState.Searching, is SpeedState.NoSignal ->
                 getString(R.string.searching_gps_signal)
-            is SpeedState.Reading -> "${state.kmh} km/h"
+            is SpeedState.Reading -> getString(R.string.speed_kmh_format, state.kmh)
         }
     }
 }
