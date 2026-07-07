@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Tachimetro</string>
+    <string name="status_ready">Pronto</string>
+    <string name="permission_denied">Permesso GPS necessario per funzionare</string>
+    <string name="permission_denied_permanent">Permesso GPS necessario per funzionare</string>
+    <string name="retry">Riprova</string>
+    <string name="open_settings">Apri impostazioni</string>
 </resources>
