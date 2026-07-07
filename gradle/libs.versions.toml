@@ -5,7 +5,6 @@ junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
 material = "1.10.0"
-kotlin = "2.1.0"
 constraintlayout = "2.2.1"
 
 [libraries]
@@ -18,5 +17,8 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+# NOTE: no separate Kotlin Gradle Plugin declared here. AGP 9.1.1 ships mandatory
+# built-in Kotlin support (android.builtInKotlin, default true; the classic separate
+# `org.jetbrains.kotlin.android` plugin conflicts with it and cannot be applied in
+# this AGP line -- see 01-01-SUMMARY.md "Deviations from Plan" for details).
 
