@@ -12,7 +12,8 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ App che apre direttamente la schermata principale, nessuna schermata iniziale/menu — Fase 1
+- ✓ Richiesta del permesso ACCESS_FINE_LOCATION con gestione corretta di concessione/rifiuto/rifiuto permanente — Fase 1
 
 ### Active
 
@@ -27,8 +28,6 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 - [ ] Velocità massima persistente su disco (sopravvive a chiusura app e riavvio del telefono)
 - [ ] Toggle "Schermo sempre acceso" / "Schermo automatico", con preferenza salvata tra sessioni
 - [ ] Quando "sempre acceso" è attivo, impedire lo spegnimento schermo durante l'uso (FLAG_KEEP_SCREEN_ON)
-- [ ] App che apre direttamente la schermata della velocità (nessuna schermata iniziale/menu)
-- [ ] Richiesta del permesso ACCESS_FINE_LOCATION con gestione corretta di concessione/rifiuto
 - [ ] Testi e messaggi dell'interfaccia interamente in italiano
 
 ### Out of Scope
@@ -40,7 +39,8 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 ## Context
 
-- Progetto Android Studio già inizializzato (`com.sed.tachimetro`), attualmente uno scaffold vuoto: nessun codice applicativo esiste ancora, solo risorse di default e stub di test (vedi `.planning/codebase/` per la mappatura completa pre-esistente)
+- Fase 1 completa (2026-07-07): scaffold portato sotto controllo versione, Kotlin abilitato via supporto built-in AGP 9.1.1 (non il plugin classico, incompatibile con questa versione AGP), MainActivity LAUNCHER con flusso permesso GPS completo, verificato su emulatore reale
+- Progetto Android Studio inizializzato (`com.sed.tachimetro`); vedi `.planning/codebase/` per la mappatura pre-esistente
 - minSdk 30, targetSdk 36, AGP 9.1.1, Gradle 9.3.1, Kotlin DSL per i build script
 - Uso previsto: app montata su supporto auto/moto, quindi priorità assoluta a leggibilità a distanza/in movimento e a basso consumo batteria durante sessioni prolungate
 
@@ -56,8 +56,9 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Kotlin invece di Java | Standard moderno per Android, build script già in Kotlin DSL | — Pending |
-| Layout XML invece di Jetpack Compose | Schermata singola e statica, meno overhead di setup, coerente con AppCompat esistente | — Pending |
+| Kotlin invece di Java | Standard moderno per Android, build script già in Kotlin DSL | ✓ Good |
+| Kotlin abilitato via supporto built-in AGP 9.1.1 (non plugin separato) | Il plugin `org.jetbrains.kotlin.android` classico è incompatibile con AGP 9.1.1 (conflitto verificato) | ✓ Good |
+| Layout XML invece di Jetpack Compose | Schermata singola e statica, meno overhead di setup, coerente con AppCompat esistente | ✓ Good |
 | FusedLocationProviderClient invece di LocationManager nativo | Più efficiente e preciso, accettato il vincolo di richiedere Google Play Services | — Pending |
 | Velocità massima persistente (SharedPreferences) | L'utente vuole confrontare sessioni di guida diverse senza perdere il record | — Pending |
 | Aggiornamento GPS 1/sec | Bilancia fluidità e battery drain per uso prolungato in auto/moto | — Pending |
@@ -81,4 +82,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-07 after initialization*
+*Last updated: 2026-07-07 after Phase 1 completion*
