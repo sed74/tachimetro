@@ -58,7 +58,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — Dipendenze GPS via version catalog (play-services-location, kotlinx-coroutines-core, lifecycle-runtime-ktx) + gate compatibilità build
+- [x] 02-01-PLAN.md — Dipendenze GPS via version catalog (play-services-location, kotlinx-coroutines-core, lifecycle-runtime-ktx) + gate compatibilità build
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -118,7 +118,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Fondamenta, Permessi e Avvio | 2/2 | Complete    | 2026-07-07 |
-| 2. Motore GPS | 0/3 | Not started | - |
+| 2. Motore GPS | 1/3 | In Progress|  |
 | 3. Interfaccia Tachimetro | 0/? | Not started | - |
 | 4. Velocità Massima e Persistenza | 0/? | Not started | - |
 | 5. Gestione Schermo | 0/? | Not started | - |
