@@ -9,9 +9,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### GPS
 
-- [ ] **GPS-01**: L'utente vede la velocità attuale in km/h letta dal GPS del dispositivo, aggiornata 1 volta al secondo
-- [ ] **GPS-02**: L'utente vede un messaggio semplice quando il GPS non ha segnale (es. "Ricerca segnale GPS...")
-- [ ] **GPS-03**: L'app legge la velocità tramite FusedLocationProviderClient (Google Play Services)
+- [x] **GPS-01**: L'utente vede la velocità attuale in km/h letta dal GPS del dispositivo, aggiornata 1 volta al secondo
+- [x] **GPS-02**: L'utente vede un messaggio semplice quando il GPS non ha segnale (es. "Ricerca segnale GPS...")
+- [x] **GPS-03**: L'app legge la velocità tramite FusedLocationProviderClient (Google Play Services)
 
 ### Interfaccia
 
@@ -61,9 +61,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GPS-01 | Phase 2 | Pending |
-| GPS-02 | Phase 2 | Pending |
-| GPS-03 | Phase 2 | Pending |
+| GPS-01 | Phase 2 | Complete |
+| GPS-02 | Phase 2 | Complete |
+| GPS-03 | Phase 2 | Complete |
 | UI-01 | Phase 3 | Pending |
 | UI-02 | Phase 3 | Pending |
 | UI-03 | Phase 3 | Pending |
