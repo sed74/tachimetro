@@ -14,7 +14,7 @@ Tachimetro nasce da uno scaffold Android Studio vuoto e arriva a un'app completa
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Fondamenta, Permessi e Avvio** - L'app si apre direttamente sulla schermata principale e gestisce correttamente il permesso GPS (completed 2026-07-07)
-- [ ] **Phase 2: Motore GPS** - L'app legge la velocità reale dal dispositivo tramite FusedLocationProviderClient
+- [x] **Phase 2: Motore GPS** - L'app legge la velocità reale dal dispositivo tramite FusedLocationProviderClient (completed 2026-07-07)
 - [ ] **Phase 3: Interfaccia Tachimetro** - L'utente vede la velocità a schermo intero, leggibile in ogni orientamento e condizione di luce
 - [ ] **Phase 4: Velocità Massima e Persistenza** - L'utente monitora e azzera la velocità massima, con valore persistente su disco
 - [ ] **Phase 5: Gestione Schermo** - L'utente controlla se lo schermo resta sempre acceso durante l'uso
@@ -66,7 +66,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 02-03-PLAN.md — Wiring MainActivity (collector lifecycle-scoped, placeholder "N km/h" / "Ricerca segnale GPS...") + checkpoint Route Playback emulatore
+- [x] 02-03-PLAN.md — Wiring MainActivity (collector lifecycle-scoped, placeholder "N km/h" / "Ricerca segnale GPS...") + checkpoint Route Playback emulatore
 
 ### Phase 3: Interfaccia Tachimetro
 
@@ -118,7 +118,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Fondamenta, Permessi e Avvio | 2/2 | Complete    | 2026-07-07 |
-| 2. Motore GPS | 2/3 | In Progress|  |
+| 2. Motore GPS | 3/3 | Complete   | 2026-07-07 |
 | 3. Interfaccia Tachimetro | 0/? | Not started | - |
 | 4. Velocità Massima e Persistenza | 0/? | Not started | - |
 | 5. Gestione Schermo | 0/? | Not started | - |
