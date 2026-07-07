@@ -3,6 +3,7 @@ package com.sed.tachimetro.gps
 import android.content.Context
 import android.location.Location
 import android.os.Looper
+import android.os.SystemClock
 
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -82,14 +83,17 @@ class GpsSpeedProvider(context: Context) {
         }
         .filterNotNull() // D-05: drop poor-accuracy readings, do not update the shown value
         .map { kmh ->
-            lastAcceptedUpdateAtMs = System.currentTimeMillis()
+            // WR-01: SystemClock.elapsedRealtime() is monotonic and unaffected by wall-clock
+            // adjustments (NTP/GPS time sync, manual clock changes), unlike
+            // System.currentTimeMillis().
+            lastAcceptedUpdateAtMs = SystemClock.elapsedRealtime()
             kmh
         }
 
     // 1-second ticker: also drives the once-per-second staleness check (GPS-01 cadence).
     private val ticker: Flow<Long> = flow {
         while (true) {
-            emit(System.currentTimeMillis())
+            emit(SystemClock.elapsedRealtime()) // WR-01: monotonic clock, see note above.
             delay(1000)
         }
     }
