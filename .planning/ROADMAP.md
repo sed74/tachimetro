@@ -7,6 +7,7 @@ Tachimetro nasce da uno scaffold Android Studio vuoto e arriva a un'app completa
 ## Phases
 
 **Phase Numbering:**
+
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
@@ -21,57 +22,80 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Phase Details
 
 ### Phase 1: Fondamenta, Permessi e Avvio
+
 **Goal**: L'app si avvia direttamente sulla schermata principale (nessun menu iniziale) e gestisce correttamente la richiesta del permesso ACCESS_FINE_LOCATION, incluso il caso di rifiuto.
 **Depends on**: Nothing (first phase)
 **Requirements**: APP-01, PERM-01, PERM-02
 **Success Criteria** (what must be TRUE):
+
   1. L'app si apre direttamente sulla schermata della velocità, senza schermate iniziali o menu
   2. Al primo avvio, l'app richiede all'utente il permesso ACCESS_FINE_LOCATION
   3. Se l'utente nega il permesso, vede un messaggio appropriato che spiega l'impossibilità di leggere il GPS
   4. Se l'utente concede il permesso, l'app procede senza ulteriori richieste non necessarie
-**Plans**: TBD
+
+**Plans**: 2 plans
+Plans:
+**Wave 1**
+
+- [ ] 01-01-PLAN.md — Abilitazione Kotlin + dipendenza ConstraintLayout nella build (version catalog + app/build.gradle.kts)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 01-02-PLAN.md — MainActivity LAUNCHER + flusso permesso ACCESS_FINE_LOCATION (manifest, stringhe italiane, layout placeholder)
 
 ### Phase 2: Motore GPS
+
 **Goal**: L'app legge la velocità corrente del dispositivo tramite GPS in modo affidabile ed efficiente.
 **Depends on**: Phase 1
 **Requirements**: GPS-01, GPS-02, GPS-03
 **Success Criteria** (what must be TRUE):
+
   1. L'app legge la velocità attuale in km/h tramite FusedLocationProviderClient (Google Play Services)
   2. Il valore di velocità disponibile si aggiorna una volta al secondo
   3. Quando il GPS non ha ancora un segnale valido, è disponibile un messaggio di stato (es. "Ricerca segnale GPS...") anziché un valore numerico errato
+
 **Plans**: TBD
 
 ### Phase 3: Interfaccia Tachimetro
+
 **Goal**: L'utente vede la velocità corrente a schermo intero, come elemento dominante, leggibile a colpo d'occhio in ogni orientamento e condizione di luce, interamente in italiano.
 **Depends on**: Phase 2
 **Requirements**: UI-01, UI-02, UI-03, UI-04, UI-05
 **Success Criteria** (what must be TRUE):
+
   1. Il numero della velocità è l'elemento dominante dello schermo, sempre centrato e il più grande possibile
   2. Lo sfondo è nero e il testo è ad alto contrasto in stile Bold/Black del font di sistema
   3. Ruotando il dispositivo tra portrait e landscape, il layout si adatta mantenendo il numero centrato e massimizzato
   4. Non sono presenti menu, animazioni o elementi grafici non necessari
   5. Tutti i testi e i messaggi visibili nell'app sono in italiano
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 4: Velocità Massima e Persistenza
+
 **Goal**: L'utente può monitorare la velocità massima raggiunta dall'ultimo azzeramento e il valore sopravvive alla chiusura dell'app e al riavvio del telefono.
 **Depends on**: Phase 3
 **Requirements**: MAX-01, MAX-02, MAX-03
 **Success Criteria** (what must be TRUE):
+
   1. L'utente vede la velocità massima raggiunta dall'ultimo azzeramento in un'area secondaria dello schermo
   2. Premendo il pulsante "Azzera massimo", il valore si azzera e inizia una nuova misurazione
   3. Chiudendo e riaprendo l'app, o riavviando il telefono, la velocità massima precedentemente registrata è ancora visibile
+
 **Plans**: TBD
 
 ### Phase 5: Gestione Schermo
+
 **Goal**: L'utente può scegliere se mantenere lo schermo sempre acceso durante l'uso dell'app, con la preferenza salvata tra sessioni.
 **Depends on**: Phase 3
 **Requirements**: SCRN-01, SCRN-02, SCRN-03
 **Success Criteria** (what must be TRUE):
+
   1. L'utente vede un toggle per scegliere tra "Schermo sempre acceso" e "Schermo automatico"
   2. Con "Schermo sempre acceso" attivo, lo schermo non si spegne mentre l'app è in uso
   3. Chiudendo e riaprendo l'app, la preferenza scelta in precedenza è ancora impostata
+
 **Plans**: TBD
 
 ## Progress
@@ -81,7 +105,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Fondamenta, Permessi e Avvio | 0/? | Not started | - |
+| 1. Fondamenta, Permessi e Avvio | 0/2 | Not started | - |
 | 2. Motore GPS | 0/? | Not started | - |
 | 3. Interfaccia Tachimetro | 0/? | Not started | - |
 | 4. Velocità Massima e Persistenza | 0/? | Not started | - |
