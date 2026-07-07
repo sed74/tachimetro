@@ -90,3 +90,13 @@ None - no external service configuration required.
 ---
 *Phase: 02-motore-gps*
 *Completed: 2026-07-07*
+
+## Self-Check: PASSED
+
+- FOUND: gradle/libs.versions.toml
+- FOUND: app/build.gradle.kts
+- FOUND: .planning/phases/02-motore-gps/02-01-SUMMARY.md
+- FOUND commit: c5d2301 (Task 1)
+- FOUND commit: accc81a (SUMMARY)
+- FOUND: `playServicesLocation = "21.4.0"` in gradle/libs.versions.toml
+- FOUND: `libs.play.services.location` wiring in app/build.gradle.kts
