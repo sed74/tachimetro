@@ -14,10 +14,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
+
+import com.sed.tachimetro.gps.GpsSpeedProvider
+import com.sed.tachimetro.gps.SpeedState
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var messageText: TextView
     private lateinit var retryButton: Button
+    private lateinit var gpsSpeedProvider: GpsSpeedProvider
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -35,6 +44,22 @@ class MainActivity : AppCompatActivity() {
         messageText = findViewById(R.id.messageText)
         retryButton = findViewById(R.id.retryButton)
         retryButton.setOnClickListener { onRetryClicked() }
+
+        gpsSpeedProvider = GpsSpeedProvider(this)
+        // D-07: start/stop is entirely driven by repeatOnLifecycle(STARTED) below -- no
+        // manual onStart()/onStop() overrides call collect/cancel by hand (see 02-PATTERNS.md).
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Only collect once the Phase-1 permission flow has confirmed the grant;
+                // the denied UI (showDenied()) remains the single source of truth otherwise.
+                if (ContextCompat.checkSelfPermission(
+                        this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    gpsSpeedProvider.state.collect { state -> updatePlaceholder(state) }
+                }
+            }
+        }
 
         checkAndRequestPermission()
     }
@@ -108,6 +133,15 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.open_settings)
         } else {
             getString(R.string.retry)
+        }
+    }
+
+    private fun updatePlaceholder(state: SpeedState) {
+        retryButton.visibility = View.GONE
+        messageText.text = when (state) {
+            is SpeedState.Searching, is SpeedState.NoSignal ->
+                getString(R.string.searching_gps_signal)
+            is SpeedState.Reading -> "${state.kmh} km/h"
         }
     }
 }
