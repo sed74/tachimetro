@@ -59,16 +59,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkAndRequestPermission() {
-        when {
-            ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> showReady()
+        val granted = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
 
-            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
-                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
-
-            else -> requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        // Note: shouldShowRequestPermissionRationale() is intentionally not
+        // checked here -- both the "show rationale" and "first ask" cases
+        // launch the same system permission request. A rationale-specific
+        // explanation (if ever added) belongs in onRetryClicked()/showDenied(),
+        // not here.
+        if (granted) {
+            showReady()
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
