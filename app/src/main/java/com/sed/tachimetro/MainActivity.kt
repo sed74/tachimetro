@@ -39,6 +39,25 @@ class MainActivity : AppCompatActivity() {
         checkAndRequestPermission()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Re-check permission state whenever the activity comes back to the
+        // foreground (e.g. returning from the system Settings screen opened
+        // by openAppSettings()). Without this, granting the permission
+        // externally leaves the UI stuck on the "denied" screen until the
+        // app is force-killed and relaunched.
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            showReady()
+        } else if (retryButton.visibility == View.VISIBLE) {
+            // Refresh the denial message/button label in case the
+            // "can ask again" state changed while we were away.
+            showDenied()
+        }
+    }
+
     private fun checkAndRequestPermission() {
         when {
             ContextCompat.checkSelfPermission(
