@@ -304,6 +304,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applySpeedAutosize() {
+        // Impedisce che le cifre della velocità vadano mai a capo su una 2ª riga: con
+        // maxLines = 1 l'autosize uniform le rimpicciolisce per stare su una sola riga
+        // invece di wrapparle (visibile altrimenti con numeri a 2 cifre in portrait).
+        messageText.maxLines = 1
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
             messageText,
             AUTOSIZE_MIN_SP,
@@ -314,6 +318,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applyMessageAutosize() {
+        // messageText è la STESSA TextView riusata per le cifre e per i messaggi di
+        // stato/errore: ripristina esplicitamente il wrapping libero, altrimenti un
+        // precedente applySpeedAutosize() lascerebbe maxLines = 1 e bloccherebbe il
+        // wrapping dei messaggi multi-parola (es. "Ricerca segnale GPS...").
+        messageText.maxLines = Integer.MAX_VALUE
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
             messageText,
             AUTOSIZE_MIN_SP,
