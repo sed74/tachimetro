@@ -15,11 +15,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Interfaccia
 
-- [ ] **UI-01**: Il numero della velocità è l'elemento dominante dello schermo, sempre centrato e il più grande possibile
-- [ ] **UI-02**: Sfondo nero e testo ad alto contrasto (font di sistema Bold/Black) per massima leggibilità in ogni condizione di luce
-- [ ] **UI-03**: L'app supporta sia orientamento portrait sia landscape, con il layout che si adatta mantenendo il numero centrato
-- [ ] **UI-04**: L'interfaccia non contiene menu, animazioni o elementi grafici non necessari
-- [ ] **UI-05**: Tutti i testi e i messaggi dell'app sono in italiano
+- [x] **UI-01**: Il numero della velocità è l'elemento dominante dello schermo, sempre centrato e il più grande possibile
+- [x] **UI-02**: Sfondo nero e testo ad alto contrasto (font di sistema Bold/Black) per massima leggibilità in ogni condizione di luce
+- [x] **UI-03**: L'app supporta sia orientamento portrait sia landscape, con il layout che si adatta mantenendo il numero centrato
+- [x] **UI-04**: L'interfaccia non contiene menu, animazioni o elementi grafici non necessari
+- [x] **UI-05**: Tutti i testi e i messaggi dell'app sono in italiano
 
 ### Velocità Massima
 
@@ -64,11 +64,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GPS-01 | Phase 2 | Complete |
 | GPS-02 | Phase 2 | Complete |
 | GPS-03 | Phase 2 | Complete |
-| UI-01 | Phase 3 | Pending |
-| UI-02 | Phase 3 | Pending |
-| UI-03 | Phase 3 | Pending |
-| UI-04 | Phase 3 | Pending |
-| UI-05 | Phase 3 | Pending |
+| UI-01 | Phase 3 | Complete |
+| UI-02 | Phase 3 | Complete |
+| UI-03 | Phase 3 | Complete |
+| UI-04 | Phase 3 | Complete |
+| UI-05 | Phase 3 | Complete |
 | MAX-01 | Phase 4 | Pending |
 | MAX-02 | Phase 4 | Pending |
 | MAX-03 | Phase 4 | Pending |
@@ -86,4 +86,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-07-07*
-*Last updated: 2026-07-07 after roadmap creation*
+*Last updated: 2026-07-10 after Phase 3 completion*
