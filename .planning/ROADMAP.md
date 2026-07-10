@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Fondamenta, Permessi e Avvio** - L'app si apre direttamente sulla schermata principale e gestisce correttamente il permesso GPS (completed 2026-07-07)
 - [x] **Phase 2: Motore GPS** - L'app legge la velocità reale dal dispositivo tramite FusedLocationProviderClient (completed 2026-07-07)
-- [ ] **Phase 3: Interfaccia Tachimetro** - L'utente vede la velocità a schermo intero, leggibile in ogni orientamento e condizione di luce
+- [x] **Phase 3: Interfaccia Tachimetro** - L'utente vede la velocità a schermo intero, leggibile in ogni orientamento e condizione di luce (completed 2026-07-10)
 - [ ] **Phase 4: Velocità Massima e Persistenza** - L'utente monitora e azzera la velocità massima, con valore persistente su disco
 - [ ] **Phase 5: Gestione Schermo** - L'utente controlla se lo schermo resta sempre acceso durante l'uso
 
@@ -85,7 +85,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 03-01-PLAN.md — Auto-size dominante di messageText in activity_main.xml (0dp box, uniform 12/300/4sp, centratura, font weight 900) + checkpoint verifica visiva portrait/landscape × 1/2/3 cifre
+- [x] 03-01-PLAN.md — Auto-size dominante di messageText in activity_main.xml (0dp box, uniform 12/300/4sp, centratura, font weight 900) + checkpoint verifica visiva portrait/landscape × 1/2/3 cifre
 **UI hint**: yes
 
 ### Phase 4: Velocità Massima e Persistenza
@@ -123,6 +123,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Fondamenta, Permessi e Avvio | 2/2 | Complete    | 2026-07-07 |
 | 2. Motore GPS | 3/3 | Complete    | 2026-07-07 |
-| 3. Interfaccia Tachimetro | 0/1 | Not started | - |
+| 3. Interfaccia Tachimetro | 1/1 | Complete   | 2026-07-10 |
 | 4. Velocità Massima e Persistenza | 0/? | Not started | - |
 | 5. Gestione Schermo | 0/? | Not started | - |
