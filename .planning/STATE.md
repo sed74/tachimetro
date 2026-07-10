@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Phase 4 UI-SPEC approved
-last_updated: "2026-07-10T13:44:02.015Z"
+status: ready_to_plan
+stopped_at: Phase 04 complete (2/2) — ready to discuss Phase 5
+last_updated: 2026-07-10T15:01:20.905Z
 last_activity: 2026-07-10 -- Phase 04 execution started
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 8
   percent: 60
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-07)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** Phase 04 — Velocità Massima e Persistenza
+**Current focus:** Phase 5 — gestione schermo
 
 ## Current Position
 
-Phase: 04 (Velocità Massima e Persistenza) — EXECUTING
-Plan: 1 of 2
-Status: Executing Phase 04
-Last activity: 2026-07-10 -- Phase 04 execution started
+Phase: 5
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-07-10
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -36,7 +36,7 @@ Progress: [░░░░░░░░░░] 0%
 
 **Velocity:**
 
-- Total plans completed: 6
+- Total plans completed: 8
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -47,6 +47,7 @@ Progress: [░░░░░░░░░░] 0%
 | 1 | 2 | - | - |
 | 2 | 3 | - | - |
 | 03 | 1 | - | - |
+| 04 | 2 | - | - |
 
 **Recent Trend:**
 

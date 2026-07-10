@@ -23,9 +23,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Velocità Massima
 
-- [ ] **MAX-01**: L'utente vede la velocità massima raggiunta dall'ultimo azzeramento in un'area secondaria dello schermo
-- [ ] **MAX-02**: L'utente può premere un pulsante "Azzera massimo" per azzerare il valore e iniziare una nuova misurazione
-- [ ] **MAX-03**: La velocità massima persiste su disco e sopravvive a chiusura app e riavvio del telefono
+- [x] **MAX-01**: L'utente vede la velocità massima raggiunta dall'ultimo azzeramento in un'area secondaria dello schermo
+- [x] **MAX-02**: L'utente può premere un pulsante "Azzera massimo" per azzerare il valore e iniziare una nuova misurazione
+- [x] **MAX-03**: La velocità massima persiste su disco e sopravvive a chiusura app e riavvio del telefono
 
 ### Schermo
 
@@ -69,9 +69,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UI-03 | Phase 3 | Complete |
 | UI-04 | Phase 3 | Complete |
 | UI-05 | Phase 3 | Complete |
-| MAX-01 | Phase 4 | Pending |
-| MAX-02 | Phase 4 | Pending |
-| MAX-03 | Phase 4 | Pending |
+| MAX-01 | Phase 4 | Complete |
+| MAX-02 | Phase 4 | Complete |
+| MAX-03 | Phase 4 | Complete |
 | SCRN-01 | Phase 5 | Pending |
 | SCRN-02 | Phase 5 | Pending |
 | SCRN-03 | Phase 5 | Pending |
@@ -86,4 +86,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-07-07*
-*Last updated: 2026-07-10 after Phase 3 completion*
+*Last updated: 2026-07-10 after Phase 4 completion*
