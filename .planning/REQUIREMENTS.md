@@ -29,9 +29,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Schermo
 
-- [ ] **SCRN-01**: L'utente può scegliere tra "Schermo sempre acceso" e "Schermo automatico" tramite un toggle
-- [ ] **SCRN-02**: Quando "Schermo sempre acceso" è attivo, lo schermo non si spegne durante l'utilizzo dell'app
-- [ ] **SCRN-03**: La preferenza scelta viene salvata e ripristinata nelle sessioni successive
+- [x] **SCRN-01**: L'utente può scegliere tra "Schermo sempre acceso" e "Schermo automatico" tramite un toggle
+- [x] **SCRN-02**: Quando "Schermo sempre acceso" è attivo, lo schermo non si spegne durante l'utilizzo dell'app
+- [x] **SCRN-03**: La preferenza scelta viene salvata e ripristinata nelle sessioni successive
 
 ### Permessi
 
@@ -72,9 +72,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MAX-01 | Phase 4 | Complete |
 | MAX-02 | Phase 4 | Complete |
 | MAX-03 | Phase 4 | Complete |
-| SCRN-01 | Phase 5 | Pending |
-| SCRN-02 | Phase 5 | Pending |
-| SCRN-03 | Phase 5 | Pending |
+| SCRN-01 | Phase 5 | Complete |
+| SCRN-02 | Phase 5 | Complete |
+| SCRN-03 | Phase 5 | Complete |
 | PERM-01 | Phase 1 | Complete |
 | PERM-02 | Phase 1 | Complete |
 | APP-01 | Phase 1 | Complete |
@@ -86,4 +86,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-07-07*
-*Last updated: 2026-07-10 after Phase 4 completion*
+*Last updated: 2026-07-10 after Phase 5 completion (v1 milestone complete — 17/17 requirements)*
