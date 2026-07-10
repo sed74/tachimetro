@@ -7,4 +7,5 @@
     <string name="open_settings">Apri impostazioni</string>
     <string name="searching_gps_signal">Ricerca segnale GPS...</string>
     <string name="speed_kmh_format">%1$d km/h</string>
+    <string name="unit_kmh">km/h</string>
 </resources>

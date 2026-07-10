@@ -6,9 +6,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.RelativeSizeSpan
 import android.util.TypedValue
 import android.view.View
 import android.widget.Button
@@ -43,13 +40,10 @@ class MainActivity : AppCompatActivity() {
         // (e.g. permission_denied_permanent) stay compact/legible instead of
         // scaling up toward the speed digits' huge range and wrapping unreadably.
         private const val AUTOSIZE_MAX_MESSAGE_SP = 56
-
-        // Relative size of the "km/h" unit suffix versus the speed digits, so the
-        // digits stay visually dominant even though both share one autosize run.
-        private const val UNIT_RELATIVE_SIZE = 0.35f
     }
 
     private lateinit var messageText: TextView
+    private lateinit var unitText: TextView
     private lateinit var retryButton: Button
     private lateinit var gpsSpeedProvider: GpsSpeedProvider
 
@@ -74,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         messageText = findViewById(R.id.messageText)
+        unitText = findViewById(R.id.unitText)
         retryButton = findViewById(R.id.retryButton)
         retryButton.setOnClickListener { onRetryClicked() }
 
@@ -170,12 +165,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun showReady() {
         retryButton.visibility = View.GONE
+        unitText.visibility = View.GONE
         applyMessageAutosize()
         messageText.text = getString(R.string.status_ready)
     }
 
     private fun showDenied() {
         retryButton.visibility = View.VISIBLE
+        unitText.visibility = View.GONE
         applyMessageAutosize()
         val permanentlyDenied =
             !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -195,33 +192,19 @@ class MainActivity : AppCompatActivity() {
         retryButton.visibility = View.GONE
         when (state) {
             is SpeedState.Searching, is SpeedState.NoSignal -> {
+                unitText.visibility = View.GONE
                 applyMessageAutosize()
                 messageText.text = getString(R.string.searching_gps_signal)
             }
             is SpeedState.Reading -> {
+                // D-03/checkpoint feedback round 2: the unit label now lives in its own
+                // small, fixed-size, top-end-pinned view (unitText) instead of being a
+                // RelativeSizeSpan inside messageText -- messageText shows only the
+                // digits so it stays the single dominant, centered element.
+                unitText.visibility = View.VISIBLE
                 applySpeedAutosize()
-                messageText.text = buildSpeedText(state.kmh)
+                messageText.text = state.kmh.toString()
             }
-        }
-    }
-
-    // Speed digits (e.g. "180") keep the full dominant autosize range; only the
-    // TextView's autosize *cap* controls their max on-screen size. This span
-    // additionally shrinks just the " km/h" unit suffix relative to whatever
-    // size the digits end up autosized to, so the unit never competes visually
-    // with the digits (D-01/D-03: still a single messageText, single string).
-    private fun buildSpeedText(kmh: Int): CharSequence {
-        val fullText = getString(R.string.speed_kmh_format, kmh)
-        val digitsLength = kmh.toString().length
-        if (digitsLength >= fullText.length) return fullText
-
-        return SpannableString(fullText).apply {
-            setSpan(
-                RelativeSizeSpan(UNIT_RELATIVE_SIZE),
-                digitsLength,
-                fullText.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
         }
     }
 
