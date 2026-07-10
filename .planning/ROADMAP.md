@@ -121,7 +121,16 @@ Plans:
   2. Con "Schermo sempre acceso" attivo, lo schermo non si spegne mentre l'app è in uso
   3. Chiudendo e riaprendo l'app, la preferenza scelta in precedenza è ancora impostata
 
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+**Wave 1**
+
+- [ ] 05-01-PLAN.md — Stringa + 2 ColorStateList grayscale + ScreenOnPreferenceStore (SharedPreferences Boolean nullable), layout keepScreenOnSwitch (SwitchCompat bottom-left sempre visibile), wiring MainActivity (default da ricarica al primo avvio D-04/D-05, FLAG_KEEP_SCREEN_ON immediato D-06, persistenza D-07, insets bottom+left)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 05-02-PLAN.md — Checkpoint verifica su device: switch sempre visibile in ogni stato, blocco spegnimento immediato/reversibile, persistenza chiusura app E riavvio telefono, default da ricarica al primo avvio, insets portrait/landscape, no overlap con Riprova
+**UI hint**: yes
 
 ## Progress
 
@@ -134,4 +143,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Motore GPS | 3/3 | Complete    | 2026-07-07 |
 | 3. Interfaccia Tachimetro | 1/1 | Complete   | 2026-07-10 |
 | 4. Velocità Massima e Persistenza | 2/2 | Complete   | 2026-07-10 |
-| 5. Gestione Schermo | 0/? | Not started | - |
+| 5. Gestione Schermo | 0/2 | Not started | - |
