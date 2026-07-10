@@ -2,17 +2,21 @@ package com.sed.tachimetro
 
 import android.Manifest
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.BatteryManager
 import android.os.Bundle
 import android.provider.Settings
 import android.util.TypedValue
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -32,6 +36,7 @@ import com.sed.tachimetro.gps.GpsSpeedProvider
 import com.sed.tachimetro.gps.SpeedState
 import com.sed.tachimetro.maxspeed.MaxSpeedStore
 import com.sed.tachimetro.maxspeed.reduceMax
+import com.sed.tachimetro.screen.ScreenOnPreferenceStore
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,6 +61,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var resetMaxButton: Button
     private lateinit var maxSpeedStore: MaxSpeedStore
     private var currentMax: Int = 0
+    private lateinit var keepScreenOnSwitch: SwitchCompat
+    private lateinit var screenOnStore: ScreenOnPreferenceStore
     private lateinit var gpsSpeedProvider: GpsSpeedProvider
 
     // CR-01: reactive permission state, refreshed from every place permission state can
@@ -94,6 +101,26 @@ class MainActivity : AppCompatActivity() {
         maxSpeedStore = MaxSpeedStore(applicationContext)
         currentMax = maxSpeedStore.read()
         updateMaxArea()
+
+        screenOnStore = ScreenOnPreferenceStore(applicationContext)
+        keepScreenOnSwitch = findViewById(R.id.keepScreenOnSwitch)
+        // D-04/D-05: se nessuna preferenza è salvata (primo avvio), il default deriva dallo stato di
+        // ricarica; quel valore derivato viene persistito UNA sola volta, così dagli avvii successivi
+        // conta solo la scelta salvata (lo stato di ricarica non viene più ricontrollato).
+        val savedKeepOn = screenOnStore.read()
+        val keepOn = savedKeepOn ?: isDeviceCharging()
+        if (savedKeepOn == null) {
+            screenOnStore.write(keepOn)
+        }
+        // Impostare checked PRIMA del listener: nessun trigger in init, nessun flash (UI-SPEC).
+        keepScreenOnSwitch.isChecked = keepOn
+        applyKeepScreenOn(keepOn)
+        // D-06/D-07: il cambio applica immediatamente il flag e persiste la preferenza su disco.
+        keepScreenOnSwitch.setOnCheckedChangeListener { _, isChecked ->
+            applyKeepScreenOn(isChecked)
+            screenOnStore.write(isChecked)
+        }
+        applyScreenSwitchWindowInsets()
 
         // WR-04: pass applicationContext, not the Activity, so GpsSpeedProvider (and the
         // FusedLocationProviderClient it wraps) never retains an Activity reference.
@@ -367,6 +394,48 @@ class MainActivity : AppCompatActivity() {
             val bp = resetMaxButton.layoutParams as ConstraintLayout.LayoutParams
             bp.marginStart = buttonBaseStart + extraStart
             resetMaxButton.layoutParams = bp
+            insets
+        }
+    }
+
+    // SCRN-02/D-06: applica o rimuove FLAG_KEEP_SCREEN_ON sulla finestra corrente. Immediato,
+    // nessun riavvio richiesto. FLAG_KEEP_SCREEN_ON è la via documentata e leggera per impedire
+    // lo spegnimento schermo senza permessi WAKE_LOCK.
+    private fun applyKeepScreenOn(keepOn: Boolean) {
+        if (keepOn) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
+    // D-04: legge lo stato di ricarica corrente dal broadcast sticky ACTION_BATTERY_CHANGED
+    // (registerReceiver(null, ...) restituisce subito l'ultimo Intent sticky, nessun receiver da
+    // deregistrare). Usato SOLO al primo avvio per derivare il default dello switch.
+    private fun isDeviceCharging(): Boolean {
+        val batteryStatus = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        val status = batteryStatus?.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ?: -1
+        return status == BatteryManager.BATTERY_STATUS_CHARGING ||
+            status == BatteryManager.BATTERY_STATUS_FULL
+    }
+
+    // Specchio di applyMaxAreaWindowInsets() per l'angolo bottom-left: somma l'inset live
+    // systemBars/displayCutout bottom+left sui margini base XML, così lo switch non finisce mai
+    // dietro la navigation bar o un cutout inferiore/sinistro, in entrambi gli orientamenti.
+    // Listener dedicato: gli insets differiscono per angolo (non riusare quello di maxSpeedText).
+    private fun applyScreenSwitchWindowInsets() {
+        val baseParams = keepScreenOnSwitch.layoutParams as ConstraintLayout.LayoutParams
+        val baseBottom = baseParams.bottomMargin
+        val baseStart = baseParams.marginStart
+        ViewCompat.setOnApplyWindowInsetsListener(keepScreenOnSwitch) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val extraBottom = maxOf(systemBars.bottom, cutout.bottom)
+            val extraStart = maxOf(systemBars.left, cutout.left)
+            val lp = view.layoutParams as ConstraintLayout.LayoutParams
+            lp.bottomMargin = baseBottom + extraBottom
+            lp.marginStart = baseStart + extraStart
+            view.layoutParams = lp
             insets
         }
     }
