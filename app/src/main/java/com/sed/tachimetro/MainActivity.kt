@@ -16,7 +16,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.TextViewCompat
 
 import androidx.lifecycle.Lifecycle
@@ -69,6 +71,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        enableImmersiveFullscreen()
 
         messageText = findViewById(R.id.messageText)
         unitText = findViewById(R.id.unitText)
@@ -115,6 +118,18 @@ class MainActivity : AppCompatActivity() {
             // Refresh the denial message/button label in case the
             // "can ask again" state changed while we were away.
             showDenied()
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        // Re-apply immersive fullscreen whenever this window regains focus. System bars can
+        // reappear behind our back after e.g. returning from openAppSettings() (Settings app
+        // covers/uncovers our window) or after a swipe-reveal (BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        // only auto-hides them again on the *next* interaction, not deterministically) -- this is
+        // the documented pattern for keeping WindowInsetsControllerCompat.hide() sticky.
+        if (hasFocus) {
+            enableImmersiveFullscreen()
         }
     }
 
@@ -230,6 +245,26 @@ class MainActivity : AppCompatActivity() {
             AUTOSIZE_STEP_SP,
             TypedValue.COMPLEX_UNIT_SP
         )
+    }
+
+    // Post-completion enhancement (round 4 user feedback): "vorrei che l'app fosse a tutto
+    // schermo, senza la barra del titolo". The title/ActionBar is removed via the
+    // NoActionBar theme parent (themes.xml / values-night/themes.xml). This function hides
+    // the system status bar and navigation bar entirely for a distraction-free, at-a-glance
+    // speedometer display (Core Value / UI-04: nessun elemento grafico non necessario),
+    // using the modern WindowInsetsControllerCompat API (the current best-practice
+    // replacement for the deprecated SYSTEM_UI_FLAG_FULLSCREEN/SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+    // flags) with swipe-to-reveal behavior so the bars remain reachable without leaving them
+    // permanently on screen. setDecorFitsSystemWindows(false) is set explicitly rather than
+    // relying on the targetSdk 36 edge-to-edge default, because that default is only enforced
+    // from API 35+ -- this app's minSdk is 30, so API 30-34 devices need it set explicitly for
+    // consistent immersive behavior across the whole supported SDK range.
+    private fun enableImmersiveFullscreen() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        controller.hide(WindowInsetsCompat.Type.systemBars())
     }
 
     // Fix (checkpoint round 3 feedback): targetSdk 36 (Android 15+) enforces
