@@ -74,6 +74,12 @@ None yet.
 
 None yet.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260710-tuh | Impedire wrapping numero velocità (maxLines dinamico su messageText) | 2026-07-10 | 3600992 | [260710-tuh-impedire-wrapping-del-numero-velocit-max](./quick/260710-tuh-impedire-wrapping-del-numero-velocit-max/) |
+
 ## Deferred Items
 
 Items acknowledged and carried forward from previous milestone close:
@@ -84,6 +90,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-10 — completamento milestone v1.0
-Stopped at: v1.0 MVP archiviata e taggata
+Last session: 2026-07-10 — quick task 260710-tuh (fix wrapping numero velocità) completato e verificato
+Stopped at: v1.0 MVP shippata + hotfix leggibilità applicato
 Resume file: — (avvia prossima milestone con `/gsd-new-milestone`)
