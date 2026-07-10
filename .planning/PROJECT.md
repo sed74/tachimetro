@@ -17,18 +17,19 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 - ✓ Lettura della velocità via GPS usando FusedLocationProviderClient (Google Play Services) — Fase 2
 - ✓ Aggiornamento della velocità a schermo 1 volta al secondo — Fase 2
 - ✓ Messaggio semplice quando manca il segnale GPS (es. "Ricerca segnale GPS...") — Fase 2
+- ✓ Velocità attuale come numero enorme, sempre centrato, elemento dominante dello schermo (auto-size uniform) — Fase 3
+- ✓ Sfondo nero, testo ad alto contrasto, font di sistema in versione Bold/Black — Fase 3
+- ✓ Supporto completo portrait e landscape, con il numero che si adatta e resta il più grande possibile (layout unico adattivo) — Fase 3
+- ✓ Nessun menu, animazione o elemento grafico non necessario — Fase 3
+- ✓ Testi e messaggi dell'interfaccia interamente in italiano — Fase 3 (già rispettato dalle Fasi 1-2, validato formalmente in Fase 3)
 
 ### Active
 
-- [ ] Mostrare la velocità attuale in km/h con un numero enorme, sempre centrato, elemento dominante dello schermo
-- [ ] Sfondo nero, testo ad alto contrasto, font di sistema in versione Bold/Black
-- [ ] Supporto completo portrait e landscape, con il numero che si adatta e resta il più grande possibile
 - [ ] Area secondaria con la velocità massima raggiunta dall'ultimo azzeramento
 - [ ] Pulsante "Azzera massimo" che azzera il valore e avvia una nuova misurazione
 - [ ] Velocità massima persistente su disco (sopravvive a chiusura app e riavvio del telefono)
 - [ ] Toggle "Schermo sempre acceso" / "Schermo automatico", con preferenza salvata tra sessioni
 - [ ] Quando "sempre acceso" è attivo, impedire lo spegnimento schermo durante l'uso (FLAG_KEEP_SCREEN_ON)
-- [ ] Testi e messaggi dell'interfaccia interamente in italiano
 
 ### Out of Scope
 
@@ -39,6 +40,7 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 ## Context
 
+- Fase 3 completa (2026-07-10): interfaccia tachimetro implementata — `messageText` con `autoSizeTextType="uniform"` (12-300sp per il numero, 12-56sp per i messaggi di stato, cap distinti applicati a runtime), layout unico adattivo (nessun `res/layout-land`), unità "km/h" spostata in un `TextView` separato (`unitText`) piccolo e ancorato in alto a destra. Quattro round di fix da checkpoint umano, tutti approvati su emulatore: (1) cap autosize messaggi, (2) unitText separata, (3) fix window insets per targetSdk 36 edge-to-edge (la status bar copriva unitText), (4) modalità fullscreen immersiva su richiesta utente (tema NoActionBar + `WindowInsetsControllerCompat` per nascondere status/nav bar con swipe-to-reveal). Nota per fasi future: l'app ora gestisce attivamente i window insets — qualunque nuovo elemento posizionato ai bordi schermo (es. area velocità massima in Fase 4) deve tenerne conto.
 - Fase 2 completa (2026-07-07): motore GPS implementato (SpeedState, mapSpeedToKmh con 7 unit test, GpsSpeedProvider via callbackFlow/StateFlow), collegato a MainActivity, verificato su emulatore con Route Playback. Filtro accuratezza (~50m), soglia rumore (~2 km/h), timeout "nessun segnale" 5s
 - Fase 1 completa (2026-07-07): scaffold portato sotto controllo versione, Kotlin abilitato via supporto built-in AGP 9.1.1 (non il plugin classico, incompatibile con questa versione AGP), MainActivity LAUNCHER con flusso permesso GPS completo, verificato su emulatore reale
 - Progetto Android Studio inizializzato (`com.sed.tachimetro`); vedi `.planning/codebase/` per la mappatura pre-esistente
@@ -84,4 +86,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-07 after Phase 2 completion*
+*Last updated: 2026-07-10 after Phase 3 completion*
