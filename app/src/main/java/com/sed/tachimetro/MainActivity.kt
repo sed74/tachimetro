@@ -13,7 +13,10 @@ import android.widget.TextView
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.TextViewCompat
 
 import androidx.lifecycle.Lifecycle
@@ -71,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         unitText = findViewById(R.id.unitText)
         retryButton = findViewById(R.id.retryButton)
         retryButton.setOnClickListener { onRetryClicked() }
+        applyUnitTextWindowInsets()
 
         // WR-04: pass applicationContext, not the Activity, so GpsSpeedProvider (and the
         // FusedLocationProviderClient it wraps) never retains an Activity reference.
@@ -226,5 +230,33 @@ class MainActivity : AppCompatActivity() {
             AUTOSIZE_STEP_SP,
             TypedValue.COMPLEX_UNIT_SP
         )
+    }
+
+    // Fix (checkpoint round 3 feedback): targetSdk 36 (Android 15+) enforces
+    // edge-to-edge by default with no opt-out, so content draws under the status bar
+    // unless window insets are explicitly handled. unitText is pinned to the top-end
+    // corner with only a fixed 16dp base margin (declared in activity_main.xml) and
+    // no insets handling existed anywhere in the app, so it rendered directly behind
+    // the status bar (clock/battery/signal icons) -- invisible, not a visibility-flag
+    // bug. This listener adds the live system bars / display cutout inset on top of
+    // the XML-declared base margin so unitText always renders fully clear of the
+    // status bar and any right-side cutout, in both portrait and landscape, without
+    // touching messageText's or retryButton's existing (checkpoint-approved)
+    // constraints/behavior.
+    private fun applyUnitTextWindowInsets() {
+        val baseParams = unitText.layoutParams as ConstraintLayout.LayoutParams
+        val baseTopMargin = baseParams.topMargin
+        val baseEndMargin = baseParams.marginEnd
+        ViewCompat.setOnApplyWindowInsetsListener(unitText) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val extraTop = maxOf(systemBars.top, cutout.top)
+            val extraEnd = maxOf(systemBars.right, cutout.right)
+            val params = view.layoutParams as ConstraintLayout.LayoutParams
+            params.topMargin = baseTopMargin + extraTop
+            params.marginEnd = baseEndMargin + extraEnd
+            view.layoutParams = params
+            insets
+        }
     }
 }
