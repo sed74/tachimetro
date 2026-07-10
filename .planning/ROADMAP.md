@@ -99,7 +99,16 @@ Plans:
   2. Premendo il pulsante "Azzera massimo", il valore si azzera e inizia una nuova misurazione
   3. Chiudendo e riaprendo l'app, o riavviando il telefono, la velocità massima precedentemente registrata è ancora visibile
 
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Stringhe + layout (maxSpeedText/resetMaxButton), logica pura reduceMax/sanitize (test JVM) + MaxSpeedStore (SharedPreferences), wiring MainActivity (lettura all'avvio, aggiornamento/persistenza D-07/D-08, reset, insets, visibilità D-09)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04-02-PLAN.md — Checkpoint verifica su device: display MAX, non-decrescita, azzeramento immediato, persistenza dopo chiusura app E riavvio telefono, insets portrait/landscape
+**UI hint**: yes
 
 ### Phase 5: Gestione Schermo
 
@@ -124,5 +133,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Fondamenta, Permessi e Avvio | 2/2 | Complete    | 2026-07-07 |
 | 2. Motore GPS | 3/3 | Complete    | 2026-07-07 |
 | 3. Interfaccia Tachimetro | 1/1 | Complete   | 2026-07-10 |
-| 4. Velocità Massima e Persistenza | 0/? | Not started | - |
+| 4. Velocità Massima e Persistenza | 0/2 | Not started | - |
 | 5. Gestione Schermo | 0/? | Not started | - |
