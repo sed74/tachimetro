@@ -10,4 +10,5 @@
     <string name="unit_kmh">km/h</string>
     <string name="max_speed_format">MAX %1$d</string>
     <string name="reset_max_button">Azzera massimo</string>
+    <string name="keep_screen_on_label">Sempre acceso</string>
 </resources>
