@@ -57,4 +57,33 @@
         tools:text="Riprova"
         tools:visibility="visible" />
 
+    <TextView
+        android:id="@+id/maxSpeedText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="MAX 120"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/resetMaxButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:minHeight="48dp"
+        android:text="@string/reset_max_button"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/maxSpeedText"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
