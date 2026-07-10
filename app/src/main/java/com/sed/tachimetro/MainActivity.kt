@@ -30,6 +30,8 @@ import kotlinx.coroutines.launch
 
 import com.sed.tachimetro.gps.GpsSpeedProvider
 import com.sed.tachimetro.gps.SpeedState
+import com.sed.tachimetro.maxspeed.MaxSpeedStore
+import com.sed.tachimetro.maxspeed.reduceMax
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,6 +52,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var messageText: TextView
     private lateinit var unitText: TextView
     private lateinit var retryButton: Button
+    private lateinit var maxSpeedText: TextView
+    private lateinit var resetMaxButton: Button
+    private lateinit var maxSpeedStore: MaxSpeedStore
+    private var currentMax: Int = 0
     private lateinit var gpsSpeedProvider: GpsSpeedProvider
 
     // CR-01: reactive permission state, refreshed from every place permission state can
@@ -78,6 +84,16 @@ class MainActivity : AppCompatActivity() {
         retryButton = findViewById(R.id.retryButton)
         retryButton.setOnClickListener { onRetryClicked() }
         applyUnitTextWindowInsets()
+
+        maxSpeedText = findViewById(R.id.maxSpeedText)
+        resetMaxButton = findViewById(R.id.resetMaxButton)
+        resetMaxButton.setOnClickListener { onResetMaxClicked() }
+        applyMaxAreaWindowInsets()
+        // D-09: leggere il massimo salvato PRIMA di avviare la raccolta GPS, cosi' l'area MAX
+        // appare gia' con lo stato corretto senza flash di "MAX 0".
+        maxSpeedStore = MaxSpeedStore(applicationContext)
+        currentMax = maxSpeedStore.read()
+        updateMaxArea()
 
         // WR-04: pass applicationContext, not the Activity, so GpsSpeedProvider (and the
         // FusedLocationProviderClient it wraps) never retains an Activity reference.
@@ -187,11 +203,14 @@ class MainActivity : AppCompatActivity() {
         unitText.visibility = View.GONE
         applyMessageAutosize()
         messageText.text = getString(R.string.status_ready)
+        updateMaxArea()
     }
 
     private fun showDenied() {
         retryButton.visibility = View.VISIBLE
         unitText.visibility = View.GONE
+        maxSpeedText.visibility = View.GONE
+        resetMaxButton.visibility = View.GONE
         applyMessageAutosize()
         val permanentlyDenied =
             !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -223,7 +242,37 @@ class MainActivity : AppCompatActivity() {
                 unitText.visibility = View.VISIBLE
                 applySpeedAutosize()
                 messageText.text = state.kmh.toString()
+
+                // D-07: update and persist the session max immediately whenever the current
+                // reading exceeds it -- no batching to onPause()/onStop().
+                val newMax = reduceMax(currentMax, state.kmh)
+                if (newMax != currentMax) {
+                    currentMax = newMax
+                    maxSpeedStore.write(currentMax)
+                }
             }
+        }
+        updateMaxArea()
+    }
+
+    // D-04/D-08: reset tap zeroes the in-memory max immediately (no confirmation dialog) and
+    // persists 0 to disk right away, so a re-open right after reset never resurrects the old max.
+    private fun onResetMaxClicked() {
+        currentMax = 0
+        maxSpeedStore.write(0)
+        updateMaxArea()
+    }
+
+    // D-03/D-09: the whole MAX area (label + reset button) stays hidden while the max is 0 --
+    // never renders a misleading "MAX 0". Plain visibility toggle, no animation (UI-04).
+    private fun updateMaxArea() {
+        if (currentMax > 0) {
+            maxSpeedText.text = getString(R.string.max_speed_format, currentMax)
+            maxSpeedText.visibility = View.VISIBLE
+            resetMaxButton.visibility = View.VISIBLE
+        } else {
+            maxSpeedText.visibility = View.GONE
+            resetMaxButton.visibility = View.GONE
         }
     }
 
@@ -291,6 +340,33 @@ class MainActivity : AppCompatActivity() {
             params.topMargin = baseTopMargin + extraTop
             params.marginEnd = baseEndMargin + extraEnd
             view.layoutParams = params
+            insets
+        }
+    }
+
+    // Mirror of applyUnitTextWindowInsets() for the top-left MAX area (D-01, UI-SPEC Window
+    // insets row): adds live systemBars/displayCutout top+left inset on top of the XML base
+    // margins so maxSpeedText/resetMaxButton never render behind the status bar or a left-side
+    // display cutout, in either orientation. Not shared with unitText's listener instance --
+    // insets differ per side (start vs end).
+    private fun applyMaxAreaWindowInsets() {
+        val labelParams = maxSpeedText.layoutParams as ConstraintLayout.LayoutParams
+        val labelBaseTop = labelParams.topMargin
+        val labelBaseStart = labelParams.marginStart
+        val buttonParams = resetMaxButton.layoutParams as ConstraintLayout.LayoutParams
+        val buttonBaseStart = buttonParams.marginStart
+        ViewCompat.setOnApplyWindowInsetsListener(maxSpeedText) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val extraTop = maxOf(systemBars.top, cutout.top)
+            val extraStart = maxOf(systemBars.left, cutout.left)
+            val lp = view.layoutParams as ConstraintLayout.LayoutParams
+            lp.topMargin = labelBaseTop + extraTop
+            lp.marginStart = labelBaseStart + extraStart
+            view.layoutParams = lp
+            val bp = resetMaxButton.layoutParams as ConstraintLayout.LayoutParams
+            bp.marginStart = buttonBaseStart + extraStart
+            resetMaxButton.layoutParams = bp
             insets
         }
     }
