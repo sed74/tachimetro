@@ -125,7 +125,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 05-01-PLAN.md — Stringa + 2 ColorStateList grayscale + ScreenOnPreferenceStore (SharedPreferences Boolean nullable), layout keepScreenOnSwitch (SwitchCompat bottom-left sempre visibile), wiring MainActivity (default da ricarica al primo avvio D-04/D-05, FLAG_KEEP_SCREEN_ON immediato D-06, persistenza D-07, insets bottom+left)
+- [x] 05-01-PLAN.md — Stringa + 2 ColorStateList grayscale + ScreenOnPreferenceStore (SharedPreferences Boolean nullable), layout keepScreenOnSwitch (SwitchCompat bottom-left sempre visibile), wiring MainActivity (default da ricarica al primo avvio D-04/D-05, FLAG_KEEP_SCREEN_ON immediato D-06, persistenza D-07, insets bottom+left)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -143,4 +143,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Motore GPS | 3/3 | Complete    | 2026-07-07 |
 | 3. Interfaccia Tachimetro | 1/1 | Complete   | 2026-07-10 |
 | 4. Velocità Massima e Persistenza | 2/2 | Complete   | 2026-07-10 |
-| 5. Gestione Schermo | 0/2 | Not started | - |
+| 5. Gestione Schermo | 1/2 | In Progress|  |
