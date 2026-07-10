@@ -41,10 +41,10 @@ patterns-established:
   - "Pattern 2 (superato in round 2, vedi Deviazione 3 sotto): un'etichetta secondaria fissa (es. unità di misura) va in una vista dedicata separata, ancorata via vincoli ConstraintLayout a un angolo dello schermo, non in uno span dentro il TextView dominante — più semplice da posizionare in modo indipendente in portrait/landscape senza res/layout-land"
   - "Pattern 3 (round 3): con targetSdk >= 35 (edge-to-edge forzato, nessun opt-out), qualunque vista ancorata a un angolo/bordo dello schermo con solo margini XML fissi va protetta con ViewCompat.setOnApplyWindowInsetsListener che somma l'inset live (systemBars/displayCutout) al margine base — altrimenti rischia di disegnare dietro la status bar/nav bar/cutout ed essere invisibile"
 
-requirements-completed: [UI-01, UI-02, UI-03, UI-05]
+requirements-completed: [UI-01, UI-02, UI-03, UI-04, UI-05]
 
 # Metrics
-duration: n/a (Task 1 storico + due round di fix di deviazione da checkpoint)
+duration: n/a (Task 1 storico + tre round di fix di deviazione da checkpoint, chiuso con approvazione utente)
 completed: 2026-07-10
 ---
 
@@ -54,7 +54,7 @@ completed: 2026-07-10
 
 ## Performance
 
-- **Tasks:** 1 di 2 completato (Task 1 auto), Task 2 è un checkpoint umano tuttora in attesa di ri-verifica dopo due round di fix da feedback utente
+- **Tasks:** 2 di 2 completati (Task 1 auto; Task 2 checkpoint umano approvato dall'utente con "approvato" dopo tre round di fix da feedback)
 - **Files modified:** 3 (`activity_main.xml`, `MainActivity.kt`, `strings.xml`)
 
 ## Accomplishments
@@ -132,9 +132,16 @@ _Task 2 (checkpoint:human-verify) non è ancora marcato "done": richiede una nuo
 None - nessuna configurazione di servizi esterni richiesta.
 
 ## Next Phase Readiness
-- Task 2 (checkpoint:human-verify) di questo plan richiede una nuova verifica visiva su device/emulatore reale dopo questo terzo round di fix: confermare che (a) il numero di velocità è grande, centrato e da solo (senza "km/h" al suo interno), (b) l'etichetta "km/h" appare ora **visibile**, piccola, fissa, in alto a destra e completamente libera dalla status bar (nessuna sovrapposizione con orologio/batteria/segnale), sia in portrait sia in landscape, e (c) i messaggi di stato restano compatti/leggibili come nei round precedenti
-- In attesa di questa ri-verifica, la Fase 4 (velocità massima) non deve iniziare: il layout di questa fase non è ancora approvato
+- Task 2 approvato dall'utente ("approvato") dopo il terzo round di fix: la Fase 4 (velocità massima) può iniziare quando pianificata, il layout di questa fase è definitivamente chiuso.
+
+---
+
+## Chiusura Task 2 (checkpoint approvato)
+
+Dopo tre round di fix da feedback utente su device/emulatore reale (round 1: unità km/h ridimensionata via span e cap autosize distinto per i messaggi di stato; round 2: unità km/h spostata da span dentro `messageText` a `unitText` dedicata, ancorata in alto a destra; round 3: fix window-insets per far sì che `unitText` non disegnasse più dietro la status bar con edge-to-edge forzato da targetSdk 36), l'utente ha ri-verificato il risultato finale su portrait/landscape con velocità a 1/2/3 cifre e stati di messaggio, e ha confermato esplicitamente con la parola **"approvato"**.
+
+Task 2 (checkpoint:human-verify) è quindi marcato **done**. Il plan 03-01 è **completo al 100%** (Task 1 + Task 2, entrambi done). Nessuna ulteriore modifica di codice è stata necessaria in questa chiusura: il self-check finale (`./gradlew.bat :app:assembleDebug` e `./gradlew.bat test`) conferma BUILD SUCCESSFUL su entrambi, a conferma che l'albero è pulito e buildabile dopo i tre round di deviazione.
 
 ---
 *Phase: 03-interfaccia-tachimetro*
-*Completed: 2026-07-10 (terzo fix di deviazione da checkpoint; Task 2 checkpoint ancora in attesa di ri-verifica)*
+*Completed: 2026-07-10 (Task 2 approvato dall'utente dopo tre round di fix da checkpoint; plan 03-01 completo)*
