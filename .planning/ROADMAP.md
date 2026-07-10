@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Motore GPS** - L'app legge la velocità reale dal dispositivo tramite FusedLocationProviderClient (completed 2026-07-07)
 - [x] **Phase 3: Interfaccia Tachimetro** - L'utente vede la velocità a schermo intero, leggibile in ogni orientamento e condizione di luce (completed 2026-07-10)
 - [x] **Phase 4: Velocità Massima e Persistenza** - L'utente monitora e azzera la velocità massima, con valore persistente su disco (completed 2026-07-10)
-- [ ] **Phase 5: Gestione Schermo** - L'utente controlla se lo schermo resta sempre acceso durante l'uso
+- [x] **Phase 5: Gestione Schermo** - L'utente controlla se lo schermo resta sempre acceso durante l'uso (completed 2026-07-10)
 
 ## Phase Details
 
@@ -129,7 +129,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 05-02-PLAN.md — Checkpoint verifica su device: switch sempre visibile in ogni stato, blocco spegnimento immediato/reversibile, persistenza chiusura app E riavvio telefono, default da ricarica al primo avvio, insets portrait/landscape, no overlap con Riprova
+- [x] 05-02-PLAN.md — Checkpoint verifica su device: switch sempre visibile in ogni stato, blocco spegnimento immediato/reversibile, persistenza chiusura app E riavvio telefono, default da ricarica al primo avvio, insets portrait/landscape, no overlap con Riprova
 **UI hint**: yes
 
 ## Progress
@@ -143,4 +143,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Motore GPS | 3/3 | Complete    | 2026-07-07 |
 | 3. Interfaccia Tachimetro | 1/1 | Complete   | 2026-07-10 |
 | 4. Velocità Massima e Persistenza | 2/2 | Complete   | 2026-07-10 |
-| 5. Gestione Schermo | 1/2 | In Progress|  |
+| 5. Gestione Schermo | 2/2 | Complete   | 2026-07-10 |
