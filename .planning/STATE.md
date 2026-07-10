@@ -2,35 +2,35 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: milestone_complete
-stopped_at: Milestone complete (Phase 05 was final phase)
-last_updated: 2026-07-10T19:11:23.476Z
-last_activity: 2026-07-10 -- Phase 05 execution started
+status: completed
+stopped_at: Phase 5 UI-SPEC approved
+last_updated: "2026-07-10T19:20:33.726Z"
+last_activity: 2026-07-10
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 10
   completed_plans: 10
-  percent: 80
+  percent: 100
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-07)
+See: .planning/PROJECT.md (updated 2026-07-10)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** Milestone complete
+**Current focus:** v1.0 MVP shippato — in attesa di definire la prossima milestone (`/gsd-new-milestone`)
 
 ## Current Position
 
-Phase: 05
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-07-10
+Phase: — (v1.0 completa)
+Plan: —
+Status: v1.0 MVP shipped (2026-07-10)
+Last activity: 2026-07-10 — milestone v1.0 archiviata
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100% (v1.0)
 
 ## Performance Metrics
 
@@ -84,6 +84,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-10T15:23:14.586Z
-Stopped at: Phase 5 UI-SPEC approved
-Resume file: .planning/phases/05-gestione-schermo/05-UI-SPEC.md
+Last session: 2026-07-10 — completamento milestone v1.0
+Stopped at: v1.0 MVP archiviata e taggata
+Resume file: — (avvia prossima milestone con `/gsd-new-milestone`)

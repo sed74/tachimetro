@@ -41,6 +41,7 @@ Nessuno — tutti i requisiti v1 sono validati. Milestone v1.0 completa (17/17 r
 
 ## Context
 
+- **v1.0 MVP SHIPPED (2026-07-10)** — 5 fasi, 10 piani, 17/17 requisiti validati con checkpoint umani su device. ~695 LOC Kotlin (8 file `.kt` in `main`: `MainActivity`, package `gps/`, `maxspeed/`, `screen/`), 3 suite di test JVM (SpeedMapping, GpsProviderState, MaxSpeedReducer). Timeline 2026-07-07 → 2026-07-10 (4 giorni). Archivio: `.planning/milestones/v1.0-*`. Nessun feedback utente reale ancora raccolto (app non ancora usata su strada). Prossima milestone da definire via `/gsd-new-milestone`.
 - Fase 5 completa (2026-07-10) — **v1.0 completa**: toggle "Sempre acceso" (`keepScreenOnSwitch`, SwitchCompat monocromatico) in basso a sinistra, speculare all'area MAX, sempre visibile. `ScreenOnPreferenceStore.kt` persiste una preferenza booleana nullable (null = mai impostata); al primo avvio il default è derivato dallo stato di ricarica del telefono (ON se in carica) e scritto una sola volta. Cambio di stato applica/rimuove `FLAG_KEEP_SCREEN_ON` immediatamente. Checkpoint umano superato su emulatore (8/8 casi, incluso riavvio e stato di ricarica).
 - Fase 4 completa (2026-07-10): monitoraggio velocità massima implementato — `maxSpeedText`/`resetMaxButton` in alto a sinistra (speculare a `unitText`), `MaxSpeedReducer.kt` (funzioni pure `reduceMax`/`sanitizePersistedMax`, TDD con 8 test JVM) e `MaxSpeedStore.kt` (wrapper SharedPreferences). Il massimo si aggiorna e si salva su disco immediatamente ad ogni nuovo record e ad ogni azzeramento; l'area resta nascosta finché il massimo è 0. Applica lo stesso pattern di window insets di `unitText` per restare libera da status bar/cutout. Checkpoint umano superato su emulatore, incluso il test critico di persistenza tramite `adb reboot`.
 - Fase 3 completa (2026-07-10): interfaccia tachimetro implementata — `messageText` con `autoSizeTextType="uniform"` (12-300sp per il numero, 12-56sp per i messaggi di stato, cap distinti applicati a runtime), layout unico adattivo (nessun `res/layout-land`), unità "km/h" spostata in un `TextView` separato (`unitText`) piccolo e ancorato in alto a destra. Quattro round di fix da checkpoint umano, tutti approvati su emulatore: (1) cap autosize messaggi, (2) unitText separata, (3) fix window insets per targetSdk 36 edge-to-edge (la status bar copriva unitText), (4) modalità fullscreen immersiva su richiesta utente (tema NoActionBar + `WindowInsetsControllerCompat` per nascondere status/nav bar con swipe-to-reveal). Nota per fasi future: l'app ora gestisce attivamente i window insets — qualunque nuovo elemento posizionato ai bordi schermo (es. area velocità massima in Fase 4) deve tenerne conto.
@@ -69,7 +70,7 @@ Nessuno — tutti i requisiti v1 sono validati. Milestone v1.0 completa (17/17 r
 | Velocità esposta via Kotlin Flow/StateFlow (callbackFlow manuale, non kotlinx-coroutines-play-services) | kotlinx-coroutines-play-services non offre un adapter Flow per aggiornamenti continui (verificato in ricerca Fase 2) | ✓ Good |
 | Velocità massima persistente (SharedPreferences) | L'utente vuole confrontare sessioni di guida diverse senza perdere il record | ✓ Good |
 | Aggiornamento GPS 1/sec | Bilancia fluidità e battery drain per uso prolungato in auto/moto | ✓ Good |
-| Solo km/h, nessun toggle unità | Riduce complessità UI, non richiesto per v1 | — Pending |
+| Solo km/h, nessun toggle unità | Riduce complessità UI, non richiesto per v1 | ✓ Good (shippato in v1.0 senza attriti) |
 
 ## Evolution
 
@@ -89,4 +90,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-10 after Phase 5 completion — v1.0 milestone complete*
+*Last updated: 2026-07-10 after v1.0 MVP milestone completion*
