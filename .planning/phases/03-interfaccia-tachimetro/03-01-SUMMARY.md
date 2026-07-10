@@ -143,5 +143,46 @@ Dopo tre round di fix da feedback utente su device/emulatore reale (round 1: uni
 Task 2 (checkpoint:human-verify) è quindi marcato **done**. Il plan 03-01 è **completo al 100%** (Task 1 + Task 2, entrambi done). Nessuna ulteriore modifica di codice è stata necessaria in questa chiusura: il self-check finale (`./gradlew.bat :app:assembleDebug` e `./gradlew.bat test`) conferma BUILD SUCCESSFUL su entrambi, a conferma che l'albero è pulito e buildabile dopo i tre round di deviazione.
 
 ---
+
+## Round 4 (post-completamento): app a tutto schermo, senza barra del titolo
+
+Il plan 03-01 era già completo al 100% (Task 1 + Task 2, entrambi done, "approvato" dall'utente). Dopo aver testato il layout approvato al checkpoint, l'utente ha richiesto un'estensione visiva ulteriore dello stesso lavoro di interfaccia, con parole proprie: **"vorrei che l'app fosse a tutto schermo, senza la barra del titolo"**. Il cambiamento è stato approvato per essere incorporato in questa stessa fase invece di essere rimandato a una fase successiva, trattandosi di rifinitura dello stesso layout schermo-intero già oggetto del plan (coerente con Core Value/UI-04: nessun elemento grafico non necessario).
+
+### Cosa è stato verificato prima di agire
+- **Barra del titolo:** contrariamente all'ipotesi iniziale, il tema `Theme.Tachimetro` (sia in `values/themes.xml` sia in `values-night/themes.xml`) usava ancora `Theme.MaterialComponents.DayNight.DarkActionBar` come parent — la ActionBar/barra del titolo era quindi **effettivamente presente e visibile**, non solo assunta assente. Verificato per lettura diretta di entrambi i file prima di modificare.
+- **Status bar/nav bar:** l'app non nascondeva mai status bar o nav bar. L'unica gestione insets esistente (`applyUnitTextWindowInsets()`, round 3) serviva solo a spostare il margine di `unitText` per non farla disegnare dietro la status bar visibile — un problema diverso e complementare rispetto a nasconderla del tutto.
+
+### Modifiche applicate
+1. **`app/src/main/res/values/themes.xml`** e **`app/src/main/res/values-night/themes.xml`**: parent del tema `Theme.Tachimetro` cambiato da `Theme.MaterialComponents.DayNight.DarkActionBar` a `Theme.MaterialComponents.DayNight.NoActionBar`, rimuovendo la ActionBar/barra del titolo. Nessun altro attributo del tema toccato.
+2. **`app/src/main/java/com/sed/tachimetro/MainActivity.kt`**: nuova funzione privata `enableImmersiveFullscreen()`, che usa `WindowCompat.setDecorFitsSystemWindows(window, false)` + `WindowInsetsControllerCompat(window, window.decorView)` per nascondere `WindowInsetsCompat.Type.systemBars()` (status bar **e** nav bar, adatto a un display sempre montato su supporto auto/moto senza necessità di gesture di navigazione visibili) con `systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE` (swipe-to-reveal, sostituto moderno dei deprecati `SYSTEM_UI_FLAG_FULLSCREEN`/`SYSTEM_UI_FLAG_IMMERSIVE_STICKY`). Chiamata una volta in `onCreate()` subito dopo `setContentView()`, e ri-applicata in un nuovo override `onWindowFocusChanged(hasFocus: Boolean)` ogni volta che la finestra riacquista il focus (pattern raccomandato per mantenere l'immersive mode persistente dopo il ritorno da `openAppSettings()` o dopo uno swipe-reveal temporaneo).
+3. **Nessuna nuova dipendenza Gradle**: `WindowCompat`/`WindowInsetsControllerCompat` sono nel package `androidx.core.view`, già disponibile transitivamente via `androidx.appcompat:appcompat` (stesso pattern già usato per `ViewCompat`/`WindowInsetsCompat` nel fix round 3) — confermata l'assenza di `androidx.core:core-ktx` in `gradle/libs.versions.toml`/`app/build.gradle.kts`, quindi nessuna funzione di estensione Kotlin-only usata.
+4. **`setDecorFitsSystemWindows(false)` esplicito**: non ci si è affidati al comportamento edge-to-edge forzato da `targetSdk 36` (che si applica solo da API 35+), perché `minSdk = 30` di questo progetto richiede la chiamata esplicita per un comportamento immersivo coerente anche sui device API 30-34.
+
+### Verifica di `applyUnitTextWindowInsets()` con le barre nascoste
+Riesaminata la logica esistente (round 3): il margine di `unitText` viene ricalcolato interamente da zero a ogni invocazione del listener `ViewCompat.setOnApplyWindowInsetsListener` (`params.topMargin = baseTopMargin + extraTop`, mai un accumulo incrementale), quindi non c'è rischio di margine residuo/obsoleto quando le barre passano da visibili a nascoste: con `systemBars()` nascosta, l'inset riportato si riduce naturalmente verso zero (o verso il solo `displayCutout()` residuo, se presente), e il margine finale torna al valore base 16dp dichiarato in XML. Nessuna modifica di codice necessaria a questa funzione — comportamento già corretto per costruzione.
+
+### Verifica
+- `./gradlew.bat :app:assembleDebug` → **BUILD SUCCESSFUL**
+- `./gradlew.bat test` → **BUILD SUCCESSFUL**
+- Revisione del codice: nessuna stringa nuova, nessun nuovo elemento grafico, `messageText`/`unitText`/`retryButton` non toccati in `activity_main.xml` in questo round
+
+### Verifica visiva richiesta (checkpoint umano)
+Questa è una modifica di system-UI/comportamento a runtime non verificabile senza device/emulatore reale. Da ri-controllare visivamente:
+1. All'avvio dell'app, status bar e nav bar risultano nascoste (nessuna barra del titolo, nessuna icona di sistema in alto/in basso).
+2. Uno swipe dal bordo superiore/inferiore mostra temporaneamente le barre di sistema (swipe-to-reveal) senza bloccare l'interazione con l'app.
+3. L'etichetta "km/h" (`unitText`, in alto a destra) resta correttamente posizionata e leggibile, senza margine eccessivo residuo, sia in portrait sia in landscape, con le barre nascoste.
+4. Tornando dall'app Impostazioni (flusso "Apri impostazioni" del permesso GPS negato in modo permanente), le barre di sistema tornano nascoste automaticamente al rientro nell'app.
+5. Nessuna barra del titolo/ActionBar visibile in nessun momento.
+
+**Nessun cambiamento architetturale, nessuna nuova dipendenza, nessuna nuova stringa.** Modifica commit singolo: `42bb31a` (feat).
+
+---
 *Phase: 03-interfaccia-tachimetro*
 *Completed: 2026-07-10 (Task 2 approvato dall'utente dopo tre round di fix da checkpoint; plan 03-01 completo)*
+*Aggiornamento round 4: 2026-07-10 (fullscreen/no-title-bar, in attesa di verifica visiva umana su device/emulatore)*
+
+## Self-Check: PASSED
+- FOUND: commit `42bb31a`
+- FOUND: `app/src/main/java/com/sed/tachimetro/MainActivity.kt` (contiene `enableImmersiveFullscreen`)
+- FOUND: `app/src/main/res/values/themes.xml` (contiene `NoActionBar`)
+- FOUND: `app/src/main/res/values-night/themes.xml` (contiene `NoActionBar`)
