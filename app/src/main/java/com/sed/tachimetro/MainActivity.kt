@@ -6,6 +6,10 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.RelativeSizeSpan
+import android.util.TypedValue
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -13,6 +17,7 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +30,24 @@ import com.sed.tachimetro.gps.GpsSpeedProvider
 import com.sed.tachimetro.gps.SpeedState
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        // Shared autosize floor/step for messageText regardless of content type.
+        private const val AUTOSIZE_MIN_SP = 12
+        private const val AUTOSIZE_STEP_SP = 4
+
+        // Speed digits keep the full dominant range (UI-01/UI-SPEC Typography).
+        private const val AUTOSIZE_MAX_SPEED_SP = 300
+
+        // Status/error messages get a materially smaller cap so long strings
+        // (e.g. permission_denied_permanent) stay compact/legible instead of
+        // scaling up toward the speed digits' huge range and wrapping unreadably.
+        private const val AUTOSIZE_MAX_MESSAGE_SP = 56
+
+        // Relative size of the "km/h" unit suffix versus the speed digits, so the
+        // digits stay visually dominant even though both share one autosize run.
+        private const val UNIT_RELATIVE_SIZE = 0.35f
+    }
 
     private lateinit var messageText: TextView
     private lateinit var retryButton: Button
@@ -147,11 +170,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun showReady() {
         retryButton.visibility = View.GONE
+        applyMessageAutosize()
         messageText.text = getString(R.string.status_ready)
     }
 
     private fun showDenied() {
         retryButton.visibility = View.VISIBLE
+        applyMessageAutosize()
         val permanentlyDenied =
             !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
         messageText.text = if (permanentlyDenied) {
@@ -168,10 +193,55 @@ class MainActivity : AppCompatActivity() {
 
     private fun updatePlaceholder(state: SpeedState) {
         retryButton.visibility = View.GONE
-        messageText.text = when (state) {
-            is SpeedState.Searching, is SpeedState.NoSignal ->
-                getString(R.string.searching_gps_signal)
-            is SpeedState.Reading -> getString(R.string.speed_kmh_format, state.kmh)
+        when (state) {
+            is SpeedState.Searching, is SpeedState.NoSignal -> {
+                applyMessageAutosize()
+                messageText.text = getString(R.string.searching_gps_signal)
+            }
+            is SpeedState.Reading -> {
+                applySpeedAutosize()
+                messageText.text = buildSpeedText(state.kmh)
+            }
         }
+    }
+
+    // Speed digits (e.g. "180") keep the full dominant autosize range; only the
+    // TextView's autosize *cap* controls their max on-screen size. This span
+    // additionally shrinks just the " km/h" unit suffix relative to whatever
+    // size the digits end up autosized to, so the unit never competes visually
+    // with the digits (D-01/D-03: still a single messageText, single string).
+    private fun buildSpeedText(kmh: Int): CharSequence {
+        val fullText = getString(R.string.speed_kmh_format, kmh)
+        val digitsLength = kmh.toString().length
+        if (digitsLength >= fullText.length) return fullText
+
+        return SpannableString(fullText).apply {
+            setSpan(
+                RelativeSizeSpan(UNIT_RELATIVE_SIZE),
+                digitsLength,
+                fullText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+    }
+
+    private fun applySpeedAutosize() {
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+            messageText,
+            AUTOSIZE_MIN_SP,
+            AUTOSIZE_MAX_SPEED_SP,
+            AUTOSIZE_STEP_SP,
+            TypedValue.COMPLEX_UNIT_SP
+        )
+    }
+
+    private fun applyMessageAutosize() {
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+            messageText,
+            AUTOSIZE_MIN_SP,
+            AUTOSIZE_MAX_MESSAGE_SP,
+            AUTOSIZE_STEP_SP,
+            TypedValue.COMPLEX_UNIT_SP
+        )
     }
 }
