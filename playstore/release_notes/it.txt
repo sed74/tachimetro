@@ -1,0 +1,6 @@
+Prima versione di Tachimetro.
+
+• Velocità GPS in tempo reale a schermo intero
+• Velocità massima di sessione, azzerabile con un tocco
+• Interruttore "schermo sempre acceso"
+• Nessuna pubblicità, nessuna connessione a Internet

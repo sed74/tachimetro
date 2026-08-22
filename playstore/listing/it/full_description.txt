@@ -1,0 +1,20 @@
+Tachimetro è un tachimetro GPS essenziale: mostra la tua velocità attuale a schermo intero, con cifre enormi ad altissimo contrasto, pensate per essere lette a colpo d'occhio mentre il telefono è montato su un supporto in auto o in moto.
+
+NIENTE DI SUPERFLUO
+Nessun menu, nessuna pubblicità, nessun grafico, nessuna animazione. Solo il numero della velocità, sempre visibile e sempre corretto, in ogni condizione di luce.
+
+FUNZIONALITÀ PRINCIPALI
+• Velocità GPS in tempo reale, aggiornata ogni secondo
+• Cifre a schermo intero che si adattano automaticamente alla larghezza
+• Velocità massima della sessione, sempre visibile e azzerabile con un tocco
+• Interruttore "schermo sempre acceso", con impostazione predefinita intelligente in base allo stato di ricarica
+• Schermo immersivo: nessuna barra di stato o di navigazione a distrarre
+• Rilevamento automatico di "nessun segnale GPS" quando il segnale si perde
+
+PRIVACY AL PRIMO POSTO
+Tachimetro non richiede l'accesso a Internet: nessun dato lascia mai il tuo telefono. La posizione GPS viene usata esclusivamente per calcolare la velocità mostrata a schermo, non viene salvata, condivisa o trasmessa in alcun modo.
+
+REQUISITI
+Richiede il permesso di localizzazione precisa (GPS) e i Google Play Services. Compatibile con Android 11 e versioni successive.
+
+Tachimetro è pensato per un solo scopo: mostrarti quanto stai andando veloce, senza distrazioni.

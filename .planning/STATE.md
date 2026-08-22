@@ -79,6 +79,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260710-tuh | Impedire wrapping numero velocità (maxLines dinamico su messageText) | 2026-07-10 | 3600992 | [260710-tuh-impedire-wrapping-del-numero-velocit-max](./quick/260710-tuh-impedire-wrapping-del-numero-velocit-max/) |
+| 260822-huf | Genera asset e testi per pubblicazione Play Store in playstore/ | 2026-08-22 | (pending) | [260822-huf-genera-asset-e-testi-per-pubblicazione-p](./quick/260822-huf-genera-asset-e-testi-per-pubblicazione-p/) |
 
 ## Deferred Items
 
@@ -90,6 +91,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-10 — quick task 260710-tuh (fix wrapping numero velocità) completato e verificato
-Stopped at: v1.0 MVP shippata + hotfix leggibilità applicato
+Last session: 2026-08-22 — quick task 260822-huf (asset e testi pubblicazione Play Store) completato
+Stopped at: pacchetto playstore/ pronto; in attesa che l'utente compili keystore.properties e i form Play Console (vedi playstore/README.md)
 Resume file: — (avvia prossima milestone con `/gsd-new-milestone`)

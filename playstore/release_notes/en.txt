@@ -1,0 +1,6 @@
+First release of Tachimetro.
+
+• Real-time full-screen GPS speed
+• Session max speed, resettable with one tap
+• "Keep screen on" toggle
+• No ads, no Internet connection

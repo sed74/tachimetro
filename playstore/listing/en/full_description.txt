@@ -1,0 +1,20 @@
+Tachimetro is a no-frills GPS speedometer: it shows your current speed full-screen, in huge, high-contrast digits designed to be read at a glance while your phone is mounted in a car or on a motorbike.
+
+NOTHING ELSE
+No menus, no ads, no charts, no animations. Just the speed number, always visible and always accurate, in every lighting condition.
+
+KEY FEATURES
+• Real-time GPS speed, updated every second
+• Full-screen digits that auto-scale to fit the width
+• Session max speed, always visible and resettable with one tap
+• "Keep screen on" toggle, with a smart default based on charging state
+• Immersive fullscreen display: no status or navigation bar to distract you
+• Automatic "no GPS signal" detection when the signal is lost
+
+PRIVACY FIRST
+Tachimetro does not request Internet access: no data ever leaves your phone. GPS location is used solely to compute the speed shown on screen — it is never saved, shared, or transmitted anywhere.
+
+REQUIREMENTS
+Requires precise (GPS) location permission and Google Play Services. Compatible with Android 11 and later.
+
+Tachimetro does one thing: show you how fast you're going, with nothing in the way.
