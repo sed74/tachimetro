@@ -1,4 +1,9 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 <!-- GSD:project-start source:PROJECT.md -->
+
 ## Project
 
 **Tachimetro**
@@ -14,180 +19,345 @@ App Android nativa che mostra la velocità GPS in tempo reale a schermo intero, 
 - **Compatibility**: minSdk 30 (Android 11+), targetSdk 36
 - **Performance**: aggiornamento velocità 1 volta/sec — bilanciamento scelto tra fluidità percepita e consumo batteria
 - **UX**: nessun elemento grafico non necessario, nessun menu, nessuna animazione — massima leggibilità in ogni condizione di luce
+
 <!-- GSD:project-end -->
 
 <!-- GSD:stack-start source:codebase/STACK.md -->
+
 ## Technology Stack
 
 ## Languages
-- Kotlin - Gradle build scripts (`build.gradle.kts`, `app/build.gradle.kts`, `settings.gradle.kts`) via Kotlin DSL. No `.kt` application source files exist yet under `app/src/main/`.
-- Java 11 - Test sources: `app/src/test/java/com/sed/tachimetro/ExampleUnitTest.java`, `app/src/androidTest/java/com/sed/tachimetro/ExampleInstrumentedTest.java` (default template test stubs, not yet customized).
+
+- Kotlin - Application code, build scripts via Gradle Kotlin DSL (`build.gradle.kts`, `app/build.gradle.kts`, `settings.gradle.kts`)
+- Java 11 - Compilation target; legacy test stubs present in `app/src/test/java/` and `app/src/androidTest/java/`
+- XML - Android resources (layouts, themes, strings, colors) in `app/src/main/res/`
+- TOML - Dependency version management in `gradle/libs.versions.toml`
+
 ## Runtime
-- Android (native APK), targeting Android SDK 36 (compileSdk/targetSdk), minSdk 30 (Android 11+).
-- JVM target: Java 11 (`compileOptions.sourceCompatibility/targetCompatibility = VERSION_11` in `app/build.gradle.kts`).
-- Gradle JVM toolchain: Java 21 (`gradle/gradle-daemon-jvm.properties`, `toolchainVersion=21`).
-- Gradle 9.3.1 (`gradle/wrapper/gradle-wrapper.properties`, `distributionUrl` → gradle-9.3.1-bin.zip)
-- Lockfile: none (Gradle version catalog used instead — see below); no `gradle.lockfile`.
-- Dependency versions centralized in `gradle/libs.versions.toml` (Gradle Version Catalog).
+
+- Android 11+ (API 30) to Android 16 (API 36)
+- Compilation SDK: 36 with minorApiLevel = 1
+- Target SDK: 36
+- JVM target: Java 11 (`compileOptions.sourceCompatibility/targetCompatibility = VERSION_11`)
+- Gradle 9.3.1 (wrapper: `gradle/wrapper/gradle-wrapper.properties`)
+- Gradle Kotlin DSL for all build scripts
+- Gradle version catalog (centralized dependency versions in `gradle/libs.versions.toml`)
+- Toolchain: JDK 21 for Gradle daemon (auto-resolved via foojay-resolver-convention v1.0.0)
+
 ## Frameworks
-- Android Gradle Plugin (AGP) 9.1.1 (`com.android.application`, applied in `app/build.gradle.kts` via `libs.plugins.android.application`)
-- AndroidX AppCompat 1.6.1 (`androidx.appcompat:appcompat`) - base Activity/UI compatibility
-- Material Components for Android 1.10.0 (`com.google.android.material:material`) - UI theming/components
-- JUnit 4.13.2 (`junit:junit`) - local unit tests (`testImplementation`)
-- AndroidX Test Ext JUnit 1.1.5 (`androidx.test.ext:junit`) - instrumented test runner integration
-- Espresso Core 3.5.1 (`androidx.test.espresso:espresso-core`) - UI/instrumented testing
-- Test instrumentation runner: `androidx.test.runner.AndroidJUnitRunner` (set in `app/build.gradle.kts`)
-- Gradle Kotlin DSL (`.kts` build files) throughout (`build.gradle.kts`, `app/build.gradle.kts`, `settings.gradle.kts`)
-- `org.gradle.toolchains.foojay-resolver-convention` plugin v1.0.0 (`settings.gradle.kts`) - auto-provisions JDK toolchains
-- ProGuard (config present but disabled): `app/proguard-rules.pro`, `isMinifyEnabled = false` in release build type (`app/build.gradle.kts`)
+
+- Android Gradle Plugin 9.1.1 - App compilation, build configuration
+- AndroidX AppCompat 1.6.1 - Activity/UI base compatibility layer
+- Material Components for Android 1.10.0 - Material Design theming and components
+- AndroidX Activity 1.9.3 (activity-ktx) - Activity lifecycle and coroutine integration
+- AndroidX ConstraintLayout 2.2.1 - Flexible view layout management
+- AndroidX Lifecycle Runtime 2.11.0 - Lifecycle-aware component support
+- Kotlin Coroutines Core 1.10.2 - Asynchronous programming and threading
+- Google Play Services Location 21.4.0 - FusedLocationProviderClient for GPS speed data
+- JUnit 4.13.2 - Local unit test framework
+- AndroidX Test Ext JUnit 1.1.5 - Instrumented test runner integration
+- Espresso Core 3.5.1 - UI/instrumented testing framework
+- Test runner: `androidx.test.runner.AndroidJUnitRunner` (configured in `app/build.gradle.kts`)
+- Gradle Kotlin DSL (all `.kts` files)
+- org.gradle.toolchains.foojay-resolver-convention v1.0.0 - Auto-provisions JDK toolchains
+
 ## Key Dependencies
-- None beyond AndroidX AppCompat and Material — this is a minimal template dependency set. No networking, database, DI, or reactive libraries (e.g., Retrofit, Room, Hilt, Coroutines, Compose) are declared in `gradle/libs.versions.toml` or `app/build.gradle.kts`.
-- Not applicable — no infrastructure-related dependencies present.
+
+- `com.google.android.gms:play-services-location:21.4.0` - Provides FusedLocationProviderClient for real-time GPS speed data; core to app's primary feature
+- `androidx.appcompat:appcompat:1.6.1` - Provides Activity and AppCompatActivity base classes needed for any screen
+- `com.google.android.material:material:1.10.0` - Material Design theming support
+- `org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2` - Enables async location updates and non-blocking UI
+- `androidx.lifecycle:lifecycle-runtime-ktx:2.11.0` - Lifecycle-aware coroutine scoping for location providers
+- `androidx.activity:activity-ktx:1.9.3` - Activity extension functions for coroutine support
+- `androidx.constraintlayout:constraintlayout:2.2.1` - Flexible view layout for speed display
+- `junit:junit:4.13.2` - Unit test assertions
+- `androidx.test.ext:junit:1.1.5` - AndroidX test runner
+- `androidx.test.espresso:espresso-core:3.5.1` - Instrumented test UI assertions
+
 ## Configuration
-- No `.env` files detected.
-- `local.properties` exists at repo root (standard Android Studio file for local SDK path; not read per policy — contains local machine config, not secrets in typical setups).
-- No custom `BuildConfig` fields or `buildConfigField` entries defined.
-- Root build file: `build.gradle.kts` (applies AGP plugin at root, `apply false`)
-- Module build file: `app/build.gradle.kts` (namespace `com.sed.tachimetro`, applicationId `com.sed.tachimetro`, versionCode 1, versionName "1.0")
+
+- `local.properties` - Contains local Android SDK path (standard Android Studio file, not version-controlled secrets)
+- No `.env` files or custom environment-specific config files
+- No `BuildConfig` fields or `buildConfigField` entries defined
+- Root build file: `build.gradle.kts` (declares AGP plugin version)
+- Module build file: `app/build.gradle.kts` (namespace `com.sed.tachimetro`, versionCode 1, versionName "1.0")
 - Settings: `settings.gradle.kts` (single module `:app`; repositories: Google, Maven Central, Gradle Plugin Portal)
-- Version catalog: `gradle/libs.versions.toml`
-- Gradle properties: `gradle.properties` (JVM args `-Xmx2048m -Dfile.encoding=UTF-8`; parallel mode commented out)
-- ProGuard rules: `app/proguard-rules.pro` (default template, no custom keep rules)
-- Android manifest: `app/src/main/AndroidManifest.xml` (no permissions declared, no activities/services/receivers registered)
+- Version catalog: `gradle/libs.versions.toml` - Centralized dependency/plugin versions
+- Gradle properties: `gradle.properties` (`-Xmx2048m -Dfile.encoding=UTF-8`; parallel mode disabled)
+- Daemon JVM: `gradle/gradle-daemon-jvm.properties` (toolchainVersion=21; foojay URLs for auto-resolution)
+- ProGuard rules: `app/proguard-rules.pro` (default template present; `isMinifyEnabled = false` in release build type)
+- Location: `app/src/main/AndroidManifest.xml`
+- Permissions: `android.permission.ACCESS_FINE_LOCATION` (fine-grained GPS required for speedometer accuracy; no coarse-location fallback per project constraint)
+- Entry point: `.MainActivity` (exported, MAIN/LAUNCHER intent filter)
+- Theme: `@style/Theme.Tachimetro`
+- Backup/data extraction rules: `@xml/backup_rules`, `@xml/data_extraction_rules` (in `app/src/main/res/xml/`)
+- Theme definitions: `app/src/main/res/values/themes.xml`, `app/src/main/res/values-night/themes.xml`
+- Colors: `app/src/main/res/values/colors.xml`
+- Strings: `app/src/main/res/values/strings.xml`
+- Launcher icons: `app/src/main/res/mipmap-*` directories and `app/src/main/res/drawable/ic_launcher_*.xml` (adaptive launcher icon)
+
 ## Platform Requirements
-- Android Studio with AGP 9.1.1 support
-- JDK 21 for Gradle daemon/toolchain (auto-resolved via foojay-resolver-convention if not locally available)
-- Windows environment (project path `C:\Users\fedes\AndroidStudioProjects\Tachimetro`), using `gradlew.bat` for CLI builds
-- Target: Android devices/emulators running Android 11 (API 30) through Android 16 (API 36)
-- Distribution: Native APK (no Play Store metadata, no App Bundle config beyond AGP defaults)
+
+- Android Studio compatible with AGP 9.1.1
+- JDK 21 (auto-provisioned via foojay if not locally installed)
+- Windows environment (project path: `C:\Users\fedes\AndroidStudioProjects\Tachimetro`); gradlew.bat available for CLI builds
+- Android device/emulator running Android 11+ (API 30–36)
+- Google Play Services installed (required for FusedLocationProviderClient)
+- Location permission granted by user at runtime (Android 6+)
+- Format: Native APK
+- Build variants: debug (default), release (ProGuard disabled)
+- Package name: `com.sed.tachimetro`
+- Version: 1.0 (versionCode 1)
+
 <!-- GSD:stack-end -->
 
 <!-- GSD:conventions-start source:CONVENTIONS.md -->
+
 ## Conventions
 
-## Project State
-## Language
-- Project is configured as a Java/Android project (`app/build.gradle.kts` has no `kotlin-android` plugin applied, and the only existing sources are `.java` files: `app/src/test/java/com/sed/tachimetro/ExampleUnitTest.java`, `app/src/androidTest/java/com/sed/tachimetro/ExampleInstrumentedTest.java`).
-- No Kotlin plugin, `kotlin-stdlib` dependency, or `.kt` files are present. If future work is expected to use Kotlin (common for modern Android apps), the Kotlin Android Gradle plugin must be added to `app/build.gradle.kts` and `gradle/libs.versions.toml` first.
-- Java source/target compatibility is pinned to Java 11 in `app/build.gradle.kts:32-35` (`sourceCompatibility`/`targetCompatibility = JavaVersion.VERSION_11`). Any new code must remain compatible with Java 11 language features unless this is bumped.
 ## Naming Patterns
-- Root package: `com.sed.tachimetro` (declared in `app/build.gradle.kts:6` as `namespace` and used consistently in `AndroidManifest.xml` and both test classes).
-- All new classes should live under `com.sed.tachimetro` or a sub-package of it (e.g. `com.sed.tachimetro.ui`, `com.sed.tachimetro.data`) — no sub-package structure exists yet, so the first real feature establishes the pattern.
-- Test classes follow the stock Android Studio template naming: `Example<Type>Test.java` (`ExampleUnitTest.java`, `ExampleInstrumentedTest.java`). This prefix (`Example`) is a placeholder and should be replaced with the real class-under-test name once actual code exists (e.g. `SpeedCalculatorTest.java`).
-- Android resource files follow standard Android naming (`ic_launcher_background.xml`, `colors.xml`, `themes.xml`) under `app/src/main/res/`.
-- PascalCase, matching standard Java/Android convention, as seen in `ExampleUnitTest`, `ExampleInstrumentedTest`.
-- Test methods use `snake_case`-style descriptive names with an underscore separating subject and expectation, e.g. `addition_isCorrect()` in `app/src/test/java/com/sed/tachimetro/ExampleUnitTest.java:14` and `useAppContext()` in `app/src/androidTest/java/com/sed/tachimetro/ExampleInstrumentedTest.java:21`. Follow this `subject_expectedBehavior` pattern for new test methods.
-- No production methods exist yet to establish a convention for non-test method naming; default to standard Java camelCase (`doSomething()`).
+
+- Kotlin files: PascalCase matching the primary class name (e.g., `MainActivity.kt`, `SpeedMapping.kt`, `MaxSpeedStore.kt`)
+- Package structure: reverse-domain + feature/domain split (e.g., `com.sed.tachimetro.gps`, `com.sed.tachimetro.maxspeed`, `com.sed.tachimetro.screen`)
+- Test files: `[SubjectClass]Test.kt` (e.g., `SpeedMappingTest.kt`, `GpsSpeedProviderStateTest.kt`)
+- PascalCase for all classes: `MainActivity`, `GpsSpeedProvider`, `MaxSpeedStore`, `ScreenOnPreferenceStore`
+- Sealed classes and data classes: PascalCase (e.g., `SpeedState` sealed class with `Searching`, `Reading`, `NoSignal` subclasses)
+- Companions and top-level constants: SCREAMING_SNAKE_CASE (e.g., `PREFS_NAME`, `KEY_MAX_SPEED`, `AUTOSIZE_MIN_SP`)
+- Top-level functions: camelCase (e.g., `mapSpeedToKmh()`, `deriveSpeedState()`, `reduceMax()`, `sanitizePersistedMax()`)
+- Private/internal functions: camelCase (e.g., `checkAndRequestPermission()`, `updatePlaceholder()`, `applySpeedAutosize()`)
+- Test method names: snake_case describing the condition and expected outcome (e.g., `hasSpeedFalse_returnsZero()`, `belowNoiseFloor_returnsZero()`, `poorAccuracy_returnsNull()`)
+- camelCase for local variables and properties (e.g., `permissionGranted`, `messageText`, `lastAcceptedUpdateAtMs`, `currentMax`)
+- Private/internal properties: camelCase with `private val` or `private var` (e.g., `private val scope`, `private var lastAcceptedUpdateAtMs`)
+- Companion object constants: SCREAMING_SNAKE_CASE (e.g., `const val PREFS_NAME = "tachimetro_prefs"`)
+
 ## Code Style
-- No `.editorconfig`, checkstyle, ktlint, or detekt configuration is present anywhere in the repo.
-- No formatter (Spotless, ktlint, google-java-format) is configured in `app/build.gradle.kts` or `build.gradle.kts`.
-- Default Android Studio / IntelliJ Java formatting conventions apply (4-space indentation, braces on same line), as observed in the two existing Java files.
-- No custom lint configuration file (`lint.xml`) or `android.lintOptions` block is present in `app/build.gradle.kts`.
-- Only the default Android Gradle Plugin lint checks apply (whatever `com.android.application` runs out of the box).
+
+- No `.editorconfig` or automated formatter (Spotless, ktlint) configured
+- Default Kotlin/Android Studio formatting conventions apply: 4-space indentation, braces on same line
+- Line length: pragmatic, following Android Studio defaults (typically 100-120 characters based on observed code)
+- Spacing: blank lines between logical method groups, especially between public API and private helpers
+- No detekt, ktlint, or custom lint configuration present
+- Default Android Gradle Plugin lint checks apply
+- Suppression annotations used sparingly: `@Suppress("MissingPermission")` when intentionally bypassing Android permission checks (e.g., `GpsSpeedProvider.kt:66` where permission is guaranteed by MainActivity)
+- Prefer Kotlin idioms: data classes over Java POJOs, sealed classes for sum types (`SpeedState`), destructuring when useful
+- Avoid unnecessary null-safety: use `?.let {}` and `?:` operators freely, avoid nested ifs
+- Top-level pure functions for testability when logic can be isolated from Android framework (see `mapSpeedToKmh()`, `deriveSpeedState()`, `reduceMax()`)
+
 ## Import Organization
-- Existing files use plain, ungrouped imports with a blank line separating framework imports from static imports, e.g. in `app/src/androidTest/java/com/sed/tachimetro/ExampleInstrumentedTest.java:3-11`:
-- Pattern observed: `android.*` imports first, then `androidx.*`, then third-party (`org.junit.*`), then static imports last, each group separated by a blank line. Follow this grouping for new files.
-- No path aliases apply (not applicable to Java/Android).
+
 ## Error Handling
-- No error-handling code exists in the codebase yet (no try/catch, no custom exceptions, no Result-style wrappers). No convention to document — establish one (e.g. checked vs. unchecked exceptions, `Result`/sealed-class style for Kotlin) when the first real feature is implemented.
+
+- Prefer returning a safe default or null over throwing exceptions: `prefs.getInt(KEY_MAX_SPEED, 0)` defaults to 0 when key is missing
+- Use null-coalescing with `?:`: `val keepOn = savedKeepOn ?: isDeviceCharging()`
+- Check before dereferencing: `result.lastLocation?.let { trySend(it) }` in `GpsSpeedProvider.kt:70`
+- Sanitize on read: `fun sanitizePersistedMax(raw: Int): Int = if (raw < 0) 0 else raw` (`MaxSpeedReducer.kt:13`) validates persisted data at entry point
+- Use `@Suppress("MissingPermission")` with a class-level comment explaining why permission is safe (e.g., `GpsSpeedProvider.kt:66` — MainActivity checks permission before calling)
+
 ## Logging
-- No logging framework or `Log.*` calls exist anywhere in the codebase yet. No convention to document.
+
+- No structured logging framework is currently used
+- Comments document behavior instead (see "Comments" section below)
+- When logging is needed in future: consider logcat-based approach or explicit `Log.d()` calls (Android standard), not a third-party library
+
 ## Comments
-- Existing files use standard Javadoc-style block comments for class-level documentation, e.g. `app/src/test/java/com/sed/tachimetro/ExampleUnitTest.java:7-11`:
-- No inline comments exist in production code (none exists). Follow Javadoc conventions for public class/method documentation when added.
+
+- **Javadoc/KDoc for public classes and functions:** Explain purpose, parameters, and return values
+- **Inline comments reference design decision tags:** Prefix inline comments with document/requirement tags (e.g., "D-01", "WR-04", "CR-01")
+- **Complex logic:** Document the "why", not the "what"
+- Use `/**` for class and function documentation
+- Document parameters, return values, and notable behaviors
+- Include `@see` links to external documentation or related code when relevant
+
 ## Function Design
-- No production functions exist. No size, parameter, or return-value conventions to observe yet.
+
+- Prefer small, focused functions with a single responsibility
+- Pure functions (no side effects) are preferred when possible and are always unit-testable
+- Private helper functions in Activities/classes break down responsibilities (e.g., `applySpeedAutosize()`, `applyMessageAutosize()`, `updateMaxArea()`)
+- Use named parameters for clarity, especially in constructors and test assertions
+- Keep parameter lists short (<=5 params); use data classes if more are needed
+- Default parameters are acceptable for stable configuration values (e.g., `accuracyThresholdMeters: Float = 50f`)
+- Prefer explicit typed returns (`Int?`, `Boolean?`) over throwing exceptions
+- Use `Unit` implicitly (no explicit return needed for functions that don't return a value)
+- Sealed classes (`SpeedState`) for representing multiple possible outcomes
+
 ## Module Design
-- Single Gradle module: `app` (declared in `settings.gradle.kts`). No multi-module structure, no `core`/`feature` split.
-- No custom Gradle convention plugins beyond the version-catalog-based plugin aliases (`libs.plugins.android.application`) referenced in `app/build.gradle.kts:2`. Dependency versions are centralized via a Gradle version catalog (`gradle/libs.versions.toml` — referenced as `libs.appcompat`, `libs.material`, `libs.junit`, `libs.ext.junit`, `libs.espresso.core` in `app/build.gradle.kts:39-43`). Add new dependencies to the catalog rather than hardcoding versions inline.
+
+- One class/interface per file typically, with supporting pure functions in the same file
+- Public functions documented with KDoc
+- Internal state kept private; only expose what's needed for consumers
+- `GpsSpeedProvider` exports `val state: StateFlow<SpeedState>` as its public API; internal `rawLocations` and `acceptedKmh` flows are private
+- `MaxSpeedStore` exports `fun read()` and `fun write(value: Int)` as the persistence API
+- `mapSpeedToKmh()` is a top-level, testable pure function; not hidden in a class
+- Not currently used; each module is imported directly
+- If needed in future: create `package com.sed.tachimetro.gps.models` with `SpeedState`, then a barrel `index.kt` exporting it
+- Group related constants in companion objects (e.g., `MaxSpeedStore.PREFS_NAME`, `MaxSpeedStore.KEY_MAX_SPEED`)
+- Use `const val` for compile-time constants, `val` for runtime
+
+## Coroutines & Async
+
+- Example from `MainActivity.kt:130-142`:
+- Use `collectLatest` to interrupt the previous collector when the source emits again (for reactive permission changes)
+- Use `callbackFlow` to wrap callback-based APIs (e.g., FusedLocationProviderClient in `GpsSpeedProvider.kt:67-75`)
+- Coroutine scopes should match the lifetime of their owner
+- `MainActivity` uses `lifecycleScope` (built-in)
+- `GpsSpeedProvider` owns its own `scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)` and explicitly `close()` it in `MainActivity.onDestroy()`
+
+## Resource Management
+
+- Pass `applicationContext` to utilities that hold references (e.g., `GpsSpeedProvider`, `MaxSpeedStore`, `ScreenOnPreferenceStore`)
+- Never pass Activity context to long-lived objects to avoid leaks
+
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->
+
 ## Architecture
 
 ## System Overview
+
 ```text
+
 ```
+
 ## Component Responsibilities
+
 | Component | Responsibility | File |
 |-----------|----------------|------|
-| Root Gradle build | Declares the AGP plugin version, applies no application logic itself | `build.gradle.kts` |
-| App module build | Configures `com.sed.tachimetro` application module: SDK versions, Java 11 compatibility, dependencies | `app/build.gradle.kts` |
-| Version catalog | Centralizes dependency versions (AGP, JUnit, Espresso, AppCompat, Material) | `gradle/libs.versions.toml` |
-| App manifest | Declares application-level attributes (icon, label, theme, backup rules); currently declares zero components (no activities/services) | `app/src/main/AndroidManifest.xml` |
-| Main source root | Intended home for all production Java/Kotlin classes; currently empty | `app/src/main/java/com/sed/tachimetro/` |
-| Resources | Launcher icons, base theme (`Theme.Tachimetro`), color palette, string table (only `app_name` defined) | `app/src/main/res/` |
-| Unit tests | JVM-only test source set; contains only the IDE-generated placeholder test | `app/src/test/java/com/sed/tachimetro/ExampleUnitTest.java` |
-| Instrumented tests | On-device/emulator test source set; contains only the IDE-generated placeholder test | `app/src/androidTest/java/com/sed/tachimetro/ExampleInstrumentedTest.java` |
+| **MainActivity** | Single entry point; orchestrates permission flow, UI state updates, layout window insets, speed/message display, max speed tracking, screen-on toggle | `app/src/main/java/com/sed/tachimetro/MainActivity.kt` |
+| **GpsSpeedProvider** | Wraps FusedLocationProviderClient; exposes reactive StateFlow of SpeedState (Searching, Reading, NoSignal); applies accuracy filtering, noise floor filtering, 1-second staleness detection | `app/src/main/java/com/sed/tachimetro/gps/GpsSpeedProvider.kt` |
+| **SpeedState** | Sealed model representing GPS engine state: Searching (no fix yet), Reading (valid km/h), NoSignal (stale) | `app/src/main/java/com/sed/tachimetro/gps/SpeedState.kt` |
+| **mapSpeedToKmh** | Pure function: filters raw GPS (m/s, accuracy) to km/h; drops poor accuracy readings, applies noise floor, converts to whole number | `app/src/main/java/com/sed/tachimetro/gps/SpeedMapping.kt` |
+| **MaxSpeedStore** | Persists session max speed as single Int via SharedPreferences; sanitizes corrupted reads | `app/src/main/java/com/sed/tachimetro/maxspeed/MaxSpeedStore.kt` |
+| **reduceMax** | Pure function: updates session max only if reading exceeds current max (monotonic increase only) | `app/src/main/java/com/sed/tachimetro/maxspeed/MaxSpeedReducer.kt` |
+| **ScreenOnPreferenceStore** | Persists "keep screen on" toggle preference via SharedPreferences; returns null on first launch so MainActivity can derive default from charging state | `app/src/main/java/com/sed/tachimetro/screen/ScreenOnPreferenceStore.kt` |
+
 ## Pattern Overview
-- Single Gradle module (`:app`) — no `:core`, `:data`, `:feature` modules exist
-- Java-based (not Kotlin) — `app/build.gradle.kts` sets `sourceCompatibility`/`targetCompatibility` to Java 11 and all existing `.java` files use Java syntax; no Kotlin plugin is applied
-- No architectural layers implemented (no MVC/MVVM/MVI, no ViewModel, no Repository, no DI framework)
-- No third-party libraries beyond AppCompat, Material Components, JUnit, and Espresso (see `gradle/libs.versions.toml`)
-- No navigation component, no Jetpack Compose — the project is set up for traditional View-based UI (implied by `appcompat` + `material` deps) but no layouts or activities exist yet
+
+- **Reactive data flow:** GPS updates drive a StateFlow of SpeedState; MainActivity collects on lifecycle STARTED, updating UI synchronously on each emission.
+- **Single source of truth:** Permission state lives in permissionGranted MutableStateFlow; GPS collection only starts when permission is granted. Current max speed is held in-memory in MainActivity, persisted to disk immediately on change.
+- **No ViewModel/DI layer:** GpsSpeedProvider and stores are instantiated directly in MainActivity; scope is tied to Activity lifecycle (WhileSubscribed StateFlow, explicit close() on destroy).
+- **Immersive fullscreen:** System bars hidden via WindowInsetsControllerCompat; content draws edge-to-edge with window insets handled explicitly to avoid overlap with status bar / display cutouts.
+- **Asynchronous persistence:** SharedPreferences.edit().apply() is called (off main thread) for max speed and screen-on preference, never blocking UI.
+
 ## Layers
-- Purpose: Declares module structure, SDK targets, and dependency versions
-- Location: `build.gradle.kts`, `app/build.gradle.kts`, `settings.gradle.kts`, `gradle/libs.versions.toml`
-- Contains: Gradle Kotlin DSL scripts, version catalog TOML
-- Depends on: Nothing (root of the build graph)
-- Used by: Gradle build/compile/test tasks
-- Purpose: Declares application metadata and static resources
-- Location: `app/src/main/AndroidManifest.xml`, `app/src/main/res/`
-- Contains: Theme XML (`values/themes.xml`, `values-night/themes.xml`), colors (`values/colors.xml`), strings (`values/strings.xml`), launcher icon assets (`mipmap-*`, `drawable/ic_launcher_*.xml`), backup/data-extraction rules (`xml/backup_rules.xml`, `xml/data_extraction_rules.xml`)
-- Depends on: Nothing
-- Used by: The (currently nonexistent) application code, and the OS at install/runtime for app metadata
-- Purpose: Intended to hold all Java/Kotlin application code
-- Location: `app/src/main/java/com/sed/tachimetro/`
-- Contains: Nothing currently — directory exists but has zero files
-- Depends on: AppCompat, Material Components (declared as dependencies but unused)
-- Used by: N/A
-- Purpose: JVM unit tests (`test`) and instrumented/on-device tests (`androidTest`)
-- Location: `app/src/test/java/com/sed/tachimetro/`, `app/src/androidTest/java/com/sed/tachimetro/`
-- Contains: Single IDE-generated placeholder test class each (`ExampleUnitTest.java`, `ExampleInstrumentedTest.java`)
-- Depends on: JUnit4, AndroidX Test (Espresso, ext-junit)
-- Used by: `./gradlew test` and `./gradlew connectedAndroidTest` respectively
+
+- Purpose: Render current speed/state, handle permission UI, manage fullscreen/immersive display, listen for user interaction (retry, reset max, toggle screen-on).
+- Location: `app/src/main/java/com/sed/tachimetro/MainActivity.kt`, `app/src/main/res/layout/activity_main.xml`
+- Contains: Activity lifecycle, layout binding, TextView autosize configuration, window insets handling, button click handlers.
+- Depends on: GpsSpeedProvider, MaxSpeedStore, ScreenOnPreferenceStore, AndroidX AppCompat/Lifecycle/Constraintlayout.
+- Used by: Android framework (launched from manifest intent filter).
+- Purpose: Continuous FusedLocationProviderClient updates; accuracy/noise filtering; staleness detection; derive SpeedState model.
+- Location: `app/src/main/java/com/sed/tachimetro/gps/`
+- Contains: GpsSpeedProvider (wraps callback into Flow, combines with 1-second ticker), SpeedState (sealed model), mapSpeedToKmh (pure filter), deriveSpeedState (pure state machine).
+- Depends on: Google Play Services Location, Kotlin coroutines/Flow.
+- Used by: MainActivity to collect reactive speed updates.
+- Purpose: Read/write simple configuration (max speed, screen-on preference) to SharedPreferences; sanitize corrupted values.
+- Location: `app/src/main/java/com/sed/tachimetro/maxspeed/`, `app/src/main/java/com/sed/tachimetro/screen/`
+- Contains: MaxSpeedStore, MaxSpeedReducer (pure), ScreenOnPreferenceStore.
+- Depends on: Android SharedPreferences, Context.
+- Used by: MainActivity to persist state across sessions.
+
 ## Data Flow
-### Primary Request Path
-- Not applicable — no state-holding classes exist yet.
+
+### Primary Request Path: GPS Signal → Speed Display
+
+### Secondary Flow: Permission Change (Runtime)
+
+### Tertiary Flow: User Interaction
+
+- **In-memory state:** currentMax (Int), permissionGranted (MutableStateFlow<Boolean>), keepOn (Boolean).
+- **Persisted state:** max speed (SharedPreferences), screen-on preference (SharedPreferences).
+- **Reactive state:** gpsSpeedProvider.state (StateFlow<SpeedState>) drives UI continuously on STARTED lifecycle.
+
 ## Key Abstractions
+
+- Purpose: Represents the GPS engine's public state — searching for initial fix, actively reading speed, or stale (no update for 5+ sec).
+- Examples: `app/src/main/java/com/sed/tachimetro/gps/SpeedState.kt`
+- Pattern: Sealed class with three subtypes (Searching, Reading(kmh: Int), NoSignal); used in when-expression matching in MainActivity.updatePlaceholder().
+- Purpose: Isolates GPS machinery (callback-based FusedLocationProviderClient) from MainActivity; exposes pure reactive StateFlow<SpeedState>.
+- Examples: `app/src/main/java/com/sed/tachimetro/gps/GpsSpeedProvider.kt`
+- Pattern: Encapsulates callbackFlow, combines with ticker, shares state via WhileSubscribed() (stops upstream on no collectors). Passed applicationContext to prevent Activity leak.
+- Purpose: Isolate testable logic from Android/coroutines machinery.
+- Examples: `app/src/main/java/com/sed/tachimetro/gps/SpeedMapping.kt`, `app/src/main/java/com/sed/tachimetro/gps/GpsSpeedProvider.kt:135-139`, `app/src/main/java/com/sed/tachimetro/maxspeed/MaxSpeedReducer.kt`
+- Pattern: Framework-free, take primitives, return primitives/sealed models; unit-testable in isolation.
+
 ## Entry Points
-- Not declared. `app/src/main/AndroidManifest.xml` has an `<application>` tag with no child `<activity>`, `<service>`, or `<receiver>` elements, and no `android:name` custom Application class.
-- `./gradlew assembleDebug` / `./gradlew assembleRelease` — compiles the (currently empty) app module per `app/build.gradle.kts` build type definitions (`release` block only; debug uses AGP defaults)
-- `./gradlew test` — runs `app/src/test/java/com/sed/tachimetro/ExampleUnitTest.java`
-- `./gradlew connectedAndroidTest` — runs `app/src/androidTest/java/com/sed/tachimetro/ExampleInstrumentedTest.java`
+
+- Location: `app/src/main/java/com/sed/tachimetro/MainActivity.kt`
+- Triggers: Launched by Android framework via intent-filter in `app/src/main/AndroidManifest.xml:28-31` (MAIN/LAUNCHER).
+- Responsibilities: 
+
 ## Architectural Constraints
-- **Threading:** No threading model established — no background work, coroutines, or executors exist yet.
-- **Global state:** None — no singletons, no `Application` subclass, no static mutable state.
-- **Circular imports:** None possible — there is only one (empty) package.
-- **Min/target SDK:** `minSdk = 30` (Android 11), `targetSdk = 36`, `compileSdk = 36` (with `minorApiLevel = 1`) as set in `app/build.gradle.kts`. Any new code must remain compatible with API 30 as the floor.
-- **Language:** Java 11 source/target compatibility is configured; no Kotlin plugin is applied in `app/build.gradle.kts`, so introducing Kotlin files would require adding `id("org.jetbrains.kotlin.android")` to the plugins block first.
+
+- **Threading:** 
+- **Global state:** 
+- **Circular imports:** None — clean dependency graph: MainActivity → GpsSpeedProvider/Stores; GpsSpeedProvider → none (just Android/coroutines); Stores → none (just Android SharedPreferences).
+- **Min/Target SDK:** minSdk 30 (Android 11), targetSdk/compileSdk 36 (Android 15 with edge-to-edge). All window insets handling explicitly set (WindowCompat.setDecorFitsSystemWindows(false)) to ensure consistent behavior on API 30-34.
+- **Permission model:** ACCESS_FINE_LOCATION requested at runtime; MainActivity is single source of truth. GpsSpeedProvider does NOT check permission itself (enforced via @Suppress("MissingPermission")); only collects state if MainActivity has confirmed grant.
+- **Lifecycle:** Activities tied to Flow/StateFlow collection via repeatOnLifecycle(STARTED); GpsSpeedProvider.close() called in onDestroy() for defensive scope cleanup. No manual onStart()/onStop() collection management.
+
 ## Anti-Patterns
+
+### Callback-Based Permission Dialogs Without Reactive Re-collection
+
+- Use MutableStateFlow (permissionGranted) to hold reactive permission state.
+- Call refreshPermissionState() in onCreate(), onResume(), and the requestPermissionLauncher callback.
+- collectLatest on permissionGranted in a repeatOnLifecycle(STARTED) block; restart GpsSpeedProvider collection immediately on grant, independent of lifecycle cycles.
+- (See `MainActivity.kt:68-72`, `MainActivity.kt:130-142`, `MainActivity.kt:147-165`, `MainActivity.kt:191-195`, `MainActivity.kt:74-82`)
+
+### Retaining Activity Reference in Long-Lived Components
+
+- Accept applicationContext, not Activity, in component constructors (GpsSpeedProvider, MaxSpeedStore, ScreenOnPreferenceStore).
+- If component owns a CoroutineScope tied to Activity lifetime, explicitly cancel it in Activity.onDestroy().
+- (See `MainActivity.kt:125-127` comment WR-04, `GpsSpeedProvider.kt:42-45`, `MainActivity.kt:179-187`)
+
+### Naive "No Signal" Detection Without Staleness Timestamp
+
+- Record monotonic timestamp (SystemClock.elapsedRealtime()) of each accepted reading.
+- Run a 1-second ticker alongside the readings; combine into state derivation.
+- Emit NoSignal if now - lastAcceptedAtMs > 5 seconds.
+- (See `GpsSpeedProvider.kt:90-103`, `deriveSpeedState()` lines 135-139, `MainActivity.kt:259`)
+
 ## Error Handling
+
+- **Poor GPS accuracy:** Silently dropped in mapSpeedToKmh() (no reading shown, staleness detection triggers "no signal" after 5 sec). (`GpsSpeedProvider.kt:77-88`)
+- **Permission denied:** Show user-facing message (permission_denied or permission_denied_permanent); offer Retry or Open Settings. No exception. (`MainActivity.kt:236-254`)
+- **No GPS signal (startup/loss):** Show "Ricerca segnale GPS..." message; automatically clears when signal returns. No retry button. (`MainActivity.kt:259-262`)
+- **Corrupted SharedPreferences:** Sanitize on read (negative max → 0). (`MaxSpeedStore.kt:14`, `MaxSpeedReducer.kt:12-13`)
+- **Location callback null/missing:** Silently skipped (result.lastLocation?.let). (`GpsSpeedProvider.kt:70`)
+
 ## Cross-Cutting Concerns
+
+- GPS accuracy checked per reading (mapSpeedToKmh).
+- Speed values sanitized (reduceMax, sanitizePersistedMax check >= 0).
+- Permission checked in MainActivity, not delegated.
+
 <!-- GSD:architecture-end -->
 
 <!-- GSD:skills-start source:skills/ -->
+
 ## Project Skills
 
 No project skills found. Add skills to any of: `.claude/skills/`, `.agents/skills/`, `.cursor/skills/`, `.github/skills/`, or `.codex/skills/` with a `SKILL.md` index file.
 <!-- GSD:skills-end -->
 
 <!-- GSD:workflow-start source:GSD defaults -->
+
 ## GSD Workflow Enforcement
 
 Before using Edit, Write, or other file-changing tools, start work through a GSD command so planning artifacts and execution context stay in sync.
 
 Use these entry points:
-- `/gsd-quick` for small fixes, doc updates, and ad-hoc tasks
-- `/gsd-debug` for investigation and bug fixing
-- `/gsd-execute-phase` for planned phase work
+
+- `/gsd:quick` for small fixes, doc updates, and ad-hoc tasks
+- `/gsd:debug` for investigation and bug fixing
+- `/gsd:execute-phase` for planned phase work
 
 Do not make direct repo edits outside a GSD workflow unless the user explicitly asks to bypass it.
 <!-- GSD:workflow-end -->
 
-
-
 <!-- GSD:profile-start -->
+
 ## Developer Profile
 
 > Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
