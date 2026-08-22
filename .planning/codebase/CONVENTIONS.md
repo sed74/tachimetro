@@ -1,93 +1,208 @@
 # Coding Conventions
 
-**Analysis Date:** 2026-07-07
-
-## Project State
-
-This is a newly generated Android Studio project (default "Empty Views Activity" / basic template) for package `com.sed.tachimetro`. No custom application code has been written yet — the codebase currently contains only the stock files Android Studio generates when a new project is created (manifest, default resources, and the two boilerplate test classes). There is no `MainActivity`, no custom classes, no Kotlin source files, and no established in-house convention to document yet.
-
-Because there is no first-party source code to observe, the sections below record the project's declared/tooling-level conventions (build config, package naming, Java version) and provide **prescriptive defaults** to follow once real code is added, based on standard Android/Kotlin conventions and the toolchain already configured in this repo.
-
-## Language
-
-- Project is configured as a Java/Android project (`app/build.gradle.kts` has no `kotlin-android` plugin applied, and the only existing sources are `.java` files: `app/src/test/java/com/sed/tachimetro/ExampleUnitTest.java`, `app/src/androidTest/java/com/sed/tachimetro/ExampleInstrumentedTest.java`).
-- No Kotlin plugin, `kotlin-stdlib` dependency, or `.kt` files are present. If future work is expected to use Kotlin (common for modern Android apps), the Kotlin Android Gradle plugin must be added to `app/build.gradle.kts` and `gradle/libs.versions.toml` first.
-- Java source/target compatibility is pinned to Java 11 in `app/build.gradle.kts:32-35` (`sourceCompatibility`/`targetCompatibility = JavaVersion.VERSION_11`). Any new code must remain compatible with Java 11 language features unless this is bumped.
+**Analysis Date:** 2026-08-22
 
 ## Naming Patterns
 
-**Package:**
-- Root package: `com.sed.tachimetro` (declared in `app/build.gradle.kts:6` as `namespace` and used consistently in `AndroidManifest.xml` and both test classes).
-- All new classes should live under `com.sed.tachimetro` or a sub-package of it (e.g. `com.sed.tachimetro.ui`, `com.sed.tachimetro.data`) — no sub-package structure exists yet, so the first real feature establishes the pattern.
-
 **Files:**
-- Test classes follow the stock Android Studio template naming: `Example<Type>Test.java` (`ExampleUnitTest.java`, `ExampleInstrumentedTest.java`). This prefix (`Example`) is a placeholder and should be replaced with the real class-under-test name once actual code exists (e.g. `SpeedCalculatorTest.java`).
-- Android resource files follow standard Android naming (`ic_launcher_background.xml`, `colors.xml`, `themes.xml`) under `app/src/main/res/`.
+- Kotlin files: PascalCase matching the primary class name (e.g., `MainActivity.kt`, `SpeedMapping.kt`, `MaxSpeedStore.kt`)
+- Package structure: reverse-domain + feature/domain split (e.g., `com.sed.tachimetro.gps`, `com.sed.tachimetro.maxspeed`, `com.sed.tachimetro.screen`)
+- Test files: `[SubjectClass]Test.kt` (e.g., `SpeedMappingTest.kt`, `GpsSpeedProviderStateTest.kt`)
 
-**Classes:**
-- PascalCase, matching standard Java/Android convention, as seen in `ExampleUnitTest`, `ExampleInstrumentedTest`.
+**Classes & Types:**
+- PascalCase for all classes: `MainActivity`, `GpsSpeedProvider`, `MaxSpeedStore`, `ScreenOnPreferenceStore`
+- Sealed classes and data classes: PascalCase (e.g., `SpeedState` sealed class with `Searching`, `Reading`, `NoSignal` subclasses)
+- Companions and top-level constants: SCREAMING_SNAKE_CASE (e.g., `PREFS_NAME`, `KEY_MAX_SPEED`, `AUTOSIZE_MIN_SP`)
 
-**Methods:**
-- Test methods use `snake_case`-style descriptive names with an underscore separating subject and expectation, e.g. `addition_isCorrect()` in `app/src/test/java/com/sed/tachimetro/ExampleUnitTest.java:14` and `useAppContext()` in `app/src/androidTest/java/com/sed/tachimetro/ExampleInstrumentedTest.java:21`. Follow this `subject_expectedBehavior` pattern for new test methods.
-- No production methods exist yet to establish a convention for non-test method naming; default to standard Java camelCase (`doSomething()`).
+**Functions:**
+- Top-level functions: camelCase (e.g., `mapSpeedToKmh()`, `deriveSpeedState()`, `reduceMax()`, `sanitizePersistedMax()`)
+- Private/internal functions: camelCase (e.g., `checkAndRequestPermission()`, `updatePlaceholder()`, `applySpeedAutosize()`)
+- Test method names: snake_case describing the condition and expected outcome (e.g., `hasSpeedFalse_returnsZero()`, `belowNoiseFloor_returnsZero()`, `poorAccuracy_returnsNull()`)
+
+**Variables & Parameters:**
+- camelCase for local variables and properties (e.g., `permissionGranted`, `messageText`, `lastAcceptedUpdateAtMs`, `currentMax`)
+- Private/internal properties: camelCase with `private val` or `private var` (e.g., `private val scope`, `private var lastAcceptedUpdateAtMs`)
+- Companion object constants: SCREAMING_SNAKE_CASE (e.g., `const val PREFS_NAME = "tachimetro_prefs"`)
 
 ## Code Style
 
 **Formatting:**
-- No `.editorconfig`, checkstyle, ktlint, or detekt configuration is present anywhere in the repo.
-- No formatter (Spotless, ktlint, google-java-format) is configured in `app/build.gradle.kts` or `build.gradle.kts`.
-- Default Android Studio / IntelliJ Java formatting conventions apply (4-space indentation, braces on same line), as observed in the two existing Java files.
+- No `.editorconfig` or automated formatter (Spotless, ktlint) configured
+- Default Kotlin/Android Studio formatting conventions apply: 4-space indentation, braces on same line
+- Line length: pragmatic, following Android Studio defaults (typically 100-120 characters based on observed code)
+- Spacing: blank lines between logical method groups, especially between public API and private helpers
 
 **Linting:**
-- No custom lint configuration file (`lint.xml`) or `android.lintOptions` block is present in `app/build.gradle.kts`.
-- Only the default Android Gradle Plugin lint checks apply (whatever `com.android.application` runs out of the box).
+- No detekt, ktlint, or custom lint configuration present
+- Default Android Gradle Plugin lint checks apply
+- Suppression annotations used sparingly: `@Suppress("MissingPermission")` when intentionally bypassing Android permission checks (e.g., `GpsSpeedProvider.kt:66` where permission is guaranteed by MainActivity)
+
+**Idioms:**
+- Prefer Kotlin idioms: data classes over Java POJOs, sealed classes for sum types (`SpeedState`), destructuring when useful
+- Avoid unnecessary null-safety: use `?.let {}` and `?:` operators freely, avoid nested ifs
+- Top-level pure functions for testability when logic can be isolated from Android framework (see `mapSpeedToKmh()`, `deriveSpeedState()`, `reduceMax()`)
 
 ## Import Organization
 
-- Existing files use plain, ungrouped imports with a blank line separating framework imports from static imports, e.g. in `app/src/androidTest/java/com/sed/tachimetro/ExampleInstrumentedTest.java:3-11`:
-  ```java
-  import android.content.Context;
+**Order:**
+1. Android framework imports (`android.*`)
+2. AndroidX imports (`androidx.*`)
+3. Google/third-party imports (`com.google.*, kotlinx.*, org.junit.*)
+4. Internal project imports (`com.sed.tachimetro.*`)
+5. Blank line between groups
 
-  import androidx.test.platform.app.InstrumentationRegistry;
-  import androidx.test.ext.junit.runners.AndroidJUnit4;
+**Example from MainActivity.kt:**
+```kotlin
+import android.Manifest
+import android.content.Intent
+// ... more android.* ...
 
-  import org.junit.Test;
-  import org.junit.runner.RunWith;
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+// ... more androidx.* ...
 
-  import static org.junit.Assert.*;
-  ```
-- Pattern observed: `android.*` imports first, then `androidx.*`, then third-party (`org.junit.*`), then static imports last, each group separated by a blank line. Follow this grouping for new files.
-- No path aliases apply (not applicable to Java/Android).
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.MutableStateFlow
+// ... kotlinx.* ...
+
+import com.sed.tachimetro.gps.GpsSpeedProvider
+// ... internal imports ...
+```
+
+**Path Aliases:** Not applicable (Java/Kotlin Android project, no custom path mapping)
 
 ## Error Handling
 
-- No error-handling code exists in the codebase yet (no try/catch, no custom exceptions, no Result-style wrappers). No convention to document — establish one (e.g. checked vs. unchecked exceptions, `Result`/sealed-class style for Kotlin) when the first real feature is implemented.
+**Pattern: Defensive null coalescing and early returns**
+- Prefer returning a safe default or null over throwing exceptions: `prefs.getInt(KEY_MAX_SPEED, 0)` defaults to 0 when key is missing
+- Use null-coalescing with `?:`: `val keepOn = savedKeepOn ?: isDeviceCharging()`
+- Check before dereferencing: `result.lastLocation?.let { trySend(it) }` in `GpsSpeedProvider.kt:70`
+- Sanitize on read: `fun sanitizePersistedMax(raw: Int): Int = if (raw < 0) 0 else raw` (`MaxSpeedReducer.kt:13`) validates persisted data at entry point
+
+**Suppress Android permission checks only when guaranteed:**
+- Use `@Suppress("MissingPermission")` with a class-level comment explaining why permission is safe (e.g., `GpsSpeedProvider.kt:66` — MainActivity checks permission before calling)
+
+**No exceptions thrown in current codebase** — maintain this pattern for core logic; use typed returns (`Int?`, `Boolean?`) instead
 
 ## Logging
 
-- No logging framework or `Log.*` calls exist anywhere in the codebase yet. No convention to document.
+**Framework:** Console/Android Logcat implicit only (no explicit logging dependency like Timber or kotlin-logging configured)
+
+**Current practice:** Logging is minimal; the app is designed for silent, reliable operation
+- No structured logging framework is currently used
+- Comments document behavior instead (see "Comments" section below)
+- When logging is needed in future: consider logcat-based approach or explicit `Log.d()` calls (Android standard), not a third-party library
 
 ## Comments
 
-- Existing files use standard Javadoc-style block comments for class-level documentation, e.g. `app/src/test/java/com/sed/tachimetro/ExampleUnitTest.java:7-11`:
-  ```java
-  /**
-   * Example local unit test, which will execute on the development machine (host).
-   *
-   * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
-   */
-  ```
-- No inline comments exist in production code (none exists). Follow Javadoc conventions for public class/method documentation when added.
+**When to Comment:**
+- **Javadoc/KDoc for public classes and functions:** Explain purpose, parameters, and return values
+  - Example: `GpsSpeedProvider.kt:31-39` documents the class purpose, permission contract, and state-flow model
+  - Example: `mapSpeedToKmh()` at `SpeedMapping.kt:6-10` documents return value semantics (null means "dropped")
+- **Inline comments reference design decision tags:** Prefix inline comments with document/requirement tags (e.g., "D-01", "WR-04", "CR-01")
+  - `D-##` = Design decision (e.g., D-01: no accepted fix yet → Searching state)
+  - `WR-##` = Work/review checkpoint (e.g., WR-04: memory management rule)
+  - `CR-##` = Code review/reactive pattern rule (e.g., CR-01: reactive permission flow)
+- **Complex logic:** Document the "why", not the "what"
+  - Example: `MainActivity.kt:99-100` explains *why* maxSpeedStore is read before GPS collection starts (to avoid "MAX 0" flash)
+  - Example: `MainActivity.kt:335-346` explains the transition from deprecated SYSTEM_UI_FLAG_IMMERSIVE_STICKY to modern WindowInsetsControllerCompat, including minSdk 30 compatibility reasoning
+
+**KDoc/Javadoc Style:**
+- Use `/**` for class and function documentation
+- Document parameters, return values, and notable behaviors
+- Include `@see` links to external documentation or related code when relevant
+
+Example from `GpsSpeedProvider.kt:31-39`:
+```kotlin
+/**
+ * Wraps continuous FusedLocationProviderClient updates in a [callbackFlow] and exposes a
+ * [StateFlow] of [SpeedState], applying the tested [mapSpeedToKmh] filters and detecting
+ * startup/loss "no signal" per D-01/D-02.
+ *
+ * Permission note: this class does NOT check ACCESS_FINE_LOCATION itself. MainActivity
+ * (Phase 1) is the single source of truth for that permission and only starts collecting
+ * [state] once it has been granted — see RESEARCH.md Pitfall 1 / Anti-Patterns.
+ */
+```
 
 ## Function Design
 
-- No production functions exist. No size, parameter, or return-value conventions to observe yet.
+**Size & Complexity:**
+- Prefer small, focused functions with a single responsibility
+- Pure functions (no side effects) are preferred when possible and are always unit-testable
+  - Example: `mapSpeedToKmh()`, `deriveSpeedState()`, `reduceMax()` are pure and have full test coverage
+  - Example: `MainActivity` orchestrates UI but delegates speed logic and state derivation to pure functions
+- Private helper functions in Activities/classes break down responsibilities (e.g., `applySpeedAutosize()`, `applyMessageAutosize()`, `updateMaxArea()`)
+
+**Parameters:**
+- Use named parameters for clarity, especially in constructors and test assertions
+  - Example: `mapSpeedToKmh(hasAccuracy = false, accuracyMeters = 60f, ...)`
+- Keep parameter lists short (<=5 params); use data classes if more are needed
+- Default parameters are acceptable for stable configuration values (e.g., `accuracyThresholdMeters: Float = 50f`)
+
+**Return Values:**
+- Prefer explicit typed returns (`Int?`, `Boolean?`) over throwing exceptions
+- Use `Unit` implicitly (no explicit return needed for functions that don't return a value)
+- Sealed classes (`SpeedState`) for representing multiple possible outcomes
 
 ## Module Design
 
-- Single Gradle module: `app` (declared in `settings.gradle.kts`). No multi-module structure, no `core`/`feature` split.
-- No custom Gradle convention plugins beyond the version-catalog-based plugin aliases (`libs.plugins.android.application`) referenced in `app/build.gradle.kts:2`. Dependency versions are centralized via a Gradle version catalog (`gradle/libs.versions.toml` — referenced as `libs.appcompat`, `libs.material`, `libs.junit`, `libs.ext.junit`, `libs.espresso.core` in `app/build.gradle.kts:39-43`). Add new dependencies to the catalog rather than hardcoding versions inline.
+**Exports & Public API:**
+- One class/interface per file typically, with supporting pure functions in the same file
+- Public functions documented with KDoc
+- Internal state kept private; only expose what's needed for consumers
+
+**Examples:**
+- `GpsSpeedProvider` exports `val state: StateFlow<SpeedState>` as its public API; internal `rawLocations` and `acceptedKmh` flows are private
+- `MaxSpeedStore` exports `fun read()` and `fun write(value: Int)` as the persistence API
+- `mapSpeedToKmh()` is a top-level, testable pure function; not hidden in a class
+
+**Barrel Files (Re-exports):**
+- Not currently used; each module is imported directly
+- If needed in future: create `package com.sed.tachimetro.gps.models` with `SpeedState`, then a barrel `index.kt` exporting it
+
+**Constant Organization:**
+- Group related constants in companion objects (e.g., `MaxSpeedStore.PREFS_NAME`, `MaxSpeedStore.KEY_MAX_SPEED`)
+- Use `const val` for compile-time constants, `val` for runtime
+
+## Coroutines & Async
+
+**Pattern:** `lifecycleScope.launch` for lifecycle-aware launching; `Flow`/`StateFlow` for reactive state
+
+- Example from `MainActivity.kt:130-142`:
+  ```kotlin
+  lifecycleScope.launch {
+      repeatOnLifecycle(Lifecycle.State.STARTED) {
+          permissionGranted.collectLatest { granted ->
+              if (granted) {
+                  gpsSpeedProvider.state.collect { state -> updatePlaceholder(state) }
+              }
+          }
+      }
+  }
+  ```
+- Use `collectLatest` to interrupt the previous collector when the source emits again (for reactive permission changes)
+- Use `callbackFlow` to wrap callback-based APIs (e.g., FusedLocationProviderClient in `GpsSpeedProvider.kt:67-75`)
+
+**Scoping:**
+- Coroutine scopes should match the lifetime of their owner
+- `MainActivity` uses `lifecycleScope` (built-in)
+- `GpsSpeedProvider` owns its own `scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)` and explicitly `close()` it in `MainActivity.onDestroy()`
+
+## Resource Management
+
+**Context usage:**
+- Pass `applicationContext` to utilities that hold references (e.g., `GpsSpeedProvider`, `MaxSpeedStore`, `ScreenOnPreferenceStore`)
+- Never pass Activity context to long-lived objects to avoid leaks
+
+Example from `MainActivity.kt:125-127`:
+```kotlin
+// Pass applicationContext, not the Activity, so GpsSpeedProvider (and the
+// FusedLocationProviderClient it wraps) never retains an Activity reference.
+gpsSpeedProvider = GpsSpeedProvider(applicationContext)
+```
 
 ---
 
-*Convention analysis: 2026-07-07*
+*Convention analysis: 2026-08-22*

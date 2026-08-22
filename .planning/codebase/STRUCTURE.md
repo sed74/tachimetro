@@ -1,157 +1,271 @@
 # Codebase Structure
 
-**Analysis Date:** 2026-07-07
+**Analysis Date:** 2026-08-22
 
 ## Directory Layout
 
 ```
-Tachimetro/                                    # Repo root — no VCS metadata detected other than .git
-├── .claude/                                   # Claude Code local settings
-│   └── settings.local.json
-├── .gradle/                                   # Gradle cache (generated, not committed)
-├── .idea/                                     # Android Studio project settings (generated)
-├── .planning/                                 # GSD planning artifacts (this mapping output lives here)
-│   └── codebase/
-├── app/                                       # The single Gradle module ":app"
-│   ├── build.gradle.kts                       # Module-level build config (SDK versions, deps)
-│   ├── proguard-rules.pro                     # (referenced by build.gradle.kts release block)
+Tachimetro/
+├── app/                           # Single Android module
+│   ├── build.gradle.kts           # Module build config; dependencies, SDK versions
+│   ├── proguard-rules.pro         # ProGuard rules (minify disabled, not used)
 │   └── src/
 │       ├── main/
-│       │   ├── AndroidManifest.xml            # App-level manifest — no components declared
-│       │   ├── java/com/sed/tachimetro/       # EMPTY — production code goes here
+│       │   ├── AndroidManifest.xml                # App manifest; MAIN/LAUNCHER intent filter
+│       │   ├── java/com/sed/tachimetro/
+│       │   │   ├── MainActivity.kt                # Single entry point; orchestrates all UI
+│       │   │   ├── gps/
+│       │   │   │   ├── GpsSpeedProvider.kt        # Reactive GPS state provider
+│       │   │   │   ├── SpeedState.kt              # Sealed model: Searching, Reading, NoSignal
+│       │   │   │   └── SpeedMapping.kt            # Pure function: m/s → km/h filtering
+│       │   │   ├── maxspeed/
+│       │   │   │   ├── MaxSpeedStore.kt           # SharedPreferences persistence
+│       │   │   │   └── MaxSpeedReducer.kt         # Pure function: monotonic max update
+│       │   │   └── screen/
+│       │   │       └── ScreenOnPreferenceStore.kt # SharedPreferences: keep-screen-on toggle
 │       │   └── res/
-│       │       ├── drawable/                  # ic_launcher_background.xml, ic_launcher_foreground.xml
-│       │       ├── mipmap-anydpi/              # Adaptive launcher icon XML
-│       │       ├── mipmap-{h,m,x,xx,xxx}hdpi/  # Launcher icon PNG/WebP per density
-│       │       ├── values/                    # colors.xml, strings.xml, themes.xml
-│       │       ├── values-night/               # themes.xml (dark theme override)
-│       │       └── xml/                        # backup_rules.xml, data_extraction_rules.xml
+│       │       ├── layout/
+│       │       │   └── activity_main.xml          # Single ConstraintLayout; speed/message display
+│       │       ├── values/
+│       │       │   ├── colors.xml                 # App color palette (black background, white text)
+│       │       │   ├── strings.xml                # String resources (UI labels, messages)
+│       │       │   ├── themes.xml                 # Light theme: Theme.Tachimetro
+│       │       │   └── ic_launcher_background.xml # Launcher icon background color
+│       │       ├── values-night/
+│       │       │   └── themes.xml                 # Dark theme variant
+│       │       ├── color/
+│       │       │   ├── switch_thumb_tint.xml      # Switch component tint
+│       │       │   └── switch_track_tint.xml      # Switch component tint
+│       │       ├── drawable/
+│       │       │   ├── ic_launcher_background.xml # Launcher icon background
+│       │       │   └── ic_launcher_foreground.xml # Launcher icon foreground
+│       │       ├── mipmap-anydpi-v26/
+│       │       │   ├── ic_launcher.xml            # Adaptive icon definition
+│       │       │   └── ic_launcher_round.xml      # Round icon definition
+│       │       ├── xml/
+│       │       │   ├── backup_rules.xml           # Android backup rules
+│       │       │   └── data_extraction_rules.xml  # Data extraction rules (targetSdk 36)
+│       │       └── mipmap-*/                      # Raster launcher icons (multiple densities)
 │       ├── test/
 │       │   └── java/com/sed/tachimetro/
-│       │       └── ExampleUnitTest.java        # IDE-generated placeholder JVM test
+│       │       ├── gps/
+│       │       │   ├── SpeedMappingTest.kt        # Unit tests: mapSpeedToKmh filtering
+│       │       │   └── GpsSpeedProviderStateTest.kt # Unit tests: deriveSpeedState logic
+│       │       └── maxspeed/
+│       │           └── MaxSpeedReducerTest.kt     # Unit tests: reduceMax logic
 │       └── androidTest/
 │           └── java/com/sed/tachimetro/
-│               └── ExampleInstrumentedTest.java # IDE-generated placeholder instrumented test
+│               └── ExampleInstrumentedTest.java   # Placeholder instrumented test (not implemented)
 ├── gradle/
-│   ├── libs.versions.toml                     # Gradle version catalog (deps + plugin versions)
-│   └── wrapper/                                # Gradle wrapper jar/properties
-├── build.gradle.kts                            # Root build script (applies AGP plugin alias only)
-├── settings.gradle.kts                         # Declares rootProject name "Tachimetro", includes ":app"
-├── gradle.properties                           # Gradle/AGP global properties (JVM args, AndroidX flags)
-├── gradlew / gradlew.bat                       # Gradle wrapper scripts
-├── local.properties                            # Local SDK path (machine-specific, gitignored)
-└── .gitignore
-```
+│   ├── wrapper/
+│   │   ├── gradle-wrapper.jar     # Gradle wrapper JAR
+│   │   └── gradle-wrapper.properties # Gradle 9.3.1 distribution URL
+│   ├── gradle-daemon-jvm.properties # JVM 21 toolchain for daemon
+│   └── libs.versions.toml         # Version catalog; dependency versions centralized
+├── build.gradle.kts               # Root build script; applies AGP plugin
+├── settings.gradle.kts            # Gradle settings; declares :app module, repositories
+├── gradle.properties              # Gradle JVM args, file encoding
+└── gradlew / gradlew.bat          # Gradle wrapper scripts
 
-**No `res/layout/` directory exists** — confirms no Activity/Fragment layouts have been created yet.
-**No `AndroidManifest.xml` component entries** — confirms no Activity classes exist yet.
+```
 
 ## Directory Purposes
 
-**`app/src/main/java/com/sed/tachimetro/`:**
-- Purpose: Root Java package for all production application code
-- Contains: Nothing currently (zero files) — this is the single source root for the entire app
-- Key files: None yet
+**app/:**
+- Purpose: Single Android application module; contains all source, resources, tests.
+- Contains: Source code, layout files, resource files, build configuration.
+- Key files: `app/build.gradle.kts`, `app/src/main/AndroidManifest.xml`
 
-**`app/src/main/res/`:**
-- Purpose: Android resources — layouts, drawables, values, XML configs
-- Contains: Only scaffold resources (launcher icon in all densities, base + night theme, color palette with 2 colors, one string `app_name`)
-- Key files: `values/themes.xml` (defines `Theme.Tachimetro`, parent `Theme.MaterialComponents.DayNight.DarkActionBar`), `values/colors.xml`, `values/strings.xml`
+**app/src/main/java/com/sed/tachimetro/:**
+- Purpose: Production source root; all Kotlin application code lives here.
+- Contains: MainActivity (entry point), GPS provider, state models, data stores.
+- Organized by feature/responsibility: `gps/`, `maxspeed/`, `screen/`.
+- Current structure is flat by responsibility; no feature-based sub-modules.
 
-**`app/src/test/java/com/sed/tachimetro/`:**
-- Purpose: JVM-only unit tests (run via `./gradlew test`, no Android framework/emulator needed)
-- Contains: `ExampleUnitTest.java` (trivial `2+2` assertion, placeholder only)
-- Key files: `ExampleUnitTest.java`
+**app/src/main/java/com/sed/tachimetro/gps/:**
+- Purpose: GPS data layer; continuous location updates, state derivation, filtering.
+- Contains: 
+  - `GpsSpeedProvider.kt` — wraps FusedLocationProviderClient, exposes StateFlow<SpeedState>
+  - `SpeedState.kt` — sealed model representing GPS engine state
+  - `SpeedMapping.kt` — pure filter function (m/s → km/h, accuracy/noise filtering)
 
-**`app/src/androidTest/java/com/sed/tachimetro/`:**
-- Purpose: Instrumented tests requiring a device/emulator (run via `./gradlew connectedAndroidTest`)
-- Contains: `ExampleInstrumentedTest.java` (verifies app package name via `InstrumentationRegistry`)
-- Key files: `ExampleInstrumentedTest.java`
+**app/src/main/java/com/sed/tachimetro/maxspeed/:**
+- Purpose: Session max speed tracking and persistence.
+- Contains:
+  - `MaxSpeedStore.kt` — SharedPreferences wrapper for max speed (read/write)
+  - `MaxSpeedReducer.kt` — pure reducer (monotonically increase max only)
 
-**`gradle/`:**
-- Purpose: Gradle wrapper binaries and the dependency version catalog
-- Contains: `libs.versions.toml` (single source of truth for dependency/plugin versions), `wrapper/gradle-wrapper.properties` + jar
+**app/src/main/java/com/sed/tachimetro/screen/:**
+- Purpose: Screen-on preference persistence.
+- Contains:
+  - `ScreenOnPreferenceStore.kt` — SharedPreferences wrapper for keep-screen-on toggle
 
-**`.planning/`:**
-- Purpose: GSD (this tool's) planning and codebase-mapping output; not part of the Android build
-- Contains: `codebase/` subdirectory holding generated architecture/structure docs
+**app/src/main/res/:**
+- Purpose: Android resources (layout, strings, colors, icons).
+- Contains: Layout XML, string resources, color palette, themes, launcher icons.
+- Organized by resource type (standard Android convention).
+
+**app/src/main/res/layout/:**
+- Purpose: UI layout definitions.
+- Contains: `activity_main.xml` (single screen: messageText, unitText, maxSpeedText, buttons, switch in ConstraintLayout).
+
+**app/src/main/res/values/:**
+- Purpose: Default (light) theme and resource values.
+- Contains:
+  - `colors.xml` — App color palette (black, white, grays)
+  - `strings.xml` — UI labels, error messages, status messages
+  - `themes.xml` — Light theme definition (Theme.Tachimetro parent: NoActionBar)
+  - `ic_launcher_background.xml` — Launcher icon background color
+
+**app/src/main/res/values-night/:**
+- Purpose: Dark theme variant (for devices with system dark mode enabled).
+- Contains: `themes.xml` — Dark theme definition (inherits Theme.Tachimetro but night variant).
+
+**app/src/main/res/color/:**
+- Purpose: Color state lists (for state-aware tinting).
+- Contains: `switch_thumb_tint.xml`, `switch_track_tint.xml` — tint colors for SwitchCompat component.
+
+**app/src/main/res/drawable/:**
+- Purpose: Vector drawables for launcher icon.
+- Contains: `ic_launcher_foreground.xml`, `ic_launcher_background.xml` (adaptive icon assets).
+
+**app/src/main/res/mipmap-anydpi-v26/:**
+- Purpose: Adaptive icon definitions (Android 8+).
+- Contains: `ic_launcher.xml`, `ic_launcher_round.xml` — point to foreground/background/monochrome vectors.
+
+**app/src/main/res/mipmap-*/:**
+- Purpose: Raster (bitmap) launcher icons for multiple screen densities (mdpi, hdpi, xhdpi, etc.).
+- Contains: Pre-rendered PNG icon files (auto-generated by Android Studio adaptive icon tool).
+
+**app/src/main/res/xml/:**
+- Purpose: Android system configuration (backup, data extraction rules).
+- Contains: `backup_rules.xml`, `data_extraction_rules.xml` (targetSdk 36 requirement).
+
+**app/src/test/:**
+- Purpose: JVM-only unit tests (run on development machine, no Android runtime needed).
+- Contains: Pure function tests for GpsSpeedProvider logic, SpeedMapping, MaxSpeedReducer.
+- Organized by feature (mirrors production structure: `gps/`, `maxspeed/`).
+
+**app/src/androidTest/:**
+- Purpose: Instrumented tests (run on Android device/emulator).
+- Contains: Placeholder `ExampleInstrumentedTest.java` (not yet implemented).
+
+**gradle/:**
+- Purpose: Gradle wrapper and build configuration.
+- Contains: Gradle version pin, JVM toolchain config, version catalog.
+
+**gradle/libs.versions.toml:**
+- Purpose: Centralized dependency and plugin version declarations.
+- Contains: All dependency versions (AppCompat, Material, Coroutines, Play Services, JUnit, Espresso), plugin versions (AGP 9.1.1).
+- Usage: Referenced in `build.gradle.kts` as `libs.*` aliases.
+
+**build.gradle.kts (root):**
+- Purpose: Root-level build configuration.
+- Contains: Applies AGP plugin (apply false), sets up plugin repositories.
+
+**app/build.gradle.kts:**
+- Purpose: Module-specific build configuration.
+- Contains: Namespace, SDK versions (minSdk 30, targetSdk/compileSdk 36), Java/Kotlin compiler settings, dependency declarations, build types (release: minify disabled).
+
+**settings.gradle.kts:**
+- Purpose: Gradle settings and repository configuration.
+- Contains: Module declarations (`:app`), repository list (Google, Maven Central), version catalog inclusion.
 
 ## Key File Locations
 
 **Entry Points:**
-- None exist. When created, the launcher Activity should live at `app/src/main/java/com/sed/tachimetro/MainActivity.java` (or `.kt` if Kotlin is added) and must be registered in `app/src/main/AndroidManifest.xml` with a `LAUNCHER`/`MAIN` intent filter.
+- `app/src/main/java/com/sed/tachimetro/MainActivity.kt` — App entry point; launched by Android framework via MAIN/LAUNCHER intent.
+- `app/src/main/AndroidManifest.xml` — Manifest declarations; app icon, label, theme, permissions, activity.
 
 **Configuration:**
-- `app/build.gradle.kts`: module SDK versions, Java compatibility, dependency declarations
-- `build.gradle.kts` (root): applies the Android application plugin alias from the version catalog
-- `settings.gradle.kts`: module inclusion (`:app`), repository resolution management
-- `gradle/libs.versions.toml`: all dependency/plugin version numbers — add new library versions here first, then reference via `libs.xxx` alias in `app/build.gradle.kts`
-- `gradle.properties`: JVM args for Gradle daemon, AndroidX enablement flags
-- `local.properties`: machine-local Android SDK path (never commit real values; already gitignored)
+- `app/build.gradle.kts` — Module build config; dependency versions (via libs.versions.toml), SDK versions, Java/Kotlin compiler options.
+- `gradle/libs.versions.toml` — Centralized dependency versions (single source of truth).
+- `settings.gradle.kts` — Gradle settings; repository/module declarations.
+- `gradle.properties` — Gradle daemon JVM args.
 
 **Core Logic:**
-- None yet — `app/src/main/java/com/sed/tachimetro/` is empty.
+- `app/src/main/java/com/sed/tachimetro/gps/GpsSpeedProvider.kt` — GPS data provider; reactive state machine.
+- `app/src/main/java/com/sed/tachimetro/gps/SpeedMapping.kt` — Pure filtering logic (m/s → km/h).
+- `app/src/main/java/com/sed/tachimetro/maxspeed/MaxSpeedStore.kt` — Max speed persistence.
+- `app/src/main/java/com/sed/tachimetro/screen/ScreenOnPreferenceStore.kt` — Screen-on preference persistence.
+
+**UI:**
+- `app/src/main/res/layout/activity_main.xml` — Single screen layout (speed display, buttons, switch).
+- `app/src/main/res/values/strings.xml` — UI text (labels, messages, button labels).
+- `app/src/main/res/values/colors.xml` — Color palette.
+- `app/src/main/res/values/themes.xml` — Light theme; `values-night/themes.xml` — Dark theme.
 
 **Testing:**
-- `app/src/test/java/com/sed/tachimetro/`: unit tests (JVM, fast, no Android APIs unless mocked)
-- `app/src/androidTest/java/com/sed/tachimetro/`: instrumented tests (real/emulated device, can call Android framework APIs)
+- `app/src/test/java/com/sed/tachimetro/gps/SpeedMappingTest.kt` — mapSpeedToKmh unit tests.
+- `app/src/test/java/com/sed/tachimetro/gps/GpsSpeedProviderStateTest.kt` — deriveSpeedState unit tests.
+- `app/src/test/java/com/sed/tachimetro/maxspeed/MaxSpeedReducerTest.kt` — reduceMax unit tests.
 
 ## Naming Conventions
 
 **Files:**
-- Java class files: `PascalCase.java` matching the public class name (e.g., `ExampleUnitTest.java`, `ExampleInstrumentedTest.java`)
-- Resource XML files: `snake_case.xml` (e.g., `ic_launcher_background.xml`, `backup_rules.xml`, `data_extraction_rules.xml`)
-- Drawable/mipmap assets: `ic_<purpose>.xml` / `ic_launcher.webp` prefix convention already established for icons
+- **Kotlin source:** PascalCase, one public class per file (e.g., `MainActivity.kt`, `GpsSpeedProvider.kt`, `SpeedState.kt`).
+- **XML resources:** snake_case (e.g., `activity_main.xml`, `ic_launcher_background.xml`, `backup_rules.xml`).
+- **Test files:** Mirror production class name + `Test` suffix (e.g., `SpeedMappingTest.kt` → tests `SpeedMapping.kt`).
 
 **Directories:**
-- Java package directories mirror the reverse-domain package name: `com/sed/tachimetro/` under each source set (`main`, `test`, `androidTest`)
-- Resource qualifiers follow Android convention: `values-night/` for dark theme, `mipmap-{density}dpi/` for icon densities
+- **Packages:** com.sed.tachimetro.{feature} (lowercase, dot-separated). Feature-based: `gps`, `maxspeed`, `screen`.
+- **Resource directories:** Android standard (values/, layout/, drawable/, mipmap-*, xml/, color/).
 
-**Package:**
-- Application ID / base package: `com.sed.tachimetro` (set in `app/build.gradle.kts` via `namespace` and `applicationId`, and mirrored by the `package` directory structure). Any new class must be created under this package (or a sub-package of it) to match the manifest namespace.
+**Classes:**
+- **PascalCase:** `MainActivity`, `GpsSpeedProvider`, `MaxSpeedStore`, `ScreenOnPreferenceStore`.
+- **Sealed models:** `SpeedState` (with subtypes: Searching, Reading, NoSignal).
+- **Pure functions:** camelCase in-file (e.g., `mapSpeedToKmh()`, `deriveSpeedState()`, `reduceMax()`, `sanitizePersistedMax()`).
+
+**Functions/Methods:**
+- **camelCase:** Standard Java/Kotlin convention (e.g., `onCreate()`, `checkAndRequestPermission()`, `updatePlaceholder()`, `applyKeepScreenOn()`).
+
+**Test methods:**
+- **subject_expectedBehavior:** Underscore-separated descriptive names (e.g., `addition_isCorrect()` in stock template, follow this pattern for new tests).
 
 ## Where to Add New Code
 
-**New Activity/Fragment/Feature:**
-- Implementation: `app/src/main/java/com/sed/tachimetro/` (create sub-packages here as the app grows, e.g. `com.sed.tachimetro.ui`, `com.sed.tachimetro.data` — none exist yet, so the first feature establishes the convention)
-- Layout XML: create `app/src/main/res/layout/` (does not exist yet — must be created) with files named `activity_<name>.xml` or `fragment_<name>.xml` per Android convention
-- Manifest registration: add `<activity>` (or other component) entries inside `app/src/main/AndroidManifest.xml`
-- Tests: unit test in `app/src/test/java/com/sed/tachimetro/`, instrumented/UI test in `app/src/androidTest/java/com/sed/tachimetro/`
+**New Feature (e.g., speedometer notifications, trip timer):**
+- **Production code:** Create new package under `app/src/main/java/com/sed/tachimetro/{featureName}/` (e.g., `notifications/`, `tripTracking/`).
+- **Tests:** Create corresponding directory under `app/src/test/java/com/sed/tachimetro/{featureName}/` with `*Test.kt` files.
+- **UI (if needed):** Add new Activity/Fragment classes in production, register in `AndroidManifest.xml`.
+- **Persistence (if needed):** Create new store class (pattern: `{Feature}Store.kt` with SharedPreferences read/write methods) alongside feature code.
+- **Resources:** Add new layout/strings/colors to `res/layout/`, `res/values/strings.xml`, `res/values/colors.xml`.
 
-**New dependency:**
-- Add version to `gradle/libs.versions.toml` under `[versions]` and `[libraries]` (or `[plugins]`)
-- Reference it in `app/build.gradle.kts` via `implementation(libs.<alias>)`
+**New Component/Module (e.g., data layer, API client):**
+- **If feature-specific:** Add to feature package (e.g., `gps/LocationFetcher.kt` within `gps/`).
+- **If shared infrastructure:** Create new top-level package (e.g., `app/src/main/java/com/sed/tachimetro/network/` for API client).
+- **Coordinate with architecture:** Pure functions/models should be tested independently. Components that depend on Android context should be instantiated in MainActivity or via dependency injection if DI is added later.
 
-**New string/color/dimension resource:**
-- Strings: `app/src/main/res/values/strings.xml`
-- Colors: `app/src/main/res/values/colors.xml`
-- Theme overrides: `app/src/main/res/values/themes.xml` (light) and `app/src/main/res/values-night/themes.xml` (dark)
+**Utilities/Helpers:**
+- **Shared pure functions:** Add to existing feature package or create new `utils/` package under `app/src/main/java/com/sed/tachimetro/utils/`.
+- **Extensions:** Follow Kotlin convention (e.g., `app/src/main/java/com/sed/tachimetro/utils/AndroidExtensions.kt`).
 
-**Utilities:**
-- No shared-utility package exists yet; when needed, create `com.sed.tachimetro.util` (or similar) under the main source root.
+**Tests:**
+- **Unit tests for new code:** Always co-locate with source package (e.g., `SpeedMapping.kt` tests live in `app/src/test/java/com/sed/tachimetro/gps/SpeedMappingTest.kt`).
+- **Test data/fixtures:** If shared across multiple test files, create `app/src/test/java/com/sed/tachimetro/testhelpers/Fixtures.kt`.
 
 ## Special Directories
 
-**`.gradle/`:**
-- Purpose: Gradle build cache and daemon state
-- Generated: Yes
-- Committed: No (gitignored)
+**app/.gradle/ (generated):**
+- Purpose: Gradle build cache.
+- Generated: Yes — auto-created by Gradle daemon.
+- Committed: No — ignored by `.gitignore`.
 
-**`.idea/`:**
-- Purpose: Android Studio IDE project/workspace settings
-- Generated: Yes
-- Committed: Not recommended (check `.gitignore`)
+**app/build/ (generated):**
+- Purpose: Build output (compiled classes, intermediate resources, APK/AAB).
+- Generated: Yes — auto-created by Gradle build tasks.
+- Committed: No — ignored by `.gitignore`.
 
-**`app/build/` (not present until first build):**
-- Purpose: Compiled classes, APK/AAB outputs, generated R/BuildConfig classes
-- Generated: Yes
-- Committed: No
+**.idea/ (generated):**
+- Purpose: Android Studio project metadata (run configs, editor settings, module structure).
+- Generated: Yes — auto-created/updated by Android Studio.
+- Committed: Partially — some config files tracked (e.g., `.idea/vcs.xml` for git integration), others ignored (`.idea/workspace.xml`).
 
-**`.planning/`:**
-- Purpose: GSD tool-generated planning documents (this file included)
-- Generated: Yes (by mapping/planning commands)
-- Committed: Project-dependent — not part of the Android build regardless
+**gradle/wrapper/:**
+- Purpose: Gradle wrapper distribution.
+- Generated: Partially — wrapper JAR is committed; distribution URL is pinned in `.properties`.
+- Committed: Yes — ensures consistent Gradle version across all checkouts.
 
 ---
 
-*Structure analysis: 2026-07-07*
+*Structure analysis: 2026-08-22*

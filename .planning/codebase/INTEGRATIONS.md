@@ -1,59 +1,114 @@
 # External Integrations
 
-**Analysis Date:** 2026-07-07
+**Analysis Date:** 2026-08-22
 
 ## APIs & External Services
 
-**None detected.** No SDK/client dependencies for any third-party service are declared in `gradle/libs.versions.toml` or `app/build.gradle.kts`, and no application source code exists yet (`app/src/main/` contains only `AndroidManifest.xml` and Android resources — no Kotlin/Java classes). This appears to be a freshly scaffolded Android Studio project ("Tachimetro", package `com.sed.tachimetro`) with no implemented features.
+**Location Services:**
+- Google Play Services Location - Provides real-time GPS speed data
+  - SDK/Client: `com.google.android.gms:play-services-location:21.4.0`
+  - Implementation: FusedLocationProviderClient (high-level location provider combining GPS, WiFi, cellular)
+  - Location class: `app/src/main/java/com/sed/tachimetro/gps/GpsSpeedProvider.kt`
 
 ## Data Storage
 
 **Databases:**
-- None. No Room, SQLite, or other persistence library present.
+- None declared — No persistent relational database (no Room, SQLite, or third-party ORM)
+- State management: In-memory Kotlin Flow/State objects in `app/src/main/java/com/sed/tachimetro/`
 
 **File Storage:**
-- Not implemented. `app/src/main/res/xml/backup_rules.xml` and `app/src/main/res/xml/data_extraction_rules.xml` exist but contain only default Android Studio template content (auto-backup/data-extraction policy scaffolding, not custom rules).
+- Local filesystem only (SharedPreferences for app preferences if any)
+- No cloud storage integration
 
 **Caching:**
-- None.
+- In-memory caching via Android process memory
+- No Redis, Memcached, or external caching service
 
 ## Authentication & Identity
 
 **Auth Provider:**
-- None. No auth-related dependencies, no login/session code.
+- Android runtime permissions system
+  - Permission: `android.permission.ACCESS_FINE_LOCATION` (user-grant at runtime, Android 6+)
+  - Manifested in: `app/src/main/AndroidManifest.xml:10`
+  - No OAuth, API keys, or third-party identity provider
+
+**User Sessions:**
+- Not applicable — No user accounts or authentication framework
 
 ## Monitoring & Observability
 
 **Error Tracking:**
-- None (no Crashlytics, Sentry, or similar SDK).
+- None detected (no Sentry, Firebase Crashlytics, or similar)
 
 **Logs:**
-- None implemented (no `Log.*` usage found; no source files to contain it).
+- Android platform logs (logcat) only
+- No centralized log aggregation or monitoring service
+
+**Analytics:**
+- None detected (no Firebase Analytics, Mixpanel, or similar event tracking)
 
 ## CI/CD & Deployment
 
 **Hosting:**
-- Not applicable (native Android app, no server-side component).
+- Android devices/emulators only
+- No server backend or cloud hosting (APK is self-contained)
+- No Play Store integration configured
 
 **CI Pipeline:**
-- None detected. No `.github/workflows/`, no `.gitlab-ci.yml`, no other CI config files found in the repository.
+- None detected (no GitHub Actions, Jenkins, or similar CI configuration in repo)
+- Build performed locally via `gradlew assembleDebug` / `gradlew assembleRelease`
+
+**Testing Infrastructure:**
+- Local JUnit execution: `./gradlew test`
+- On-device instrumented testing: `./gradlew connectedAndroidTest` (requires connected device/emulator)
+- No remote testing service configured
 
 ## Environment Configuration
 
 **Required env vars:**
-- None detected. No `.env` files present.
+- None — No external API credentials or service tokens required in current implementation
 
 **Secrets location:**
-- None found. `local.properties` exists (standard Android Studio local SDK path file) but its contents were not read per security policy; no other credential/secret files (`*.pem`, `*.key`, `serviceAccountKey.json`, etc.) are present in the repository tree.
+- `local.properties` - Contains Android SDK path only (no secrets); not version-controlled
+- No `.env` file
+- No credential vault or secret management integration
+
+**Build Configuration:**
+- All build parameters centralized in `gradle/libs.versions.toml` (version catalog)
+- No environment-specific build profiles beyond default debug/release
 
 ## Webhooks & Callbacks
 
 **Incoming:**
-- None (native mobile app; no server component).
+- None (no server endpoints or webhook receivers)
 
 **Outgoing:**
-- None. `AndroidManifest.xml` declares no `<uses-permission>` entries (e.g., no `INTERNET` permission), confirming no network calls are currently possible from this app.
+- None (no HTTP requests to external services initiated by the app)
+
+## Runtime Permissions
+
+**Declared in Manifest:**
+- `android.permission.ACCESS_FINE_LOCATION` - Required for GPS speed data
+  - Granted via user dialog at app launch (Android 6+)
+  - Linter annotation override: `tools:ignore="CoarseFineLocation"` (project constraint: fine-grained location only)
+
+**Implicit Permissions (via Play Services):**
+- Network access (implied by Google Play Services for location provider backend)
+- No explicit `INTERNET` permission declared (Play Services handles this)
+
+## Third-Party Library Dependencies
+
+**Google Play Services:**
+- `com.google.android.gms:play-services-location:21.4.0` - Only GMS dependency
+- Requires Google Play Services APK on device (not available on pure AOSP devices without GMS)
+
+**AndroidX Ecosystem:**
+- AppCompat, Material, Activity, Lifecycle, ConstraintLayout (UI/lifecycle support)
+- No database, network, or reactive libraries (Retrofit, Room, RxJava absent)
+
+**Kotlin Ecosystem:**
+- Coroutines Core 1.10.2 - Async location updates
 
 ---
 
-*Integration audit: 2026-07-07*
+*Integration audit: 2026-08-22*

@@ -1,82 +1,120 @@
 # Technology Stack
 
-**Analysis Date:** 2026-07-07
+**Analysis Date:** 2026-08-22
 
 ## Languages
 
 **Primary:**
-- Kotlin - Gradle build scripts (`build.gradle.kts`, `app/build.gradle.kts`, `settings.gradle.kts`) via Kotlin DSL. No `.kt` application source files exist yet under `app/src/main/`.
+- Kotlin - Application code, build scripts via Gradle Kotlin DSL (`build.gradle.kts`, `app/build.gradle.kts`, `settings.gradle.kts`)
+- Java 11 - Compilation target; legacy test stubs present in `app/src/test/java/` and `app/src/androidTest/java/`
 
 **Secondary:**
-- Java 11 - Test sources: `app/src/test/java/com/sed/tachimetro/ExampleUnitTest.java`, `app/src/androidTest/java/com/sed/tachimetro/ExampleInstrumentedTest.java` (default template test stubs, not yet customized).
-
-**Note:** `app/src/main/` contains only Android resources (`res/`) and `AndroidManifest.xml` — no Kotlin/Java application code (no `MainActivity`, no packages under `app/src/main/java/`). This is an unmodified/near-unmodified Android Studio project scaffold.
+- XML - Android resources (layouts, themes, strings, colors) in `app/src/main/res/`
+- TOML - Dependency version management in `gradle/libs.versions.toml`
 
 ## Runtime
 
 **Environment:**
-- Android (native APK), targeting Android SDK 36 (compileSdk/targetSdk), minSdk 30 (Android 11+).
-- JVM target: Java 11 (`compileOptions.sourceCompatibility/targetCompatibility = VERSION_11` in `app/build.gradle.kts`).
-- Gradle JVM toolchain: Java 21 (`gradle/gradle-daemon-jvm.properties`, `toolchainVersion=21`).
+- Android 11+ (API 30) to Android 16 (API 36)
+- Compilation SDK: 36 with minorApiLevel = 1
+- Target SDK: 36
+- JVM target: Java 11 (`compileOptions.sourceCompatibility/targetCompatibility = VERSION_11`)
 
 **Package Manager:**
-- Gradle 9.3.1 (`gradle/wrapper/gradle-wrapper.properties`, `distributionUrl` → gradle-9.3.1-bin.zip)
-- Lockfile: none (Gradle version catalog used instead — see below); no `gradle.lockfile`.
-- Dependency versions centralized in `gradle/libs.versions.toml` (Gradle Version Catalog).
+- Gradle 9.3.1 (wrapper: `gradle/wrapper/gradle-wrapper.properties`)
+- Gradle Kotlin DSL for all build scripts
+- Gradle version catalog (centralized dependency versions in `gradle/libs.versions.toml`)
+- Toolchain: JDK 21 for Gradle daemon (auto-resolved via foojay-resolver-convention v1.0.0)
 
 ## Frameworks
 
 **Core:**
-- Android Gradle Plugin (AGP) 9.1.1 (`com.android.application`, applied in `app/build.gradle.kts` via `libs.plugins.android.application`)
-- AndroidX AppCompat 1.6.1 (`androidx.appcompat:appcompat`) - base Activity/UI compatibility
-- Material Components for Android 1.10.0 (`com.google.android.material:material`) - UI theming/components
+- Android Gradle Plugin 9.1.1 - App compilation, build configuration
+- AndroidX AppCompat 1.6.1 - Activity/UI base compatibility layer
+- Material Components for Android 1.10.0 - Material Design theming and components
+- AndroidX Activity 1.9.3 (activity-ktx) - Activity lifecycle and coroutine integration
+- AndroidX ConstraintLayout 2.2.1 - Flexible view layout management
+- AndroidX Lifecycle Runtime 2.11.0 - Lifecycle-aware component support
+
+**Runtime Support:**
+- Kotlin Coroutines Core 1.10.2 - Asynchronous programming and threading
+- Google Play Services Location 21.4.0 - FusedLocationProviderClient for GPS speed data
 
 **Testing:**
-- JUnit 4.13.2 (`junit:junit`) - local unit tests (`testImplementation`)
-- AndroidX Test Ext JUnit 1.1.5 (`androidx.test.ext:junit`) - instrumented test runner integration
-- Espresso Core 3.5.1 (`androidx.test.espresso:espresso-core`) - UI/instrumented testing
-- Test instrumentation runner: `androidx.test.runner.AndroidJUnitRunner` (set in `app/build.gradle.kts`)
+- JUnit 4.13.2 - Local unit test framework
+- AndroidX Test Ext JUnit 1.1.5 - Instrumented test runner integration
+- Espresso Core 3.5.1 - UI/instrumented testing framework
+- Test runner: `androidx.test.runner.AndroidJUnitRunner` (configured in `app/build.gradle.kts`)
 
 **Build/Dev:**
-- Gradle Kotlin DSL (`.kts` build files) throughout (`build.gradle.kts`, `app/build.gradle.kts`, `settings.gradle.kts`)
-- `org.gradle.toolchains.foojay-resolver-convention` plugin v1.0.0 (`settings.gradle.kts`) - auto-provisions JDK toolchains
-- ProGuard (config present but disabled): `app/proguard-rules.pro`, `isMinifyEnabled = false` in release build type (`app/build.gradle.kts`)
+- Gradle Kotlin DSL (all `.kts` files)
+- org.gradle.toolchains.foojay-resolver-convention v1.0.0 - Auto-provisions JDK toolchains
 
 ## Key Dependencies
 
 **Critical:**
-- None beyond AndroidX AppCompat and Material — this is a minimal template dependency set. No networking, database, DI, or reactive libraries (e.g., Retrofit, Room, Hilt, Coroutines, Compose) are declared in `gradle/libs.versions.toml` or `app/build.gradle.kts`.
+- `com.google.android.gms:play-services-location:21.4.0` - Provides FusedLocationProviderClient for real-time GPS speed data; core to app's primary feature
+- `androidx.appcompat:appcompat:1.6.1` - Provides Activity and AppCompatActivity base classes needed for any screen
+- `com.google.android.material:material:1.10.0` - Material Design theming support
 
-**Infrastructure:**
-- Not applicable — no infrastructure-related dependencies present.
+**Runtime Support:**
+- `org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2` - Enables async location updates and non-blocking UI
+- `androidx.lifecycle:lifecycle-runtime-ktx:2.11.0` - Lifecycle-aware coroutine scoping for location providers
+- `androidx.activity:activity-ktx:1.9.3` - Activity extension functions for coroutine support
+- `androidx.constraintlayout:constraintlayout:2.2.1` - Flexible view layout for speed display
+
+**Testing:**
+- `junit:junit:4.13.2` - Unit test assertions
+- `androidx.test.ext:junit:1.1.5` - AndroidX test runner
+- `androidx.test.espresso:espresso-core:3.5.1` - Instrumented test UI assertions
 
 ## Configuration
 
 **Environment:**
-- No `.env` files detected.
-- `local.properties` exists at repo root (standard Android Studio file for local SDK path; not read per policy — contains local machine config, not secrets in typical setups).
-- No custom `BuildConfig` fields or `buildConfigField` entries defined.
+- `local.properties` - Contains local Android SDK path (standard Android Studio file, not version-controlled secrets)
+- No `.env` files or custom environment-specific config files
+- No `BuildConfig` fields or `buildConfigField` entries defined
 
 **Build:**
-- Root build file: `build.gradle.kts` (applies AGP plugin at root, `apply false`)
-- Module build file: `app/build.gradle.kts` (namespace `com.sed.tachimetro`, applicationId `com.sed.tachimetro`, versionCode 1, versionName "1.0")
+- Root build file: `build.gradle.kts` (declares AGP plugin version)
+- Module build file: `app/build.gradle.kts` (namespace `com.sed.tachimetro`, versionCode 1, versionName "1.0")
 - Settings: `settings.gradle.kts` (single module `:app`; repositories: Google, Maven Central, Gradle Plugin Portal)
-- Version catalog: `gradle/libs.versions.toml`
-- Gradle properties: `gradle.properties` (JVM args `-Xmx2048m -Dfile.encoding=UTF-8`; parallel mode commented out)
-- ProGuard rules: `app/proguard-rules.pro` (default template, no custom keep rules)
-- Android manifest: `app/src/main/AndroidManifest.xml` (no permissions declared, no activities/services/receivers registered)
+- Version catalog: `gradle/libs.versions.toml` - Centralized dependency/plugin versions
+- Gradle properties: `gradle.properties` (`-Xmx2048m -Dfile.encoding=UTF-8`; parallel mode disabled)
+- Daemon JVM: `gradle/gradle-daemon-jvm.properties` (toolchainVersion=21; foojay URLs for auto-resolution)
+- ProGuard rules: `app/proguard-rules.pro` (default template present; `isMinifyEnabled = false` in release build type)
+
+**Android Manifest:**
+- Location: `app/src/main/AndroidManifest.xml`
+- Permissions: `android.permission.ACCESS_FINE_LOCATION` (fine-grained GPS required for speedometer accuracy; no coarse-location fallback per project constraint)
+- Entry point: `.MainActivity` (exported, MAIN/LAUNCHER intent filter)
+- Theme: `@style/Theme.Tachimetro`
+- Backup/data extraction rules: `@xml/backup_rules`, `@xml/data_extraction_rules` (in `app/src/main/res/xml/`)
+
+**Resources:**
+- Theme definitions: `app/src/main/res/values/themes.xml`, `app/src/main/res/values-night/themes.xml`
+- Colors: `app/src/main/res/values/colors.xml`
+- Strings: `app/src/main/res/values/strings.xml`
+- Launcher icons: `app/src/main/res/mipmap-*` directories and `app/src/main/res/drawable/ic_launcher_*.xml` (adaptive launcher icon)
 
 ## Platform Requirements
 
 **Development:**
-- Android Studio with AGP 9.1.1 support
-- JDK 21 for Gradle daemon/toolchain (auto-resolved via foojay-resolver-convention if not locally available)
-- Windows environment (project path `C:\Users\fedes\AndroidStudioProjects\Tachimetro`), using `gradlew.bat` for CLI builds
+- Android Studio compatible with AGP 9.1.1
+- JDK 21 (auto-provisioned via foojay if not locally installed)
+- Windows environment (project path: `C:\Users\fedes\AndroidStudioProjects\Tachimetro`); gradlew.bat available for CLI builds
 
-**Production:**
-- Target: Android devices/emulators running Android 11 (API 30) through Android 16 (API 36)
-- Distribution: Native APK (no Play Store metadata, no App Bundle config beyond AGP defaults)
+**Production/Runtime:**
+- Android device/emulator running Android 11+ (API 30–36)
+- Google Play Services installed (required for FusedLocationProviderClient)
+- Location permission granted by user at runtime (Android 6+)
+
+**Distribution:**
+- Format: Native APK
+- Build variants: debug (default), release (ProGuard disabled)
+- Package name: `com.sed.tachimetro`
+- Version: 1.0 (versionCode 1)
 
 ---
 
-*Stack analysis: 2026-07-07*
+*Stack analysis: 2026-08-22*
