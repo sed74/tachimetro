@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity() {
             applyKeepScreenOn(isChecked)
             screenOnStore.write(isChecked)
         }
-        applyScreenSwitchWindowInsets()
+        applyBottomLeftWindowInsets()
 
         // WR-04: pass applicationContext, not the Activity, so GpsSpeedProvider (and the
         // FusedLocationProviderClient it wraps) never retains an Activity reference.
@@ -551,23 +551,33 @@ class MainActivity : AppCompatActivity() {
             status == BatteryManager.BATTERY_STATUS_FULL
     }
 
-    // Specchio di applyMaxAreaWindowInsets() per l'angolo bottom-left: somma l'inset live
-    // systemBars/displayCutout bottom+left sui margini base XML, così lo switch non finisce mai
-    // dietro la navigation bar o un cutout inferiore/sinistro, in entrambi gli orientamenti.
-    // Listener dedicato: gli insets differiscono per angolo (non riusare quello di maxSpeedText).
-    private fun applyScreenSwitchWindowInsets() {
-        val baseParams = keepScreenOnSwitch.layoutParams as ConstraintLayout.LayoutParams
-        val baseBottom = baseParams.bottomMargin
-        val baseStart = baseParams.marginStart
+    // Specchio di applyMaxAreaWindowInsets() per l'angolo bottom-left, ora esteso al gruppo
+    // chargingIcon + keepScreenOnSwitch (D-06): un solo listener, registrato sullo switch
+    // (sempre VISIBLE, a differenza dell'icona che è GONE la maggior parte del tempo -- così
+    // non dipendiamo dal comportamento di dispatch degli insets verso figli GONE), aggiorna i
+    // margini di ENTRAMBE le view con una ripartizione asimmetrica dettata dai vincoli del
+    // Piano 01: l'inset inferiore va sullo switch, che è l'unica delle due ancorata a `parent`
+    // in basso -- chargingIcon lo eredita indirettamente perché è vincolata verticalmente al
+    // top/bottom dello switch e si sposta insieme a lui. L'inset sinistro va invece
+    // sull'icona, che ora è l'elemento più a sinistra del gruppo e l'unica ancorata a `parent`
+    // sul lato start; il marginStart da 8dp dello switch resta un gap interno al gruppo, non
+    // una distanza dal bordo schermo, quindi non riceve extraStart.
+    private fun applyBottomLeftWindowInsets() {
+        val switchParams = keepScreenOnSwitch.layoutParams as ConstraintLayout.LayoutParams
+        val baseSwitchBottom = switchParams.bottomMargin
+        val iconParams = chargingIcon.layoutParams as ConstraintLayout.LayoutParams
+        val baseIconStart = iconParams.marginStart
         ViewCompat.setOnApplyWindowInsetsListener(keepScreenOnSwitch) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
             val extraBottom = maxOf(systemBars.bottom, cutout.bottom)
             val extraStart = maxOf(systemBars.left, cutout.left)
             val lp = view.layoutParams as ConstraintLayout.LayoutParams
-            lp.bottomMargin = baseBottom + extraBottom
-            lp.marginStart = baseStart + extraStart
+            lp.bottomMargin = baseSwitchBottom + extraBottom
             view.layoutParams = lp
+            val iconLp = chargingIcon.layoutParams as ConstraintLayout.LayoutParams
+            iconLp.marginStart = baseIconStart + extraStart
+            chargingIcon.layoutParams = iconLp
             insets
         }
     }
