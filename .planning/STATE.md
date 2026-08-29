@@ -5,7 +5,7 @@ milestone_name: Ricarica e distanza
 status: ready_to_plan
 stopped_at: Phase 06 complete (4/4) — ready to discuss Phase 7
 last_updated: 2026-08-29T19:11:32.336Z
-last_activity: 2026-08-29 -- Phase 06 execution started
+last_activity: 2026-08-29 - Completed quick task 260829-tgw: Icona di ricarica più grande e animazione con svuotamento istantaneo
 progress:
   total_phases: 2
   completed_phases: 0
@@ -83,6 +83,7 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 260710-tuh | Impedire wrapping numero velocità (maxLines dinamico su messageText) | 2026-07-10 | 3600992 | [260710-tuh-impedire-wrapping-del-numero-velocit-max](./quick/260710-tuh-impedire-wrapping-del-numero-velocit-max/) |
 | 260822-huf | Genera asset e testi per pubblicazione Play Store in playstore/ | 2026-08-22 | 8bcae15 | [260822-huf-genera-asset-e-testi-per-pubblicazione-p](./quick/260822-huf-genera-asset-e-testi-per-pubblicazione-p/) |
+| 260829-tgw | Icona di ricarica più grande e animazione con svuotamento istantaneo invece di simmetrico | 2026-08-29 | TBD | [260829-tgw-icona-di-ricarica-pi-grande-e-animazione](./quick/260829-tgw-icona-di-ricarica-pi-grande-e-animazione/) |
 
 ## Deferred Items
 
@@ -95,5 +96,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-08-29T16:41:25.858Z
-Stopped at: Phase 6 UI-SPEC approved
-Resume file: .planning/phases/06-indicatore-di-ricarica/06-UI-SPEC.md
+Stopped at: quick task 260829-tgw (icona ricarica più grande, svuotamento istantaneo) completato — 8/8 punti approvati su dispositivo reale
+Resume file: .planning/quick/260829-tgw-icona-di-ricarica-pi-grande-e-animazione/260829-tgw-SUMMARY.md
