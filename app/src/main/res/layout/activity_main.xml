@@ -88,8 +88,8 @@
 
     <ImageView
         android:id="@+id/chargingIcon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginStart="16dp"
         android:src="@drawable/charging_flash_fill"
         android:contentDescription="@string/charging_indicator_description"
