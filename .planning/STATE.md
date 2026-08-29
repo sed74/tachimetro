@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Ricarica e distanza
-status: planning
-stopped_at: Phase 7 context gathered
-last_updated: "2026-08-29T19:48:51.296Z"
-last_activity: 2026-08-29
+status: executing
+stopped_at: Phase 7 UI-SPEC approved
+last_updated: "2026-08-29T20:34:34.567Z"
+last_activity: 2026-08-29 -- Phase 07 planning complete
 progress:
   total_phases: 2
   completed_phases: 1
-  total_plans: 4
+  total_plans: 8
   completed_plans: 4
   percent: 50
 ---
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 
 Phase: 7
 Plan: Not started
-Status: Ready to plan
-Last activity: 2026-08-29
+Status: Ready to execute
+Last activity: 2026-08-29 -- Phase 07 planning complete
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -95,6 +95,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-29T19:48:51.278Z
-Stopped at: Phase 7 context gathered
-Resume file: .planning/phases/07-distanza-percorsa-e-reset-unificato/07-CONTEXT.md
+Last session: 2026-08-29T20:12:50.972Z
+Stopped at: Phase 7 UI-SPEC approved
+Resume file: .planning/phases/07-distanza-percorsa-e-reset-unificato/07-UI-SPEC.md
