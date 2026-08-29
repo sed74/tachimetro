@@ -115,3 +115,12 @@ None - nessuna configurazione di servizio esterno richiesta.
 ---
 *Phase: 06-indicatore-di-ricarica*
 *Completed: 2026-08-29*
+
+## Self-Check: PASSED
+
+- FOUND: app/src/main/res/drawable/ic_charging_flash.xml
+- FOUND: app/src/main/res/drawable/ic_charging_flash_lime.xml
+- FOUND: app/src/main/res/drawable/charging_flash_fill.xml
+- FOUND: .planning/phases/06-indicatore-di-ricarica/06-01-SUMMARY.md
+- FOUND commit: b628705 (Task 1)
+- FOUND commit: a9e8366 (Task 2)
