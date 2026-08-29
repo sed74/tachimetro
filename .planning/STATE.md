@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Ricarica e distanza
-status: executing
-stopped_at: Phase 6 UI-SPEC approved
-last_updated: "2026-08-29T17:17:02.843Z"
+status: ready_to_plan
+stopped_at: Phase 06 complete (4/4) — ready to discuss Phase 7
+last_updated: 2026-08-29T19:11:32.336Z
 last_activity: 2026-08-29 -- Phase 06 execution started
 progress:
   total_phases: 2
   completed_phases: 0
   total_plans: 4
-  completed_plans: 0
+  completed_plans: 4
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-29)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** Phase 06 — Indicatore di Ricarica
+**Current focus:** Phase 7 — distanza percorsa e reset unificato
 
 ## Current Position
 
-Phase: 06 (Indicatore di Ricarica) — EXECUTING
-Plan: 1 of 4
-Status: Executing Phase 06
-Last activity: 2026-08-29 -- Phase 06 execution started
+Phase: 7
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-08-29
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -36,7 +36,7 @@ Progress: [░░░░░░░░░░] 0%
 
 **Velocity:**
 
-- Total plans completed: 10
+- Total plans completed: 14
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -49,7 +49,7 @@ Progress: [░░░░░░░░░░] 0%
 | 03 | 1 | - | - |
 | 04 | 2 | - | - |
 | 05 | 2 | - | - |
-| 06 | TBD | - | - |
+| 06 | 4 | - | - |
 | 07 | TBD | - | - |
 
 **Recent Trend:**
