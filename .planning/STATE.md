@@ -2,9 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Ricarica e distanza
-status: ready_to_plan
-last_updated: "2026-08-29T16:12:49.287Z"
-last_activity: 2026-08-29
+status: planning
+stopped_at: Phase 6 context gathered
+last_updated: "2026-08-29T16:33:36.550Z"
+last_activity: 2026-08-29 — Roadmap v1.1 creato (Fase 6-7, 6/6 requisiti mappati)
 progress:
   total_phases: 2
   completed_phases: 0
@@ -93,6 +94,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-29 — Roadmap v1.1 creato (Fase 6: Indicatore di Ricarica, Fase 7: Distanza Percorsa e Reset Unificato)
-Stopped at: ROADMAP.md e REQUIREMENTS.md aggiornati con 2 fasi, 6/6 requisiti v1.1 mappati; pronto per `/gsd:plan-phase 6`
-Resume file: — (avvia pianificazione con `/gsd:plan-phase 6`)
+Last session: 2026-08-29T16:33:36.536Z
+Stopped at: Phase 6 context gathered
+Resume file: .planning/phases/06-indicatore-di-ricarica/06-CONTEXT.md
