@@ -42,18 +42,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CHRG-01 | TBD | Pending |
-| CHRG-02 | TBD | Pending |
-| DIST-01 | TBD | Pending |
-| DIST-02 | TBD | Pending |
-| DIST-03 | TBD | Pending |
-| MAX-04 | TBD | Pending |
+| CHRG-01 | Phase 6 | Pending |
+| CHRG-02 | Phase 6 | Pending |
+| DIST-01 | Phase 7 | Pending |
+| DIST-02 | Phase 7 | Pending |
+| DIST-03 | Phase 7 | Pending |
+| MAX-04 | Phase 7 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 6 total
-- Mapped to phases: 0
-- Unmapped: 6 ⚠️ (roadmap not yet created)
+- Mapped to phases: 6
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-08-29*
-*Last updated: 2026-08-29 after initial v1.1 definition*
+*Last updated: 2026-08-29 after v1.1 roadmap creation (Phase 6-7, 6/6 requirements mapped)*

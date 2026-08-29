@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Ricarica e distanza
-status: planning
+status: ready_to_plan
 last_updated: "2026-08-29T16:12:49.287Z"
 last_activity: 2026-08-29
 progress:
-  total_phases: 0
+  total_phases: 2
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,19 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-10)
+See: .planning/PROJECT.md (updated 2026-08-29)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** v1.0 MVP shippato — in attesa di definire la prossima milestone (`/gsd-new-milestone`)
+**Current focus:** v1.1 Ricarica e distanza — Fase 6 (Indicatore di Ricarica) pronta per la pianificazione
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-08-29 — Milestone v1.1 started
+Phase: 6 of 7 (Indicatore di Ricarica)
+Plan: — (not yet planned)
+Status: Ready to plan
+Last activity: 2026-08-29 — Roadmap v1.1 creato (Fase 6-7, 6/6 requisiti mappati)
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -46,6 +48,8 @@ Last activity: 2026-08-29 — Milestone v1.1 started
 | 03 | 1 | - | - |
 | 04 | 2 | - | - |
 | 05 | 2 | - | - |
+| 06 | TBD | - | - |
+| 07 | TBD | - | - |
 
 **Recent Trend:**
 
@@ -61,7 +65,8 @@ Last activity: 2026-08-29 — Milestone v1.1 started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- Roadmap: Horizontal-layer structure (Fondamenta → GPS → UI → Max Speed → Schermo), coarse granularity, 5 phases
+- Roadmap v1.0: Horizontal-layer structure (Fondamenta → GPS → UI → Max Speed → Schermo), coarse granularity, 5 phases
+- Roadmap v1.1: Due fasi indipendenti per feature (coarse granularity) — Fase 6 Indicatore di Ricarica (CHRG-01/02), Fase 7 Distanza Percorsa e Reset Unificato (DIST-01/02/03, MAX-04); Fase 7 dipende da Fase 4 per il pattern di reset condiviso
 
 ### Pending Todos
 
@@ -88,6 +93,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-22 — quick task 260822-huf (asset e testi pubblicazione Play Store) completato
-Stopped at: pacchetto playstore/ pronto; in attesa che l'utente compili keystore.properties e i form Play Console (vedi playstore/README.md)
-Resume file: — (avvia prossima milestone con `/gsd-new-milestone`)
+Last session: 2026-08-29 — Roadmap v1.1 creato (Fase 6: Indicatore di Ricarica, Fase 7: Distanza Percorsa e Reset Unificato)
+Stopped at: ROADMAP.md e REQUIREMENTS.md aggiornati con 2 fasi, 6/6 requisiti v1.1 mappati; pronto per `/gsd:plan-phase 6`
+Resume file: — (avvia pianificazione con `/gsd:plan-phase 6`)

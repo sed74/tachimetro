@@ -1,10 +1,22 @@
 # Roadmap: Tachimetro
 
+## Overview
+
+Tachimetro nasce da uno scaffold Android Studio vuoto e arriva a un'app completa: si parte dalle fondamenta (avvio diretto, permesso GPS), si costruisce il motore di lettura della velocità, poi l'interfaccia a schermo intero che la mostra, quindi le funzionalità di velocità massima con persistenza, e infine il controllo dello schermo sempre acceso. Con la milestone v1.1 si aggiungono due indicatori secondari indipendenti: uno stato di ricarica riconoscibile a colpo d'occhio (unica animazione e unico colore accento ammessi nell'interfaccia) e una distanza percorsa persistente, azzerabile nella stessa azione del record di velocità massima già esistente.
+
 ## Milestones
 
 - ✅ **v1.0 MVP** — Fasi 1-5 (shipped 2026-07-10) → [archivio completo](milestones/v1.0-ROADMAP.md)
+- 🚧 **v1.1 Ricarica e distanza** — Fasi 6-7 (in progress)
 
 ## Phases
+
+**Phase Numbering:**
+
+- Integer phases (1, 2, 3): Planned milestone work
+- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+
+Decimal phases appear between their surrounding integers in numeric order.
 
 <details>
 <summary>✅ v1.0 MVP (Fasi 1-5) — SHIPPED 2026-07-10</summary>
@@ -19,7 +31,46 @@ Dettagli completi delle fasi: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADM
 
 </details>
 
+- [ ] **Phase 6: Indicatore di Ricarica** - L'utente riconosce a colpo d'occhio quando il telefono è in carica tramite un'icona a fulmine animata
+- [ ] **Phase 7: Distanza Percorsa e Reset Unificato** - L'utente monitora la distanza percorsa dall'ultimo azzeramento e la azzera insieme al massimo con un unico pulsante
+
+## Phase Details
+
+### Phase 6: Indicatore di Ricarica
+
+**Goal**: L'utente riconosce immediatamente quando il telefono è in carica, tramite un'icona a fulmine animata posizionata accanto al toggle "sempre acceso".
+**Depends on**: Phase 5 (riusa la logica `isDeviceCharging()` e condivide l'area accanto a `keepScreenOnSwitch`)
+**Requirements**: CHRG-01, CHRG-02
+**Success Criteria** (what must be TRUE):
+
+  1. Quando il telefono viene collegato alla ricarica, l'icona a fulmine appare accanto al toggle "sempre acceso"
+  2. Quando il telefono viene scollegato dalla ricarica, l'icona a fulmine scompare immediatamente
+  3. Mentre il telefono è in carica, l'icona anima un riempimento continuo dal basso verso l'alto, bianco → lime → bianco, in loop di circa 2-3 secondi, per tutta la durata della ricarica
+  4. Nessun'altra icona, colore o animazione compare altrove nell'interfaccia al di fuori di questo indicatore
+
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 7: Distanza Percorsa e Reset Unificato
+
+**Goal**: L'utente monitora la distanza percorsa dall'ultimo azzeramento, calcolata solo mentre l'app è in foreground e persistente su disco, e può azzerarla nella stessa azione con cui azzera la velocità massima.
+**Depends on**: Phase 4 (estende il pattern `MaxSpeedStore`/`resetMaxButton` per la nuova metrica)
+**Requirements**: DIST-01, DIST-02, DIST-03, MAX-04
+**Success Criteria** (what must be TRUE):
+
+  1. L'utente vede un'area in basso a destra con la distanza percorsa dall'ultimo azzeramento, in un font più grande dell'area velocità massima
+  2. La distanza aumenta in tempo reale mentre l'app è in foreground e riceve letture GPS valide
+  3. Mettendo l'app in background o perdendo il segnale GPS, la distanza smette di accumularsi (nessun tracking in background)
+  4. Chiudendo e riaprendo l'app, o riavviando il telefono, la distanza precedentemente accumulata è ancora visibile
+  5. Premendo il pulsante "Azzera massimo", sia la velocità massima sia la distanza percorsa si azzerano nella stessa azione
+
+**Plans**: TBD
+**UI hint**: yes
+
 ## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -28,3 +79,5 @@ Dettagli completi delle fasi: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADM
 | 3. Interfaccia Tachimetro | v1.0 | 1/1 | Complete | 2026-07-10 |
 | 4. Velocità Massima e Persistenza | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 5. Gestione Schermo | v1.0 | 2/2 | Complete | 2026-07-10 |
+| 6. Indicatore di Ricarica | v1.1 | 0/? | Not started | - |
+| 7. Distanza Percorsa e Reset Unificato | v1.1 | 0/? | Not started | - |
