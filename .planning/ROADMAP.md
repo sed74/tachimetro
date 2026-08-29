@@ -53,8 +53,8 @@ Dettagli completi delle fasi: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADM
 Plans:
 **Wave 1**
 
-- [ ] 06-01-PLAN.md — Risorse: colore lime, stringa accessibilità, drawable del fulmine riempibile, ImageView nel layout
-- [ ] 06-02-PLAN.md — Dominio charging: ChargingState, deriveChargingState (test-first), ChargingStateProvider reattivo
+- [x] 06-01-PLAN.md — Risorse: colore lime, stringa accessibilità, drawable del fulmine riempibile, ImageView nel layout
+- [x] 06-02-PLAN.md — Dominio charging: ChargingState, deriveChargingState (test-first), ChargingStateProvider reattivo
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -94,5 +94,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Interfaccia Tachimetro | v1.0 | 1/1 | Complete | 2026-07-10 |
 | 4. Velocità Massima e Persistenza | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 5. Gestione Schermo | v1.0 | 2/2 | Complete | 2026-07-10 |
-| 6. Indicatore di Ricarica | v1.1 | 0/4 | Planned | - |
+| 6. Indicatore di Ricarica | v1.1 | 2/4 | In Progress|  |
 | 7. Distanza Percorsa e Reset Unificato | v1.1 | 0/? | Not started | - |

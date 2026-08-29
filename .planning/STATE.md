@@ -4,8 +4,8 @@ milestone: v1.1
 milestone_name: Ricarica e distanza
 status: executing
 stopped_at: Phase 6 UI-SPEC approved
-last_updated: "2026-08-29T17:15:53.672Z"
-last_activity: 2026-08-29 -- Phase 6 planning complete
+last_updated: "2026-08-29T17:17:02.843Z"
+last_activity: 2026-08-29 -- Phase 06 execution started
 progress:
   total_phases: 2
   completed_phases: 0
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-29)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** v1.1 Ricarica e distanza — Fase 6 (Indicatore di Ricarica) pronta per la pianificazione
+**Current focus:** Phase 06 — Indicatore di Ricarica
 
 ## Current Position
 
-Phase: 6 of 7 (Indicatore di Ricarica)
-Plan: — (not yet planned)
-Status: Ready to execute
-Last activity: 2026-08-29 -- Phase 6 planning complete
+Phase: 06 (Indicatore di Ricarica) — EXECUTING
+Plan: 1 of 4
+Status: Executing Phase 06
+Last activity: 2026-08-29 -- Phase 06 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
