@@ -86,11 +86,26 @@
         app:layout_constraintTop_toBottomOf="@id/maxSpeedText"
         tools:visibility="visible" />
 
+    <ImageView
+        android:id="@+id/chargingIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/charging_flash_fill"
+        android:contentDescription="@string/charging_indicator_description"
+        android:clickable="false"
+        android:focusable="false"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/keepScreenOnSwitch"
+        app:layout_constraintBottom_toBottomOf="@id/keepScreenOnSwitch"
+        tools:visibility="visible" />
+
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/keepScreenOnSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginBottom="16dp"
         android:minHeight="48dp"
         android:maxLines="1"
@@ -101,7 +116,7 @@
         app:thumbTint="@color/switch_thumb_tint"
         app:trackTint="@color/switch_track_tint"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/chargingIcon"
         tools:text="Sempre acceso" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
