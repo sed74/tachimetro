@@ -58,7 +58,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 06-03-PLAN.md — Wiring MainActivity: animazione di riempimento, collettore lifecycle-aware, window insets bottom-left
+- [x] 06-03-PLAN.md — Wiring MainActivity: animazione di riempimento, collettore lifecycle-aware, window insets bottom-left
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -94,5 +94,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Interfaccia Tachimetro | v1.0 | 1/1 | Complete | 2026-07-10 |
 | 4. Velocità Massima e Persistenza | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 5. Gestione Schermo | v1.0 | 2/2 | Complete | 2026-07-10 |
-| 6. Indicatore di Ricarica | v1.1 | 2/4 | In Progress|  |
+| 6. Indicatore di Ricarica | v1.1 | 3/4 | In Progress|  |
 | 7. Distanza Percorsa e Reset Unificato | v1.1 | 0/? | Not started | - |
