@@ -1,34 +1,36 @@
 {
   "version": "1.0",
-  "timestamp": "2026-08-22T11:42:57.584Z",
-  "phase": null,
-  "phase_name": null,
-  "phase_dir": null,
+  "timestamp": "2026-08-29T20:35:11.927Z",
+  "phase": "07",
+  "phase_name": "Distanza Percorsa e Reset Unificato",
+  "phase_dir": ".planning/phases/07-distanza-percorsa-e-reset-unificato",
   "plan": null,
   "task": null,
   "total_tasks": null,
-  "status": "paused",
+  "status": "planned",
   "completed_tasks": [
-    {"id": 1, "name": "Play Store publication package (playstore/)", "status": "done", "commit": "8bcae15"},
-    {"id": 2, "name": "Record commit hash in STATE.md", "status": "done", "commit": "a819a09"}
+    {"id": "research", "name": "Research Phase 7 (D-07 architecture question)", "status": "done", "commit": "8a21062"},
+    {"id": "ui-spec", "name": "UI design contract (UI-SPEC.md)", "status": "done", "commit": "4fde053"},
+    {"id": "planning", "name": "gsd-planner: 4 plans in 3 waves", "status": "done", "commit": "eb4f514"},
+    {"id": "plan-checker", "name": "gsd-plan-checker: 0 blockers, 1 warning (fixed)", "status": "done", "commit": "674e847"},
+    {"id": "decision-coverage-fix", "name": "Add D-NN citations to plan must_haves for coverage gate", "status": "done", "commit": "917c8cb"},
+    {"id": "close-out", "name": "STATE.md + ROADMAP.md + PATTERNS.md commit, post-planning gap analysis", "status": "done", "commit": "e83a407"}
   ],
-  "remaining_tasks": [],
+  "remaining_tasks": [
+    {"id": "execute", "name": "Execute Phase 7 plans (07-01, 07-02, 07-03, 07-04)", "status": "not_started"}
+  ],
   "blockers": [],
   "human_actions_pending": [
-    {"action": "Fill in keystore.properties (storePassword, keyAlias, keyPassword) from the existing keystore at C:\\Users\\fedes\\AndroidStudioProjects\\keystore\\keystore, using keystore.properties.example as the template", "context": "Needed to produce a signed release APK/AAB — current playstore/apk/ artifacts are unsigned", "blocking": true},
-    {"action": "Re-run ./gradlew.bat assembleRelease bundleRelease after keystore.properties is filled in, and replace the unsigned artifacts in playstore/apk/", "context": "Play Console production track requires a signed .aab", "blocking": true},
-    {"action": "Replace the [insert contact email address] / [inserire indirizzo email di contatto] placeholder in playstore/privacy_policy.html, then host it at a public URL (e.g. GitHub Pages)", "context": "Play Console requires a live privacy policy URL, not a file", "blocking": true},
-    {"action": "Manually fill in Play Console forms (Store Listing, Data Safety, Content Rating) using playstore/listing/, playstore/data_safety.md, playstore/content_rating.md as reference", "context": "These forms live in Play Console UI and cannot be automated from files", "blocking": false}
+    {"action": "Run /gsd:execute-phase 07", "context": "Planning is fully complete and all gates passed; execution was deliberately NOT auto-started because the user asked to finish only in-flight work and shut down.", "blocking": false}
   ],
   "decisions": [
-    {"decision": "Executed the Play Store asset task directly instead of the standard gsd-quick planner/executor pipeline", "rationale": "Task combined Gradle build, emulator/adb device automation, and image generation — too heterogeneous for the 1-3 task planner constraint and for an executor without browser tools", "phase": null},
-    {"decision": "Signing config reads from a gitignored keystore.properties file; release build stays unsigned if the file is absent rather than failing", "rationale": "User will fill in credentials themselves; build must not block on missing secrets", "phase": null},
-    {"decision": "Feature graphic generated with Python/PIL instead of claude-in-chrome", "rationale": "More reliable in this environment, no browser dependency, matches app's pure black/white palette (colors.xml has no accent colors)", "phase": null},
-    {"decision": "Could not reliably reproduce the 'Ricerca segnale GPS...' (searching) app state on the emulator", "rationale": "Emulator replays the last known GPS fix at ~1Hz even without new geo commands, so the app's 5s staleness threshold never triggers; substituted the 'Pronto' state instead (also real and reproducible)", "phase": null}
+    {"decision": "Researched Phase 7 before planning despite workflow.research_enabled=false in config", "rationale": "CONTEXT.md D-07 explicitly flagged an unresolved architecture question (how GpsSpeedProvider should expose filtered position deltas for distance calc without duplicating SpeedMapping filter logic) as meant for the researcher/planner. User chose 'Research first' when asked.", "phase": "07"},
+    {"decision": "Auto-generated UI-SPEC.md via gsd-ui-phase --auto without prompting", "rationale": "workflow.ui_phase and workflow.ui_safety_gate are both enabled, phase has clear UI indicators, and the session was inside an active auto-chain (auto_chain_active=true), which per plan-phase.md step 5.6 means auto-generate without prompting.", "phase": "07"},
+    {"decision": "Fixed a plan-checker warning directly instead of re-invoking the planner", "rationale": "The only issue was a non-blocking documentation-traceability gap (RESEARCH.md 'Open Questions' section not marked RESOLVED even though the plans do resolve both questions). Editing RESEARCH.md directly was cheaper and lower-risk than a full planner revision pass for a one-file doc fix.", "phase": "07"},
+    {"decision": "Fixed the automated decision-coverage-plan gate by adding literal D-NN citations to plan frontmatter `must_haves.truths`, not by asking the planner to replan", "rationale": "Root-caused the gate's matcher (get-shit-done-cc sdk/src/query/check-decision-coverage.ts): it only searches frontmatter must_haves/truths/objective blocks plus body text under markdown headings literally named must_haves/truths/tasks/objective. This project's plan template uses XML <task> blocks with NO markdown headings around them, so D-02/D-03/D-05/D-06/D-08 citations that exist in plan bodies (in <action>/<constraints> prose) were invisible to the gate even though the decisions were functionally implemented (confirmed by the plan-checker's manual read, which found no gaps). Appended '(D-NN)' to existing truths bullets that already describe the corresponding behavior in 07-02-PLAN.md and 07-03-PLAN.md. Gate now reports 7/7 covered.", "phase": "07"},
+    {"decision": "Did NOT auto-advance to execute-phase despite auto_chain_active=true", "rationale": "User sent an explicit mid-session instruction: 'finisci i task in esecuzione ma non eseguire nulla di nuovo. Quando tutto è finito lancia /gsd-pause-work che spengo' (finish in-flight work, don't start anything new, then run pause-work because they're shutting down). This overrides the default plan-phase.md step 15 auto-advance behavior for this run only.", "phase": "07"}
   ],
-  "uncommitted_files": [
-    "playstore/listing/en/full_description.txt (user added a leading blank line; cosmetic, not yet committed)"
-  ],
-  "next_action": "No active phase or task. If resuming Play Store publication: check whether the user has filled in keystore.properties, and if so rebuild signed artifacts. Otherwise ask what to work on next (e.g. /gsd-new-milestone for the next milestone).",
-  "context_notes": "v1.0 milestone is fully shipped (STATE.md: status completed, 100%). This session's only work was an ad-hoc quick task (260822-huf) producing a complete Play Store publication package in playstore/ — fully committed. Nothing is blocked on Claude; all remaining items are human actions documented in playstore/README.md. No background processes running (the Android emulator used for screenshots was shut down with `adb emu kill`)."
+  "uncommitted_files": [],
+  "next_action": "Run /gsd:execute-phase 07 to execute the 4 committed plans (07-01, 07-02, 07-03, 07-04) across 3 waves.",
+  "context_notes": "Phase 7 planning is fully, cleanly complete — this is not an interrupted-mid-work pause. All GSD plan-phase gates passed: plan-checker (0 blockers), requirements coverage (4/4 REQ-IDs), decision coverage (7/7 D-IDs), post-planning gap analysis (all Phase 7 items covered; the 2 'not covered' rows it also reports, CHRG-01/CHRG-02, belong to already-Complete Phase 6 and are unrelated to Phase 7). The only reason this session stopped here instead of continuing into /gsd:execute-phase is the user's explicit request to pause and shut down. Also note (unrelated to Phase 7): a new standing project convention was recorded in this session's memory — playstore/ listing text, release notes, and build artifacts should be kept in sync with the app's current version proactively, not just on explicit request (see memory feedback_playstore_sync.md). There are pre-existing uncommitted changes in the working tree (.planning/config.json, gradle/libs.versions.toml, playstore/listing/en/full_description.txt) that predate this session and were deliberately left untouched/uncommitted — they are not part of Phase 7 work."
 }
