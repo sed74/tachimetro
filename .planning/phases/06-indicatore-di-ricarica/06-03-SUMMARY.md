@@ -113,3 +113,12 @@ None - no external service configuration required.
 ---
 *Phase: 06-indicatore-di-ricarica*
 *Completed: 2026-08-29*
+
+## Self-Check: PASSED
+
+- FOUND: app/src/main/java/com/sed/tachimetro/MainActivity.kt
+- FOUND: .planning/phases/06-indicatore-di-ricarica/06-03-SUMMARY.md
+- FOUND commit: 0e06693 (Task 1)
+- FOUND commit: 0402ef5 (Task 2)
+- FOUND commit: 4936401 (Task 3)
+- FOUND commit: 2564e99 (SUMMARY.md)
