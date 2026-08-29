@@ -1,5 +1,14 @@
 # Tachimetro
 
+## Current Milestone: v1.1 Ricarica e distanza
+
+**Goal:** Aggiungere due indicatori secondari al tachimetro — stato di ricarica e distanza percorsa dall'ultimo reset.
+
+**Target features:**
+- Icona a fulmine animata (riempimento progressivo bianco → lime → bianco, ciclo ~2-3s in loop) accanto al toggle "sempre acceso", visibile solo quando il telefono è in carica
+- Campo distanza percorsa in basso a destra, font più grande dell'area velocità massima, calcolata solo mentre l'app è attiva (GPS in foreground), persistente su disco
+- Reset unificato: il pulsante "Azzera massimo" azzera sia velocità massima sia distanza
+
 ## What This Is
 
 App Android nativa che mostra la velocità GPS in tempo reale a schermo intero, con un'interfaccia minimale ad altissimo contrasto pensata per essere letta a colpo d'occhio mentre l'app è montata su un supporto in auto o in moto. Nessun menu, nessuna animazione, nessun grafico: solo il numero della velocità.
@@ -30,7 +39,9 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 ### Active
 
-Nessuno — tutti i requisiti v1 sono validati. Milestone v1.0 completa (17/17 requisiti).
+- [ ] Icona a fulmine animata (riempimento bianco → lime → bianco) accanto al toggle "sempre acceso", visibile solo quando il telefono è in carica
+- [ ] Campo distanza percorsa in basso a destra, calcolata solo mentre l'app è attiva, persistente su disco
+- [ ] Il pulsante "Azzera massimo" azzera sia velocità massima sia distanza insieme
 
 ### Out of Scope
 
@@ -57,7 +68,8 @@ Nessuno — tutti i requisiti v1 sono validati. Milestone v1.0 completa (17/17 r
 - **GPS**: FusedLocationProviderClient (Google Play Services) — richiede un device con Google Play Services installato
 - **Compatibility**: minSdk 30 (Android 11+), targetSdk 36
 - **Performance**: aggiornamento velocità 1 volta/sec — bilanciamento scelto tra fluidità percepita e consumo batteria
-- **UX**: nessun elemento grafico non necessario, nessun menu, nessuna animazione — massima leggibilità in ogni condizione di luce
+- **UX**: nessun elemento grafico non necessario, nessun menu — massima leggibilità in ogni condizione di luce
+- **UX (eccezione v1.1)**: unica animazione ammessa è il riempimento dell'icona di ricarica (bianco → lime → bianco); unico colore accento ammesso è il lime, riservato a quell'icona — non introdurre altre animazioni o colori altrove nell'interfaccia
 
 ## Key Decisions
 
@@ -71,6 +83,8 @@ Nessuno — tutti i requisiti v1 sono validati. Milestone v1.0 completa (17/17 r
 | Velocità massima persistente (SharedPreferences) | L'utente vuole confrontare sessioni di guida diverse senza perdere il record | ✓ Good |
 | Aggiornamento GPS 1/sec | Bilancia fluidità e battery drain per uso prolungato in auto/moto | ✓ Good |
 | Solo km/h, nessun toggle unità | Riduce complessità UI, non richiesto per v1 | ✓ Good (shippato in v1.0 senza attriti) |
+| Deroga mirata a "nessuna animazione/nessun colore" per l'icona di ricarica (v1.1) | L'utente vuole un segnale di ricarica evidente e riconoscibile a colpo d'occhio; l'animazione di riempimento comunica lo stato meglio di un'icona statica | — Pending |
+| Reset unico per massimo e distanza (v1.1) | La distanza è definita come "percorsa dall'ultimo reset del massimo", quindi i due valori condividono lo stesso ciclo di vita — evita un secondo pulsante su uno schermo minimale | — Pending |
 
 ## Evolution
 
@@ -90,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-10 after v1.0 MVP milestone completion*
+*Last updated: 2026-08-29 after starting v1.1 milestone*
