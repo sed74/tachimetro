@@ -79,7 +79,22 @@ Plans:
   4. Chiudendo e riaprendo l'app, o riavviando il telefono, la distanza precedentemente accumulata è ancora visibile
   5. Premendo il pulsante "Azzera massimo", sia la velocità massima sia la distanza percorsa si azzerano nella stessa azione
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+**Wave 1** *(paralleli, nessun file in comune)*
+
+- [ ] 07-01-PLAN.md — Dominio distanza: reduceDistance/sanitizePersistedDistance, DistanceStore, formatDistanceDisplay (test-first)
+- [ ] 07-02-PLAN.md — Pipeline GPS: SpeedState.Reading porta deltaMeters calcolato con Location.distanceTo()
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 07-03-PLAN.md — Risorse, layout bottom-right e wiring MainActivity: accumulo, rendering adattivo, insets, reset unificato "Azzera"
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 07-04-PLAN.md — Verifica su strada su dispositivo reale (checkpoint umano)
+
 **UI hint**: yes
 
 ## Progress
@@ -95,4 +110,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Velocità Massima e Persistenza | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 5. Gestione Schermo | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 6. Indicatore di Ricarica | v1.1 | 4/4 | Complete   | 2026-08-29 |
-| 7. Distanza Percorsa e Reset Unificato | v1.1 | 0/? | Not started | - |
+| 7. Distanza Percorsa e Reset Unificato | v1.1 | 0/4 | Planned | - |
