@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Ricarica e distanza
-status: planning
+status: executing
 stopped_at: Phase 6 UI-SPEC approved
-last_updated: "2026-08-29T16:41:25.871Z"
-last_activity: 2026-08-29 — Roadmap v1.1 creato (Fase 6-7, 6/6 requisiti mappati)
+last_updated: "2026-08-29T17:15:53.672Z"
+last_activity: 2026-08-29 -- Phase 6 planning complete
 progress:
   total_phases: 2
   completed_phases: 0
-  total_plans: 0
+  total_plans: 4
   completed_plans: 0
   percent: 0
 ---
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 
 Phase: 6 of 7 (Indicatore di Ricarica)
 Plan: — (not yet planned)
-Status: Ready to plan
-Last activity: 2026-08-29 — Roadmap v1.1 creato (Fase 6-7, 6/6 requisiti mappati)
+Status: Ready to execute
+Last activity: 2026-08-29 -- Phase 6 planning complete
 
 Progress: [░░░░░░░░░░] 0%
 

@@ -51,9 +51,17 @@ Dettagli completi delle fasi: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADM
 **Plans**: 4 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 06-01-PLAN.md — Risorse: colore lime, stringa accessibilità, drawable del fulmine riempibile, ImageView nel layout
 - [ ] 06-02-PLAN.md — Dominio charging: ChargingState, deriveChargingState (test-first), ChargingStateProvider reattivo
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 06-03-PLAN.md — Wiring MainActivity: animazione di riempimento, collettore lifecycle-aware, window insets bottom-left
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 06-04-PLAN.md — Verifica visiva su dispositivo (checkpoint umano)
 
 **UI hint**: yes
