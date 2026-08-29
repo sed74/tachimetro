@@ -31,7 +31,7 @@ Dettagli completi delle fasi: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADM
 
 </details>
 
-- [ ] **Phase 6: Indicatore di Ricarica** - L'utente riconosce a colpo d'occhio quando il telefono è in carica tramite un'icona a fulmine animata
+- [x] **Phase 6: Indicatore di Ricarica** - L'utente riconosce a colpo d'occhio quando il telefono è in carica tramite un'icona a fulmine animata (completed 2026-08-29)
 - [ ] **Phase 7: Distanza Percorsa e Reset Unificato** - L'utente monitora la distanza percorsa dall'ultimo azzeramento e la azzera insieme al massimo con un unico pulsante
 
 ## Phase Details
@@ -62,7 +62,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 06-04-PLAN.md — Verifica visiva su dispositivo (checkpoint umano)
+- [x] 06-04-PLAN.md — Verifica visiva su dispositivo (checkpoint umano)
 
 **UI hint**: yes
 
@@ -94,5 +94,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Interfaccia Tachimetro | v1.0 | 1/1 | Complete | 2026-07-10 |
 | 4. Velocità Massima e Persistenza | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 5. Gestione Schermo | v1.0 | 2/2 | Complete | 2026-07-10 |
-| 6. Indicatore di Ricarica | v1.1 | 3/4 | In Progress|  |
+| 6. Indicatore di Ricarica | v1.1 | 4/4 | Complete   | 2026-08-29 |
 | 7. Distanza Percorsa e Reset Unificato | v1.1 | 0/? | Not started | - |
