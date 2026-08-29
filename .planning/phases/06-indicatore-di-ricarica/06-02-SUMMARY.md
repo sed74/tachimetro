@@ -109,3 +109,12 @@ None - no external service configuration required.
 ---
 *Phase: 06-indicatore-di-ricarica*
 *Completed: 2026-08-29*
+
+## Self-Check: PASSED
+
+- FOUND: app/src/main/java/com/sed/tachimetro/charging/ChargingState.kt
+- FOUND: app/src/main/java/com/sed/tachimetro/charging/ChargingStateProvider.kt
+- FOUND: app/src/test/java/com/sed/tachimetro/charging/ChargingStateProviderStateTest.kt
+- FOUND: da26ff0 (test commit)
+- FOUND: 05ece10 (feat commit)
+- FOUND: 7d8db1c (feat commit)
