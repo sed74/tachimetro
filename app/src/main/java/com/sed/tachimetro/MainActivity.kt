@@ -1,9 +1,12 @@
 package com.sed.tachimetro
 
 import android.Manifest
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.drawable.ClipDrawable
+import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.BatteryManager
 import android.os.Bundle
@@ -11,7 +14,9 @@ import android.provider.Settings
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,6 +37,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+import com.sed.tachimetro.charging.ChargingState
 import com.sed.tachimetro.gps.GpsSpeedProvider
 import com.sed.tachimetro.gps.SpeedState
 import com.sed.tachimetro.maxspeed.MaxSpeedStore
@@ -52,6 +58,17 @@ class MainActivity : AppCompatActivity() {
         // (e.g. permission_denied_permanent) stay compact/legible instead of
         // scaling up toward the speed digits' huge range and wrapping unreadably.
         private const val AUTOSIZE_MAX_MESSAGE_SP = 56
+
+        // CHRG-02/UI-SPEC "Animation spec": a ClipDrawable's level range is always 0..10000
+        // regardless of view size -- 10_000 means fully filled (100%).
+        private const val CHARGING_FILL_LEVEL_MAX = 10_000
+
+        // UI-SPEC "Animation spec": full cycle bianco->lime->bianco = 2500ms. With
+        // repeatMode = ValueAnimator.REVERSE, a single ValueAnimator of duration
+        // CHARGING_FILL_HALF_CYCLE_MS plays 0->max then max->0, i.e. two halves of 1250ms
+        // each = 2500ms per full cycle (06-UI-SPEC.md wins over 06-PATTERNS.md's incorrect
+        // duration = 2500 suggestion, which would produce a 5000ms cycle).
+        private const val CHARGING_FILL_HALF_CYCLE_MS = 1250L
     }
 
     private lateinit var messageText: TextView
@@ -64,6 +81,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var keepScreenOnSwitch: SwitchCompat
     private lateinit var screenOnStore: ScreenOnPreferenceStore
     private lateinit var gpsSpeedProvider: GpsSpeedProvider
+    private lateinit var chargingIcon: ImageView
+    private var chargingFillLayer: ClipDrawable? = null
+    private var chargingFillAnimator: ValueAnimator? = null
 
     // CR-01: reactive permission state, refreshed from every place permission state can
     // change (checkAndRequestPermission(), requestPermissionLauncher callback, onResume()),
@@ -104,6 +124,11 @@ class MainActivity : AppCompatActivity() {
 
         screenOnStore = ScreenOnPreferenceStore(applicationContext)
         keepScreenOnSwitch = findViewById(R.id.keepScreenOnSwitch)
+        chargingIcon = findViewById(R.id.chargingIcon)
+        // Resolves the ClipDrawable inside chargingIcon's LayerDrawable so the fill
+        // animation helpers below have something to animate -- without this call
+        // chargingFillLayer stays null and the icon would show but never fill (CHRG-02).
+        resolveChargingFillLayer()
         // D-04/D-05: se nessuna preferenza è salvata (primo avvio), il default deriva dallo stato di
         // ricarica; quel valore derivato viene persistito UNA sola volta, così dagli avvii successivi
         // conta solo la scelta salvata (lo stato di ricarica non viene più ricontrollato).
@@ -301,6 +326,53 @@ class MainActivity : AppCompatActivity() {
             maxSpeedText.visibility = View.GONE
             resetMaxButton.visibility = View.GONE
         }
+    }
+
+    // CHRG-01/UI-SPEC: resolves the ClipDrawable buried inside chargingIcon's LayerDrawable
+    // (R.drawable.charging_flash_fill) so startChargingFillAnimation()/freezeChargingFillAtFull()/
+    // stopChargingFillAnimation() have a level (0..10000) to drive. mutate() is required before
+    // touching level -- without it, changing this drawable's state could bleed into any other
+    // View sharing the same drawable resource via Android's ConstantState caching (T-06-03-T).
+    // Safe casts throughout: an unexpected drawable structure leaves chargingFillLayer null
+    // rather than crashing.
+    private fun resolveChargingFillLayer() {
+        val layerDrawable = chargingIcon.drawable?.mutate() as? LayerDrawable
+        chargingFillLayer = layerDrawable?.findDrawableByLayerId(R.id.chargingIconFill) as? ClipDrawable
+    }
+
+    // D-02/CHRG-02/UI-SPEC "Re-plug": always restarts the loop from empty/white (level = 0),
+    // never resumes from a previously cached phase. duration = CHARGING_FILL_HALF_CYCLE_MS with
+    // REVERSE repeat mode produces the 2500ms full white->lime->white cycle UI-SPEC requires.
+    private fun startChargingFillAnimation() {
+        chargingFillAnimator?.cancel()
+        chargingFillAnimator = null
+        chargingFillLayer?.level = 0
+        chargingFillAnimator = ValueAnimator.ofInt(0, CHARGING_FILL_LEVEL_MAX).apply {
+            duration = CHARGING_FILL_HALF_CYCLE_MS
+            repeatMode = ValueAnimator.REVERSE
+            repeatCount = ValueAnimator.INFINITE
+            interpolator = AccelerateDecelerateInterpolator()
+            addUpdateListener { animator -> chargingFillLayer?.level = animator.animatedValue as Int }
+            start()
+        }
+    }
+
+    // D-03: BATTERY_STATUS_FULL freezes the icon fully lime and motionless -- cancel() (not
+    // pause()) per UI-SPEC "Loop", since a paused animator would still hold system resources
+    // and could resume from a mid-cycle phase instead of a clean solid-full frame.
+    private fun freezeChargingFillAtFull() {
+        chargingFillAnimator?.cancel()
+        chargingFillAnimator = null
+        chargingFillLayer?.level = CHARGING_FILL_LEVEL_MAX
+    }
+
+    // D-01/roadmap SC2: chargingIcon disappears immediately on unplug, regardless of animation
+    // phase -- cancel() stops the loop right away instead of waiting for the current iteration
+    // to finish, and resets level to 0 so a future re-plug always starts from empty/white.
+    private fun stopChargingFillAnimation() {
+        chargingFillAnimator?.cancel()
+        chargingFillAnimator = null
+        chargingFillLayer?.level = 0
     }
 
     private fun applySpeedAutosize() {
