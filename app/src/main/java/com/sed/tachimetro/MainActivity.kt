@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 import com.sed.tachimetro.charging.ChargingState
+import com.sed.tachimetro.charging.ChargingStateProvider
 import com.sed.tachimetro.gps.GpsSpeedProvider
 import com.sed.tachimetro.gps.SpeedState
 import com.sed.tachimetro.maxspeed.MaxSpeedStore
@@ -81,6 +82,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var keepScreenOnSwitch: SwitchCompat
     private lateinit var screenOnStore: ScreenOnPreferenceStore
     private lateinit var gpsSpeedProvider: GpsSpeedProvider
+    private lateinit var chargingStateProvider: ChargingStateProvider
     private lateinit var chargingIcon: ImageView
     private var chargingFillLayer: ClipDrawable? = null
     private var chargingFillAnimator: ValueAnimator? = null
@@ -166,6 +168,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // WR-04: application context only, same rationale as gpsSpeedProvider above.
+        chargingStateProvider = ChargingStateProvider(applicationContext)
+        // Charging observation has no permission gate (unlike GPS), so this is a plain
+        // collect() in its own repeatOnLifecycle(STARTED) launch -- separate from the GPS
+        // block above, which is wrapped by permissionGranted.collectLatest.
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                chargingStateProvider.state.collect { state -> updateChargingIcon(state) }
+            }
+        }
+
         checkAndRequestPermission()
     }
 
@@ -189,6 +202,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // T-06-03-D: repeatOnLifecycle(STARTED) stops collecting chargingStateProvider.state on
+    // stop, but that alone does NOT cancel an already-running ValueAnimator -- it would keep
+    // ticking at 60fps in the background, draining battery, unless explicitly cancelled here.
+    // When STARTED resumes, the StateFlow immediately re-emits the current state to the new
+    // collector and the animation restarts cleanly from level 0.
+    override fun onStop() {
+        stopChargingFillAnimation()
+        super.onStop()
+    }
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         // Re-apply immersive fullscreen whenever this window regains focus. System bars can
@@ -208,6 +231,9 @@ class MainActivity : AppCompatActivity() {
         // already stops collection on stop, so this is a secondary safety net, not the
         // primary stop/start mechanism.
         gpsSpeedProvider.close()
+        // WR-04: same rationale as gpsSpeedProvider.close() above -- cancels
+        // chargingStateProvider's own CoroutineScope for symmetry/defensiveness.
+        chargingStateProvider.close()
         super.onDestroy()
     }
 
@@ -325,6 +351,31 @@ class MainActivity : AppCompatActivity() {
         } else {
             maxSpeedText.visibility = View.GONE
             resetMaxButton.visibility = View.GONE
+        }
+    }
+
+    // CHRG-01/CHRG-02/D-01/D-02/D-03: StateFlow conflates equal values, so the continuous
+    // stream of ACTION_BATTERY_CHANGED broadcasts (which also fire on every percentage/
+    // temperature change) does NOT re-trigger this when the derived state hasn't actually
+    // changed -- the fill animation is never restarted mid-cycle by unrelated battery ticks.
+    // Exhaustive when (no else): the compiler enforces every ChargingState branch is handled.
+    private fun updateChargingIcon(state: ChargingState) {
+        when (state) {
+            is ChargingState.Hidden -> {
+                // Roadmap SC2: disappears immediately, without waiting for the fill cycle to
+                // finish.
+                chargingIcon.visibility = View.GONE
+                stopChargingFillAnimation()
+            }
+            is ChargingState.Pulsing -> {
+                chargingIcon.visibility = View.VISIBLE
+                startChargingFillAnimation()
+            }
+            is ChargingState.Full -> {
+                // D-03: frozen solid lime, no motion.
+                chargingIcon.visibility = View.VISIBLE
+                freezeChargingFillAtFull()
+            }
         }
     }
 
