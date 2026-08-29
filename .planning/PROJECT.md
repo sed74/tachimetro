@@ -36,10 +36,10 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 - ✓ Velocità massima persistente su disco (sopravvive a chiusura app e riavvio del telefono, verificato con `adb reboot`) — Fase 4
 - ✓ Toggle "Schermo sempre acceso" / "Schermo automatico", con preferenza salvata tra sessioni — Fase 5
 - ✓ Quando "sempre acceso" è attivo, impedito lo spegnimento schermo durante l'uso (FLAG_KEEP_SCREEN_ON) — Fase 5
+- ✓ Icona a fulmine animata (riempimento bianco → lime → bianco) accanto al toggle "sempre acceso", visibile solo quando il telefono è in carica — Fase 6 (verificato su dispositivo reale)
 
 ### Active
 
-- [ ] Icona a fulmine animata (riempimento bianco → lime → bianco) accanto al toggle "sempre acceso", visibile solo quando il telefono è in carica
 - [ ] Campo distanza percorsa in basso a destra, calcolata solo mentre l'app è attiva, persistente su disco
 - [ ] Il pulsante "Azzera massimo" azzera sia velocità massima sia distanza insieme
 
@@ -52,6 +52,7 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 ## Context
 
+- Fase 6 completa (2026-08-29): indicatore di ricarica implementato — `ChargingStateProvider.kt` (rilevamento continuo via `BroadcastReceiver` su `ACTION_BATTERY_CHANGED`, sostituisce il precedente controllo one-shot `isDeviceCharging()` per questo scopo), `ChargingState.kt` (sealed Hidden/Pulsing/Full), icona `chargingIcon` (fulmine Material 24dp) a sinistra del toggle "sempre acceso", riempimento lime animato via `ValueAnimator`+`ClipDrawable` (loop 2500ms), stato "piena" congelato lime solido. Prima animazione e primo colore accento del progetto (deroga esplicita). Checkpoint umano su dispositivo reale superato (8/8). Review non bloccante: `isDeviceCharging()` in `MainActivity` andrebbe consolidato con `deriveChargingState()` (duplicazione minore, non blocca). L'utente ha richiesto 2 raffinamenti post-verifica (icona più grande, animazione con svuotamento istantaneo invece di simmetrico) — gestiti come quick task separato dopo la chiusura della fase.
 - **v1.0 MVP SHIPPED (2026-07-10)** — 5 fasi, 10 piani, 17/17 requisiti validati con checkpoint umani su device. ~695 LOC Kotlin (8 file `.kt` in `main`: `MainActivity`, package `gps/`, `maxspeed/`, `screen/`), 3 suite di test JVM (SpeedMapping, GpsProviderState, MaxSpeedReducer). Timeline 2026-07-07 → 2026-07-10 (4 giorni). Archivio: `.planning/milestones/v1.0-*`. Nessun feedback utente reale ancora raccolto (app non ancora usata su strada). Prossima milestone da definire via `/gsd-new-milestone`.
 - Fase 5 completa (2026-07-10) — **v1.0 completa**: toggle "Sempre acceso" (`keepScreenOnSwitch`, SwitchCompat monocromatico) in basso a sinistra, speculare all'area MAX, sempre visibile. `ScreenOnPreferenceStore.kt` persiste una preferenza booleana nullable (null = mai impostata); al primo avvio il default è derivato dallo stato di ricarica del telefono (ON se in carica) e scritto una sola volta. Cambio di stato applica/rimuove `FLAG_KEEP_SCREEN_ON` immediatamente. Checkpoint umano superato su emulatore (8/8 casi, incluso riavvio e stato di ricarica).
 - Fase 4 completa (2026-07-10): monitoraggio velocità massima implementato — `maxSpeedText`/`resetMaxButton` in alto a sinistra (speculare a `unitText`), `MaxSpeedReducer.kt` (funzioni pure `reduceMax`/`sanitizePersistedMax`, TDD con 8 test JVM) e `MaxSpeedStore.kt` (wrapper SharedPreferences). Il massimo si aggiorna e si salva su disco immediatamente ad ogni nuovo record e ad ogni azzeramento; l'area resta nascosta finché il massimo è 0. Applica lo stesso pattern di window insets di `unitText` per restare libera da status bar/cutout. Checkpoint umano superato su emulatore, incluso il test critico di persistenza tramite `adb reboot`.
@@ -83,7 +84,7 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 | Velocità massima persistente (SharedPreferences) | L'utente vuole confrontare sessioni di guida diverse senza perdere il record | ✓ Good |
 | Aggiornamento GPS 1/sec | Bilancia fluidità e battery drain per uso prolungato in auto/moto | ✓ Good |
 | Solo km/h, nessun toggle unità | Riduce complessità UI, non richiesto per v1 | ✓ Good (shippato in v1.0 senza attriti) |
-| Deroga mirata a "nessuna animazione/nessun colore" per l'icona di ricarica (v1.1) | L'utente vuole un segnale di ricarica evidente e riconoscibile a colpo d'occhio; l'animazione di riempimento comunica lo stato meglio di un'icona statica | — Pending |
+| Deroga mirata a "nessuna animazione/nessun colore" per l'icona di ricarica (v1.1) | L'utente vuole un segnale di ricarica evidente e riconoscibile a colpo d'occhio; l'animazione di riempimento comunica lo stato meglio di un'icona statica | ✓ Good (verificato su dispositivo reale, Fase 6) |
 | Reset unico per massimo e distanza (v1.1) | La distanza è definita come "percorsa dall'ultimo reset del massimo", quindi i due valori condividono lo stesso ciclo di vita — evita un secondo pulsante su uno schermo minimale | — Pending |
 
 ## Evolution
@@ -104,4 +105,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-29 after starting v1.1 milestone*
+*Last updated: 2026-08-29 after Fase 6 completion*
