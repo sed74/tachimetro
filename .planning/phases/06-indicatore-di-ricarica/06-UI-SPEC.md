@@ -162,3 +162,14 @@ Not applicable — native Android project, no npm/shadcn component registry in u
 - [ ] Dimension 6 Registry Safety: PASS
 
 **Approval:** pending
+
+---
+
+## Revisions (post-checkpoint, quick task 260829-tgw)
+
+Two follow-up refinements requested by the user during the real-device checkpoint of Phase 6 (recorded in `06-04-SUMMARY.md`), superseding two values above:
+
+- **Spacing scale / Layout:** charging icon size `24dp` → `36dp` (`chargingIcon` width/height in `activity_main.xml`). Position, constraints, and `keepScreenOnSwitch` row height are unchanged — 36dp stays under the switch's `minHeight="48dp"`.
+- **Animation spec:** fill cycle changed from symmetric `REVERSE` (fill 1250ms + drain 1250ms = 2500ms loop) to a graduated fill of `RESTART` 2500ms with an **instant reset** to empty/white once full (no animated drain). The soft accelerate-decelerate interpolator and the bottom-to-top fill direction are unchanged.
+
+All other rows of this spec (lime color/value, fill direction, icon position, Hidden/Pulsing/Full states, instant appear/disappear transitions, window insets handling) remain unchanged and approved as originally written above.

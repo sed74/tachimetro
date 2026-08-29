@@ -64,12 +64,13 @@ class MainActivity : AppCompatActivity() {
         // regardless of view size -- 10_000 means fully filled (100%).
         private const val CHARGING_FILL_LEVEL_MAX = 10_000
 
-        // UI-SPEC "Animation spec": full cycle bianco->lime->bianco = 2500ms. With
-        // repeatMode = ValueAnimator.REVERSE, a single ValueAnimator of duration
-        // CHARGING_FILL_HALF_CYCLE_MS plays 0->max then max->0, i.e. two halves of 1250ms
-        // each = 2500ms per full cycle (06-UI-SPEC.md wins over 06-PATTERNS.md's incorrect
-        // duration = 2500 suggestion, which would produce a 5000ms cycle).
-        private const val CHARGING_FILL_HALF_CYCLE_MS = 1250L
+        // UI-SPEC revision (post-checkpoint, quick task 260829-tgw): lo svuotamento non è più
+        // graduale (niente più due mezze fasi da 1250ms in modalità REVERSE). L'intero budget
+        // di ~2,5s (dentro la finestra "~2-3 secondi" di CHRG-02) è ora assegnato alla sola
+        // salita 0 -> CHARGING_FILL_LEVEL_MAX; il ritorno a 0 avviene nel frame successivo,
+        // senza durata (repeatMode = RESTART riparte istantaneamente dal valore iniziale
+        // dell'animatore invece di rifare il percorso all'indietro).
+        private const val CHARGING_FILL_CYCLE_MS = 2500L
     }
 
     private lateinit var messageText: TextView
@@ -392,15 +393,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     // D-02/CHRG-02/UI-SPEC "Re-plug": always restarts the loop from empty/white (level = 0),
-    // never resumes from a previously cached phase. duration = CHARGING_FILL_HALF_CYCLE_MS with
-    // REVERSE repeat mode produces the 2500ms full white->lime->white cycle UI-SPEC requires.
+    // never resumes from a previously cached phase. UI-SPEC revision (post-checkpoint, quick
+    // task 260829-tgw): il lime sale gradualmente dal basso in CHARGING_FILL_CYCLE_MS (2500ms,
+    // interpolatore invariato per il movimento morbido), ma una volta pieno si azzera DI COLPO
+    // invece di scendere di nuovo -- repeatMode = RESTART fa ripartire ofInt() dal suo valore
+    // iniziale (0) nel frame successivo, quindi lo svuotamento non è animato: è esattamente lo
+    // "svuotamento istantaneo" richiesto dall'utente al posto della precedente modalità
+    // simmetrica riempi/svuota.
     private fun startChargingFillAnimation() {
         chargingFillAnimator?.cancel()
         chargingFillAnimator = null
         chargingFillLayer?.level = 0
         chargingFillAnimator = ValueAnimator.ofInt(0, CHARGING_FILL_LEVEL_MAX).apply {
-            duration = CHARGING_FILL_HALF_CYCLE_MS
-            repeatMode = ValueAnimator.REVERSE
+            duration = CHARGING_FILL_CYCLE_MS
+            repeatMode = ValueAnimator.RESTART
             repeatCount = ValueAnimator.INFINITE
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener { animator -> chargingFillLayer?.level = animator.animatedValue as Int }
