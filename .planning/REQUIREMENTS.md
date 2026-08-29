@@ -9,8 +9,8 @@ Requirements for the v1.1 milestone (ricarica e distanza). Each maps to roadmap 
 
 ### Ricarica
 
-- [ ] **CHRG-01**: L'utente vede un'icona a fulmine accanto al toggle "sempre acceso" solo quando il telefono è in carica
-- [ ] **CHRG-02**: L'icona anima un riempimento progressivo dal basso verso l'alto, bianco → lime → bianco, in loop continuo (~2-3s per ciclo) per tutta la durata della ricarica
+- [x] **CHRG-01**: L'utente vede un'icona a fulmine accanto al toggle "sempre acceso" solo quando il telefono è in carica
+- [x] **CHRG-02**: L'icona anima un riempimento progressivo dal basso verso l'alto, bianco → lime → bianco, in loop continuo (~2-3s per ciclo) per tutta la durata della ricarica
 
 ### Distanza
 
@@ -42,8 +42,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CHRG-01 | Phase 6 | Pending |
-| CHRG-02 | Phase 6 | Pending |
+| CHRG-01 | Phase 6 | Complete |
+| CHRG-02 | Phase 6 | Complete |
 | DIST-01 | Phase 7 | Pending |
 | DIST-02 | Phase 7 | Pending |
 | DIST-03 | Phase 7 | Pending |
