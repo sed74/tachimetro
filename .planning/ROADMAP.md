@@ -48,7 +48,14 @@ Dettagli completi delle fasi: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADM
   3. Mentre il telefono è in carica, l'icona anima un riempimento continuo dal basso verso l'alto, bianco → lime → bianco, in loop di circa 2-3 secondi, per tutta la durata della ricarica
   4. Nessun'altra icona, colore o animazione compare altrove nell'interfaccia al di fuori di questo indicatore
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Risorse: colore lime, stringa accessibilità, drawable del fulmine riempibile, ImageView nel layout
+- [ ] 06-02-PLAN.md — Dominio charging: ChargingState, deriveChargingState (test-first), ChargingStateProvider reattivo
+- [ ] 06-03-PLAN.md — Wiring MainActivity: animazione di riempimento, collettore lifecycle-aware, window insets bottom-left
+- [ ] 06-04-PLAN.md — Verifica visiva su dispositivo (checkpoint umano)
+
 **UI hint**: yes
 
 ### Phase 7: Distanza Percorsa e Reset Unificato
@@ -79,5 +86,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Interfaccia Tachimetro | v1.0 | 1/1 | Complete | 2026-07-10 |
 | 4. Velocità Massima e Persistenza | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 5. Gestione Schermo | v1.0 | 2/2 | Complete | 2026-07-10 |
-| 6. Indicatore di Ricarica | v1.1 | 0/? | Not started | - |
+| 6. Indicatore di Ricarica | v1.1 | 0/4 | Planned | - |
 | 7. Distanza Percorsa e Reset Unificato | v1.1 | 0/? | Not started | - |
