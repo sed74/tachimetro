@@ -581,21 +581,25 @@ this phase's scope.
 | A2 | Reference-point-always-updates-but-total-only-adds-above-noise-floor (Pitfall 2's resolution) is the correct interpretation of D-04, beyond its literal text | Architecture Patterns Pattern 2, Pitfall 2 | If the user intended a stricter "freeze the reference point entirely while below noise floor" interpretation, the plan would need a one-line change (move `lastAcceptedLocation = loc` inside the `kmh >= noiseFloorKmh` branch instead of unconditionally). Low risk: both interpretations satisfy D-04's literal wording ("no accumulation below noise floor"); the recommended version is more robust against reference-point drift (Pitfall 2) and doesn't change any user-visible behavior mentioned in CONTEXT.md. |
 | A3 | Distance area should stay **always visible** (not hidden at 0, unlike the MAX area) | Pitfall 4, Open Questions | Explicitly left to Claude's Discretion in CONTEXT.md — if the user actually prefers hide-at-zero consistency with MAX, this is a one-line change to mirror `updateMaxArea()`'s visibility branch. No functional risk, only a cosmetic/consistency preference. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Exact 1000m boundary display behavior (Pitfall 5)**
+1. **Exact 1000m boundary display behavior (Pitfall 5)** — RESOLVED
    - What we know: D-01 gives qualitative examples ("850 m" below 1km, "1,2 km" above) but no exact boundary spec.
    - What's unclear: whether "999.6m" should round to "1000 m" or "1,0 km".
    - Recommendation: implement Pattern 3 as-is (branch on raw unrounded meters, round only within the chosen
      branch); this is a ~1-meter-wide edge case with negligible real-world impact — flag for the planner to
      decide/confirm during checkpoint review rather than blocking on it now.
+   - Resolution: 07-01-PLAN.md Task 2 locks this behavior — `formatDistanceDisplay(999.6f)` stays in the meters
+     branch and rounds to `Meters(1000)`, with a dedicated test `justBelowOneKilometer_staysInMetersBranch`.
 
-2. **Visibility of the distance area at exactly 0 (Pitfall 4 / Assumption A3)**
+2. **Visibility of the distance area at exactly 0 (Pitfall 4 / Assumption A3)** — RESOLVED
    - What we know: explicitly deferred to Claude's Discretion in CONTEXT.md; no requirement specifies either way.
    - What's unclear: whether the user has an implicit preference for visual consistency with the MAX area (hidden
      at 0) despite the accuracy argument for always-visible.
    - Recommendation: default to always-visible (see rationale in Pitfall 4); easy to flip to hide-at-zero if the
      human checkpoint disagrees.
+   - Resolution: 07-03-PLAN.md implements always-visible (never hidden at zero, shows "0 m"), documented in
+     07-UI-SPEC.md and the plan's constraints/actions.
 
 ## Environment Availability
 
