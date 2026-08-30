@@ -1,0 +1,52 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-08-30T21:21:28.846Z",
+  "phase": null,
+  "phase_name": null,
+  "phase_dir": null,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "paused",
+  "context": "new-milestone-workflow",
+  "milestone": "v2.0",
+  "milestone_name": "Android Auto Support",
+  "workflow_step": "8. Research Decision",
+  "completed_tasks": [
+    { "id": 1, "name": "Gather milestone goals via AskUserQuestion (3 rounds)", "status": "done" },
+    { "id": 2, "name": "Verify milestone understanding summary, confirmed by user", "status": "done" },
+    { "id": 3, "name": "Update PROJECT.md (Status, Current Milestone, Active requirements, footer date)", "status": "done" },
+    { "id": 4, "name": "Reset STATE.md via gsd-sdk query state.milestone-switch --milestone v2.0 --name \"Android Auto Support\"", "status": "done", "commit": "a078ff8" },
+    { "id": 5, "name": "Clear leftover phase directories from v1.1 (gsd-sdk query phases.clear --confirm)", "status": "done" },
+    { "id": 6, "name": "Commit PROJECT.md + STATE.md", "status": "done", "commit": "a078ff8" },
+    { "id": 7, "name": "Load init.new-milestone context (research_enabled=false, agents_installed=true, phase numbering continues from Phase 7)", "status": "done" },
+    { "id": 8, "name": "Ask Research Decision (research first vs skip)", "status": "in_progress", "progress": "Question was posed to the user; user interrupted to pause work before answering" }
+  ],
+  "remaining_tasks": [
+    { "id": 9, "name": "Re-ask/resolve Research Decision (research first vs skip) on resume", "status": "not_started" },
+    { "id": 10, "name": "If research chosen: spawn 4 parallel gsd-project-researcher agents (STACK, FEATURES, ARCHITECTURE, PITFALLS) focused on Android Auto / Car App Library integration, then gsd-research-synthesizer for SUMMARY.md", "status": "not_started" },
+    { "id": 11, "name": "Define Requirements — write REQUIREMENTS.md with REQ-IDs, confirm with user, commit", "status": "not_started" },
+    { "id": 12, "name": "Create Roadmap — spawn gsd-roadmapper (continue phase numbering from Phase 7, so new milestone starts at Phase 8), present for approval, commit", "status": "not_started" },
+    { "id": 13, "name": "Link pending todos to roadmap phases (none currently exist in .planning/todos/pending/, likely no-op)", "status": "not_started" },
+    { "id": 14, "name": "Print MILESTONE INITIALIZED summary with next-step pointer to /gsd:discuss-phase [N]", "status": "not_started" }
+  ],
+  "blockers": [
+    {
+      "description": "User wants the phone screen to turn off/lock when Android Auto connects, but a standard Android app cannot force a physical screen-off without special permissions (e.g. device admin). Realistic options are releasing FLAG_KEEP_SCREEN_ON and/or showing a neutral 'connected to Android Auto' state and letting the system's own timeout take over.",
+      "type": "technical",
+      "workaround": "Not yet resolved — needs to be nailed down precisely during research and/or requirements definition (Step 9). Do not silently promise a literal forced screen-off in REQUIREMENTS.md."
+    }
+  ],
+  "human_actions_pending": [
+    { "action": "Answer the Research Decision question: research Android Auto / Car App Library constraints first, or skip straight to requirements", "context": "research_enabled defaults to false for this project, but Android Auto has strict, poorly-known constraints on which app categories/templates can draw custom UI (e.g. requires declaring as 'navigation' category to get a drawable surface) — recommended to research first given the technical uncertainty", "blocking": true }
+  ],
+  "decisions": [
+    { "decision": "Milestone v2.0 scope: project current GPS speed onto the Android Auto car screen via Google's Car App Library", "rationale": "User explicitly wants the number visible on the car/moto display, not just phone-side compatibility", "phase": null },
+    { "decision": "Likely approach: declare the app under the 'navigation' Car App Library category to get access to a drawable Surface, since there is no generic 'just show a number' template", "rationale": "Car App Library restricts custom UI to specific app categories/templates; navigation category is the one known to expose a raw drawable surface", "phase": null },
+    { "decision": "Car display shows ONLY current speed + 'no GPS signal' state — no max speed, no distance", "rationale": "User explicitly deselected max speed and distance for the car display; those stay phone-only, consistent with Core Value (keep car display minimal)", "phase": null },
+    { "decision": "Phone screen behavior when Android Auto connects: intended to turn off/lock (exact mechanism TBD — see blockers)", "rationale": "User assumes attention shifts entirely to the car screen once connected", "phase": null }
+  ],
+  "uncommitted_files": [],
+  "next_action": "Resume /gsd:new-milestone (or re-enter this workflow) at Step 8 'Research Decision': ask the user again whether to research Android Auto / Car App Library constraints before defining requirements, recommending 'Research first' given the technical uncertainty about app categories and drawable-surface access.",
+  "context_notes": "This is a brand-new milestone (v2.0) for an app that has been a plain fullscreen-number speedometer through v1.1. PROJECT.md/STATE.md are already updated and committed for v2.0; nothing about requirements or the roadmap has been written yet. The single open technical question (Car App Library category/template feasibility) should genuinely be researched before writing REQUIREMENTS.md, since it directly constrains what's achievable — don't just proceed on assumption."
+}
