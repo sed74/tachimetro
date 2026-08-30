@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Ricarica e distanza
-status: milestone_complete
-stopped_at: Milestone complete (Phase 07 was final phase)
-last_updated: 2026-08-30T12:56:25.744Z
-last_activity: 2026-08-30 - Completed quick task 260830-o3h: Aggiorna playstore/ per la milestone v1.1
+status: Awaiting next milestone
+stopped_at: "Completed quick task 260830-o3h: Aggiorna playstore/ per la milestone v1.1"
+last_updated: "2026-08-30T18:07:03.754Z"
+last_activity: 2026-08-30 — Milestone v1.1 completed and archived
 progress:
   total_phases: 2
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 8
   completed_plans: 8
-  percent: 50
+  percent: 100
 ---
 
 # Project State
@@ -25,12 +25,10 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 
 ## Current Position
 
-Phase: 07
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-08-30
-
-Progress: [░░░░░░░░░░] 0%
+Phase: Milestone v1.1 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-08-30 — Milestone v1.1 completed and archived
 
 ## Performance Metrics
 
@@ -99,3 +97,7 @@ Items acknowledged and carried forward from previous milestone close:
 Last session: 2026-08-30
 Stopped at: Completed quick task 260830-o3h: Aggiorna playstore/ per la milestone v1.1
 Resume file: none — milestone v1.1 complete, playstore/ text content synced
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone

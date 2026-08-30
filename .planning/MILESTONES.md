@@ -1,5 +1,15 @@
 # Milestones
 
+## v1.1 Ricarica e distanza (Shipped: 2026-08-30)
+
+**Phases completed:** 2 phases, 8 plans, 18 tasks
+
+**Key accomplishments:**
+
+- Verifica manuale su dispositivo reale approvata su tutti gli 8 punti della checklist; CHRG-01 e CHRG-02 confermati funzionanti come da 06-UI-SPEC.md, con 2 richieste di rifinitura estetica rinviate a un quick task successivo
+
+---
+
 ## v1.0 MVP (Shipped: 2026-07-10)
 
 **Phases completed:** 5 phases, 10 plans, 20 tasks

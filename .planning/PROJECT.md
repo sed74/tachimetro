@@ -1,17 +1,12 @@
 # Tachimetro
 
-## Current Milestone: v1.1 Ricarica e distanza
+## Status
 
-**Goal:** Aggiungere due indicatori secondari al tachimetro — stato di ricarica e distanza percorsa dall'ultimo reset.
-
-**Target features:**
-- Icona a fulmine animata (riempimento progressivo bianco → lime → bianco, ciclo ~2-3s in loop) accanto al toggle "sempre acceso", visibile solo quando il telefono è in carica
-- Campo distanza percorsa in basso a destra, font più grande dell'area velocità massima, calcolata solo mentre l'app è attiva (GPS in foreground), persistente su disco
-- Reset unificato: il pulsante "Azzera massimo" azzera sia velocità massima sia distanza
+**v1.1 Ricarica e distanza — SHIPPED (2026-08-30).** Nessuna milestone attiva. Prossima da definire via `/gsd-new-milestone`.
 
 ## What This Is
 
-App Android nativa che mostra la velocità GPS in tempo reale a schermo intero, con un'interfaccia minimale ad altissimo contrasto pensata per essere letta a colpo d'occhio mentre l'app è montata su un supporto in auto o in moto. Nessun menu, nessuna animazione, nessun grafico: solo il numero della velocità.
+App Android nativa che mostra la velocità GPS in tempo reale a schermo intero, con un'interfaccia minimale ad altissimo contrasto pensata per essere letta a colpo d'occhio mentre l'app è montata su un supporto in auto o in moto. Nessun menu, nessun grafico: solo il numero della velocità, con due indicatori secondari opzionali (stato di ricarica, distanza percorsa) che compaiono ai margini dello schermo senza mai competere con il numero principale.
 
 ## Core Value
 
@@ -48,11 +43,12 @@ _Nessun requisito attivo — milestone v1.1 completa (Fasi 6-7)._
 
 - Cambio unità km/h ↔ mph — non richiesto per v1, l'app mostra solo km/h
 - Tracciamento percorso, mappa o cronologia velocità — l'app è un tachimetro istantaneo, non un GPS tracker
-- Menu, impostazioni avanzate, grafici o animazioni — l'interfaccia deve restare estremamente semplice per definizione di prodotto
+- Menu, impostazioni avanzate, grafici o animazioni ulteriori — l'interfaccia deve restare estremamente semplice per definizione di prodotto (vedi Constraints per l'unica eccezione ammessa, l'icona di ricarica)
 - Supporto Android precedente alla versione 11 (minSdk < 30) — il progetto fissa già minSdk 30, nessun device più vecchio da supportare
 
 ## Context
 
+- **v1.1 Ricarica e distanza SHIPPED (2026-08-30)** — 2 fasi, 8 piani, 6/6 requisiti validati con checkpoint umani su dispositivo reale. 1.631 LOC Kotlin (era ~695 a fine v1.0). Timeline 2026-08-29 → 2026-08-30 (2 giorni). Fase 7 con audit di sicurezza retroattivo completo (22/22 minacce chiuse). Archivio: `.planning/milestones/v1.1-*`. Prossima milestone da definire via `/gsd-new-milestone`.
 - Fase 7 completa (2026-08-30) — **v1.1 completa**: distanza percorsa implementata — `DistanceReducer.kt`/`DistanceFormat.kt` (funzioni pure `reduceDistance`/`sanitizePersistedDistance`/`formatDistanceDisplay`, TDD, gate soglia rumore condiviso con `mapSpeedToKmh`), `DistanceStore.kt` (mirror di `MaxSpeedStore`), `GpsSpeedProvider` esteso con `deltaMeters` per fix accettato via `Location.distanceTo()`. Area distanza in basso a destra (`distanceText` 32sp + `distanceUnitText` 16sp), formato adattivo metri/km con virgola decimale italiana sopra 1 km. Pulsante "Azzera massimo" rinominato "Azzera" e ora azzera massimo e distanza nella stessa azione. Checkpoint umano su strada superato (11/11, movimento reale, GPS reale). Review non bloccante: `GpsSpeedProvider.lastAcceptedLocation` non viene resettato quando la pipeline di collection riparte (background/foreground) — rischio latente di un salto di distanza spurio al primo fix dopo la ripresa, non riprodotto nel test su strada ma non strutturalmente garantito; candidato per un fix futuro.
 - Fase 6 completa (2026-08-29): indicatore di ricarica implementato — `ChargingStateProvider.kt` (rilevamento continuo via `BroadcastReceiver` su `ACTION_BATTERY_CHANGED`, sostituisce il precedente controllo one-shot `isDeviceCharging()` per questo scopo), `ChargingState.kt` (sealed Hidden/Pulsing/Full), icona `chargingIcon` (fulmine Material 24dp) a sinistra del toggle "sempre acceso", riempimento lime animato via `ValueAnimator`+`ClipDrawable` (loop 2500ms), stato "piena" congelato lime solido. Prima animazione e primo colore accento del progetto (deroga esplicita). Checkpoint umano su dispositivo reale superato (8/8). Review non bloccante: `isDeviceCharging()` in `MainActivity` andrebbe consolidato con `deriveChargingState()` (duplicazione minore, non blocca). L'utente ha richiesto 2 raffinamenti post-verifica (icona più grande, animazione con svuotamento istantaneo invece di simmetrico) — gestiti come quick task separato dopo la chiusura della fase.
 - **v1.0 MVP SHIPPED (2026-07-10)** — 5 fasi, 10 piani, 17/17 requisiti validati con checkpoint umani su device. ~695 LOC Kotlin (8 file `.kt` in `main`: `MainActivity`, package `gps/`, `maxspeed/`, `screen/`), 3 suite di test JVM (SpeedMapping, GpsProviderState, MaxSpeedReducer). Timeline 2026-07-07 → 2026-07-10 (4 giorni). Archivio: `.planning/milestones/v1.0-*`. Nessun feedback utente reale ancora raccolto (app non ancora usata su strada). Prossima milestone da definire via `/gsd-new-milestone`.
@@ -62,7 +58,7 @@ _Nessun requisito attivo — milestone v1.1 completa (Fasi 6-7)._
 - Fase 2 completa (2026-07-07): motore GPS implementato (SpeedState, mapSpeedToKmh con 7 unit test, GpsSpeedProvider via callbackFlow/StateFlow), collegato a MainActivity, verificato su emulatore con Route Playback. Filtro accuratezza (~50m), soglia rumore (~2 km/h), timeout "nessun segnale" 5s
 - Fase 1 completa (2026-07-07): scaffold portato sotto controllo versione, Kotlin abilitato via supporto built-in AGP 9.1.1 (non il plugin classico, incompatibile con questa versione AGP), MainActivity LAUNCHER con flusso permesso GPS completo, verificato su emulatore reale
 - Progetto Android Studio inizializzato (`com.sed.tachimetro`); vedi `.planning/codebase/` per la mappatura pre-esistente
-- minSdk 30, targetSdk 36, AGP 9.1.1, Gradle 9.3.1, Kotlin DSL per i build script
+- minSdk 30, targetSdk 36, AGP 9.3.2, Gradle 9.3.1, Kotlin DSL per i build script
 - Uso previsto: app montata su supporto auto/moto, quindi priorità assoluta a leggibilità a distanza/in movimento e a basso consumo batteria durante sessioni prolungate
 
 ## Constraints
@@ -107,4 +103,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-30 after Fase 7 completion*
+*Last updated: 2026-08-30 after v1.1 milestone completion*
