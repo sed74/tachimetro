@@ -1,0 +1,16 @@
+<it-IT>
+Novità della versione 1.1:
+
+• Indicatore di ricarica: icona a fulmine animata accanto all'interruttore "Sempre acceso", visibile solo mentre il telefono è in carica
+• Distanza percorsa: nuovo campo in basso a destra, misurata mentre l'app è aperta e salvata tra le sessioni
+• Il pulsante "Azzera" ora azzera insieme velocità massima e distanza
+• Nessuna pubblicità, nessuna connessione a Internet
+</it-IT>
+<en-US>
+What's new in version 1.1:
+
+• Charging indicator: animated lightning icon next to the "Keep screen on" toggle, visible only while the phone is charging
+• Trip distance: new field in the bottom-right corner, measured while the app is open and saved between sessions
+• The "Reset" button now clears both max speed and distance
+• No ads, no Internet connection
+</en-US>
