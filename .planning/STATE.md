@@ -18,10 +18,10 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-08-29)
+See: .planning/PROJECT.md (updated 2026-08-30)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** Milestone complete
+**Current focus:** Planning next milestone
 
 ## Current Position
 
