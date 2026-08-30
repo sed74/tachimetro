@@ -1,15 +1,17 @@
 Tachimetro is a no-frills GPS speedometer: it shows your current speed full-screen, in huge, high-contrast digits designed to be read at a glance while your phone is mounted in a car or on a motorbike.
 
 NOTHING ELSE
-No menus, no ads, no charts, no animations. Just the speed number, always visible and always accurate, in every lighting condition.
+No menus, no ads, no charts. The app's only animation is the charging icon filling up, the only splash of color (lime) in an otherwise black-and-white interface. Just the speed number, always visible and always accurate, in every lighting condition.
 
 KEY FEATURES
 • Real-time GPS speed, updated every second
 • Full-screen digits that auto-scale to fit the width
-• Session max speed, always visible and resettable with one tap
+• Session max speed, always visible; the "Reset" button clears both max speed and distance
 • "Keep screen on" toggle, with a smart default based on charging state
 • Immersive fullscreen display: no status or navigation bar to distract you
 • Automatic "no GPS signal" detection when the signal is lost
+• Trip distance since the last reset, shown in the bottom-right corner, measured while the app is open and saved between sessions
+• Charging indicator: animated lightning icon, visible only while the phone is charging
 
 PRIVACY FIRST
 Tachimetro does not request Internet access: no data ever leaves your phone. GPS location is used solely to compute the speed shown on screen — it is never saved, shared, or transmitted anywhere.

@@ -1,6 +1,6 @@
-First release of Tachimetro.
+What's new in version 1.1:
 
-• Real-time full-screen GPS speed
-• Session max speed, resettable with one tap
-• "Keep screen on" toggle
+• Charging indicator: animated lightning icon next to the "Keep screen on" toggle, visible only while the phone is charging
+• Trip distance: new field in the bottom-right corner, measured while the app is open and saved between sessions
+• The "Reset" button now clears both max speed and distance
 • No ads, no Internet connection

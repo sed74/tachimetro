@@ -1,21 +1,23 @@
 # Tachimetro — pacchetto pubblicazione Play Store
 
 Tutto il necessario per pubblicare Tachimetro su Google Play, generato il 2026-08-22.
+Aggiornato a **versione 1.1 (versionCode 2)** il 2026-08-30.
 
 ## Contenuto
 
 | Percorso | Cosa contiene |
 |---|---|
-| `apk/tachimetro-1.0-unsigned.apk` | APK release, **non firmato** (nessun keystore.properties presente al momento della build) |
-| `apk/tachimetro-1.0.aab` | Android App Bundle release — **formato richiesto da Play Console** per il canale di produzione |
+| `apk/tachimetro-1.0-unsigned.apk` | **OBSOLETO (build 1.0)** — APK release, **non firmato**; va rigenerato come `tachimetro-1.1-unsigned.apk` |
+| `apk/tachimetro-1.0.aab` | **OBSOLETO (build 1.0)** — Android App Bundle release, **formato richiesto da Play Console** per il canale di produzione; va rigenerato come `tachimetro-1.1.aab` |
 | `graphics/icon-512.png` | Icona 512×512 (copia di `app/src/main/res/playstore-icon.png`) |
 | `graphics/feature-graphic-1024x500.png` | Feature graphic per la scheda dello store |
-| `screenshots/` | 5 screenshot reali, catturati su emulatore Pixel_10_Pro con GPS mock (vedi sotto) |
-| `listing/it/`, `listing/en/` | Titolo, descrizione breve, descrizione completa (entro i limiti Play Console) |
+| `screenshots/` | 5 screenshot reali, catturati su emulatore Pixel_10_Pro con GPS mock (vedi sotto) — **risalgono alla v1.0** |
+| `listing/it/`, `listing/en/` | Titolo, descrizione breve, descrizione completa (entro i limiti Play Console) — aggiornati alla v1.1 |
 | `privacy_policy.html` | Informativa privacy bilingue IT/EN, pronta per l'hosting |
 | `data_safety.md` | Bozza risposte per il form "Sicurezza dei dati" di Play Console |
 | `content_rating.md` | Bozza risposte per il questionario di classificazione contenuti (IARC) |
-| `release_notes/it.txt`, `release_notes/en.txt` | Note di rilascio per la prima versione |
+| `release_notes/it.txt`, `release_notes/en.txt` | Note di rilascio per la versione 1.1 |
+| `release_notes/release_notes_v1.1.txt` | File unico bilingue con tag `<it-IT>`/`<en-US>`, per il copia-incolla in un'unica azione in Play Console |
 
 ## Screenshot — stati catturati
 
@@ -28,6 +30,8 @@ Catturati realmente su emulatore (Pixel_10_Pro, API 36) iniettando fix GPS mock 
 5. **05_permission_denied** — stato "Permesso GPS necessario per funzionare" con pulsante "Riprova", dopo aver negato il permesso di localizzazione
 
 Non è stato possibile catturare in modo affidabile lo stato "Ricerca segnale GPS..." (5+ secondi senza fix con GPS di sistema attivo): l'emulatore ripete l'ultimo fix noto a ~1 Hz anche senza nuovi comandi, impedendo lo scadere della soglia di staleness di 5s nel codice (`GpsSpeedProvider.kt`). Non è un problema dell'app — è una particolarità del GPS simulato dell'emulatore.
+
+**Nota v1.1:** questi screenshot risalgono alla v1.0 e non mostrano né l'area distanza (in basso a destra) né l'icona di ricarica introdotte con la milestone v1.1. Vanno rigenerati prima della sottomissione reale. A differenza della cattura v1.0 (interamente automatizzabile con GPS mock), la rigenerazione richiede una cattura manuale su device reale: l'icona di ricarica compare solo con il telefono realmente in carica, e la distanza percorsa richiede movimento GPS reale (non simulabile in modo affidabile con `adb emu geo fix` per questi due stati specifici).
 
 ## Passi manuali rimanenti prima della pubblicazione
 
@@ -43,7 +47,7 @@ Il keystore esiste già in `C:\Users\fedes\AndroidStudioProjects\keystore\keysto
    ./gradlew.bat assembleRelease bundleRelease
    ```
    Con `keystore.properties` presente, `app/build.gradle.kts` firma automaticamente sia l'APK che l'AAB con il keystore release (vedi `signingConfigs.release` nel file).
-5. Sostituisci `apk/tachimetro-1.0-unsigned.apk` e `apk/tachimetro-1.0.aab` con le versioni firmate. Per il canale di produzione su Play Console carica il file **.aab**, non l'APK.
+5. Sostituisci `apk/tachimetro-1.0-unsigned.apk` e `apk/tachimetro-1.0.aab` con le versioni rigenerate `tachimetro-1.1-unsigned.apk` e `tachimetro-1.1.aab`, firmate. Per il canale di produzione su Play Console carica il file **.aab**, non l'APK.
 
 ### 2. Hosting privacy policy
 
@@ -65,4 +69,4 @@ Questi contenuti sono bozze basate sul comportamento reale del codice, ma vanno 
 
 ### 4. Versionamento
 
-`app/build.gradle.kts` ha attualmente `versionCode = 1`, `versionName = "1.0"`. Va bene per la prima pubblicazione; ricordarsi di incrementare `versionCode` a ogni release successiva.
+`app/build.gradle.kts` ha ora `versionCode = 2`, `versionName = "1.1"` (aggiornato dalla milestone v1.1: indicatore di ricarica + distanza percorsa). Ricordarsi di incrementare `versionCode` a ogni release successiva.

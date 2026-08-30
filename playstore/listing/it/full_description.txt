@@ -1,15 +1,17 @@
 Tachimetro è un tachimetro GPS essenziale: mostra la tua velocità attuale a schermo intero, con cifre enormi ad altissimo contrasto, pensate per essere lette a colpo d'occhio mentre il telefono è montato su un supporto in auto o in moto.
 
 NIENTE DI SUPERFLUO
-Nessun menu, nessuna pubblicità, nessun grafico, nessuna animazione. Solo il numero della velocità, sempre visibile e sempre corretto, in ogni condizione di luce.
+Nessun menu, nessuna pubblicità, nessun grafico. L'unica animazione dell'app è il riempimento dell'icona di ricarica, unico elemento colorato (lime) in un'interfaccia altrimenti solo bianca su nero. Solo il numero della velocità, sempre visibile e sempre corretto, in ogni condizione di luce.
 
 FUNZIONALITÀ PRINCIPALI
 • Velocità GPS in tempo reale, aggiornata ogni secondo
 • Cifre a schermo intero che si adattano automaticamente alla larghezza
-• Velocità massima della sessione, sempre visibile e azzerabile con un tocco
+• Velocità massima della sessione, sempre visibile; il pulsante "Azzera" la azzera insieme alla distanza percorsa
 • Interruttore "schermo sempre acceso", con impostazione predefinita intelligente in base allo stato di ricarica
 • Schermo immersivo: nessuna barra di stato o di navigazione a distrarre
 • Rilevamento automatico di "nessun segnale GPS" quando il segnale si perde
+• Distanza percorsa dall'ultimo azzeramento, mostrata in basso a destra, misurata mentre l'app è aperta e salvata tra le sessioni
+• Indicatore di ricarica: icona a fulmine animata, visibile solo mentre il telefono è in carica
 
 PRIVACY AL PRIMO POSTO
 Tachimetro non richiede l'accesso a Internet: nessun dato lascia mai il tuo telefono. La posizione GPS viene usata esclusivamente per calcolare la velocità mostrata a schermo, non viene salvata, condivisa o trasmessa in alcun modo.

@@ -1,6 +1,6 @@
-Prima versione di Tachimetro.
+Novità della versione 1.1:
 
-• Velocità GPS in tempo reale a schermo intero
-• Velocità massima di sessione, azzerabile con un tocco
-• Interruttore "schermo sempre acceso"
+• Indicatore di ricarica: icona a fulmine animata accanto all'interruttore "Sempre acceso", visibile solo mentre il telefono è in carica
+• Distanza percorsa: nuovo campo in basso a destra, misurata mentre l'app è aperta e salvata tra le sessioni
+• Il pulsante "Azzera" ora azzera insieme velocità massima e distanza
 • Nessuna pubblicità, nessuna connessione a Internet
