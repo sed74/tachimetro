@@ -30,8 +30,8 @@ import kotlinx.coroutines.flow.stateIn
 
 /**
  * Wraps continuous FusedLocationProviderClient updates in a [callbackFlow] and exposes a
- * [StateFlow] of [SpeedState], applying the tested [mapSpeedToKmh] filters and detecting
- * startup/loss "no signal" per D-01/D-02.
+ * [StateFlow] of [SpeedState], applying the tested speed-mapping filters (see the single
+ * call site below) and detecting startup/loss "no signal" per D-01/D-02.
  *
  * Permission note: this class does NOT check ACCESS_FINE_LOCATION itself. MainActivity
  * (Phase 1) is the single source of truth for that permission and only starts collecting
@@ -61,6 +61,13 @@ class GpsSpeedProvider(context: Context) {
     @Volatile
     private var lastAcceptedUpdateAtMs: Long = 0L
 
+    // D-06: reference point for the next distance delta (Location.distanceTo()). Updated on
+    // EVERY accuracy-accepted fix, including ones the noise floor later rejects for kmh
+    // display — Pitfall 2: otherwise, after a long stop, this would stay anchored to a stale
+    // position and the resumed trip would add accumulated jitter in a single jump.
+    @Volatile
+    private var lastAcceptedLocation: Location? = null
+
     // MainActivity guarantees ACCESS_FINE_LOCATION is granted before `state` is ever
     // collected (permission check lives solely there — see class doc above).
     @Suppress("MissingPermission")
@@ -74,24 +81,37 @@ class GpsSpeedProvider(context: Context) {
         awaitClose { client.removeLocationUpdates(callback) }
     }
 
-    private val acceptedKmh: Flow<Int> = rawLocations
+    // D-06/D-07: payload traveling the pipeline alongside kmh — the distance delta rides the
+    // SAME accepted-fix pipeline that already produces kmh, so the shared accuracy/noise
+    // filter (below) is never duplicated for distance.
+    private data class AcceptedReading(val kmh: Int, val deltaMeters: Float)
+
+    private val acceptedReadings: Flow<AcceptedReading> = rawLocations
         .map { loc ->
-            mapSpeedToKmh(
+            val kmh = mapSpeedToKmh(
                 hasAccuracy = loc.hasAccuracy(),
                 accuracyMeters = loc.accuracy,
                 hasSpeed = loc.hasSpeed(),
                 speedMetersPerSecond = loc.speed,
                 accuracyThresholdMeters = accuracyThresholdMeters,
                 noiseFloorKmh = noiseFloorKmh,
-            )
+            ) ?: return@map null // D-05: drop poor-accuracy readings, do not update the shown value
+
+            // D-06: meters since the last accuracy-accepted fix, 0f if this is the first one.
+            val delta = lastAcceptedLocation?.distanceTo(loc) ?: 0f
+            // Pitfall 2: update unconditionally, even for fixes under the noise floor (kmh
+            // == 0) — the noise-floor accumulation gate lives downstream in reduceDistance()
+            // (Piano 01), not here.
+            lastAcceptedLocation = loc
+            AcceptedReading(kmh, delta)
         }
         .filterNotNull() // D-05: drop poor-accuracy readings, do not update the shown value
-        .map { kmh ->
+        .map { reading ->
             // WR-01: SystemClock.elapsedRealtime() is monotonic and unaffected by wall-clock
             // adjustments (NTP/GPS time sync, manual clock changes), unlike
             // System.currentTimeMillis().
             lastAcceptedUpdateAtMs = SystemClock.elapsedRealtime()
-            kmh
+            reading
         }
 
     // 1-second ticker: also drives the once-per-second staleness check (GPS-01 cadence).
@@ -103,10 +123,10 @@ class GpsSpeedProvider(context: Context) {
     }
 
     val state: StateFlow<SpeedState> = combine(
-        acceptedKmh.map { it as Int? }.onStart { emit(null) }, // null until first fix (D-01)
+        acceptedReadings.map { it as AcceptedReading? }.onStart { emit(null) }, // null until first fix (D-01)
         ticker,
-    ) { lastKmh, now ->
-        deriveSpeedState(lastKmh, now, lastAcceptedUpdateAtMs)
+    ) { last, now ->
+        deriveSpeedState(last?.kmh, last?.deltaMeters ?: 0f, now, lastAcceptedUpdateAtMs)
     }.stateIn(
         scope = scope,
         started = SharingStarted.WhileSubscribed(),
@@ -129,11 +149,18 @@ class GpsSpeedProvider(context: Context) {
  * (D-01/D-02), independent of Flow/`combine`/coroutines machinery.
  *
  * @param lastKmh the latest accepted km/h reading, or `null` if no fix has been accepted yet.
+ * @param lastDeltaMeters D-06: meters traveled since the previous accepted fix, carried
+ *   through unchanged into [SpeedState.Reading] when the reading is fresh.
  * @param now the current monotonic timestamp ([android.os.SystemClock.elapsedRealtime]).
  * @param lastAcceptedAtMs the monotonic timestamp of the last accepted reading.
  */
-fun deriveSpeedState(lastKmh: Int?, now: Long, lastAcceptedAtMs: Long): SpeedState = when {
+fun deriveSpeedState(
+    lastKmh: Int?,
+    lastDeltaMeters: Float,
+    now: Long,
+    lastAcceptedAtMs: Long,
+): SpeedState = when {
     lastKmh == null -> SpeedState.Searching // D-01: no accepted fix yet
     now - lastAcceptedAtMs > 5000L -> SpeedState.NoSignal // D-02
-    else -> SpeedState.Reading(lastKmh)
+    else -> SpeedState.Reading(lastKmh, lastDeltaMeters)
 }
