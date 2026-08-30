@@ -42,6 +42,7 @@ import com.sed.tachimetro.charging.ChargingStateProvider
 import com.sed.tachimetro.distance.DistanceDisplay
 import com.sed.tachimetro.distance.DistanceStore
 import com.sed.tachimetro.distance.formatDistanceDisplay
+import com.sed.tachimetro.distance.reduceDistance
 import com.sed.tachimetro.gps.GpsSpeedProvider
 import com.sed.tachimetro.gps.SpeedState
 import com.sed.tachimetro.maxspeed.MaxSpeedStore
@@ -124,7 +125,7 @@ class MainActivity : AppCompatActivity() {
 
         maxSpeedText = findViewById(R.id.maxSpeedText)
         resetMaxButton = findViewById(R.id.resetMaxButton)
-        resetMaxButton.setOnClickListener { onResetMaxClicked() }
+        resetMaxButton.setOnClickListener { onResetClicked() }
         applyMaxAreaWindowInsets()
 
         // DIST-01/DIST-03: (a) leggere la distanza persistita PRIMA di costruire
@@ -353,30 +354,54 @@ class MainActivity : AppCompatActivity() {
                     currentMax = newMax
                     maxSpeedStore.write(currentMax)
                 }
+
+                // DIST-03: scrittura immediata su disco ad ogni incremento, nessun batching su
+                // onPause()/onStop() -- cosi' un kill del processo non perde gli ultimi metri.
+                // D-04: il gate della soglia di rumore vive dentro reduceDistance(), non qui: a
+                // veicolo fermo state.kmh vale 0 e la funzione restituisce il totale invariato,
+                // quindi in quel caso non c'e' nemmeno una scrittura su disco.
+                val newDistance = reduceDistance(currentDistanceMeters, state.deltaMeters, state.kmh)
+                if (newDistance != currentDistanceMeters) {
+                    currentDistanceMeters = newDistance
+                    distanceStore.write(currentDistanceMeters)
+                }
             }
         }
         updateMaxArea()
+        // DIST-02: chiamata incondizionatamente ad ogni emissione, esattamente come
+        // updateMaxArea(), cosi' l'area resta visibile e coerente anche nei rami
+        // Searching/NoSignal (dove mostra congelato l'ultimo totale, senza testo di errore ne'
+        // indicatore di pausa -- 07-UI-SPEC.md "States").
+        updateDistanceArea()
     }
 
-    // D-04/D-08: reset tap zeroes the in-memory max immediately (no confirmation dialog) and
-    // persists 0 to disk right away, so a re-open right after reset never resurrects the old max.
-    private fun onResetMaxClicked() {
+    // MAX-04: unico punto di reset dell'app -- un solo tocco azzera sia il massimo sia la
+    // distanza, nessun dialog di conferma, entrambe le scritture immediate su disco, cosi' una
+    // riapertura subito dopo il reset non resuscita ne' il vecchio massimo ne' la vecchia
+    // distanza.
+    private fun onResetClicked() {
         currentMax = 0
         maxSpeedStore.write(0)
         updateMaxArea()
+        currentDistanceMeters = 0f
+        distanceStore.write(0f)
+        updateDistanceArea()
     }
 
-    // D-03/D-09: the whole MAX area (label + reset button) stays hidden while the max is 0 --
-    // never renders a misleading "MAX 0". Plain visibility toggle, no animation (UI-04).
+    // D-03/D-09: maxSpeedText resta nascosta finche' il massimo e' 0 -- mai renderizzare un
+    // fuorviante "MAX 0". MAX-04/07-UI-SPEC.md: resetMaxButton invece resta raggiungibile
+    // finche' ALMENO UNA delle due metriche ha qualcosa da azzerare, dato che l'area distanza
+    // e' sempre visibile e indipendente dallo stato dell'area MAX. Plain visibility toggle,
+    // nessuna animazione (UI-04).
     private fun updateMaxArea() {
         if (currentMax > 0) {
             maxSpeedText.text = getString(R.string.max_speed_format, currentMax)
             maxSpeedText.visibility = View.VISIBLE
-            resetMaxButton.visibility = View.VISIBLE
         } else {
             maxSpeedText.visibility = View.GONE
-            resetMaxButton.visibility = View.GONE
         }
+        resetMaxButton.visibility =
+            if (currentMax > 0 || currentDistanceMeters > 0f) View.VISIBLE else View.GONE
     }
 
     // D-01: soglia adattiva metri/km via formatDistanceDisplay(). D-02: l'unita' di misura
