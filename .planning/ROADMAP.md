@@ -84,8 +84,8 @@ Plans:
 Plans:
 **Wave 1** *(paralleli, nessun file in comune)*
 
-- [ ] 07-01-PLAN.md — Dominio distanza: reduceDistance/sanitizePersistedDistance, DistanceStore, formatDistanceDisplay (test-first)
-- [ ] 07-02-PLAN.md — Pipeline GPS: SpeedState.Reading porta deltaMeters calcolato con Location.distanceTo()
+- [x] 07-01-PLAN.md — Dominio distanza: reduceDistance/sanitizePersistedDistance, DistanceStore, formatDistanceDisplay (test-first)
+- [x] 07-02-PLAN.md — Pipeline GPS: SpeedState.Reading porta deltaMeters calcolato con Location.distanceTo()
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -110,4 +110,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Velocità Massima e Persistenza | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 5. Gestione Schermo | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 6. Indicatore di Ricarica | v1.1 | 4/4 | Complete   | 2026-08-29 |
-| 7. Distanza Percorsa e Reset Unificato | v1.1 | 0/4 | Planned | - |
+| 7. Distanza Percorsa e Reset Unificato | v1.1 | 2/4 | In Progress|  |
