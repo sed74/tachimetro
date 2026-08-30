@@ -5,7 +5,7 @@ milestone_name: Ricarica e distanza
 status: milestone_complete
 stopped_at: Milestone complete (Phase 07 was final phase)
 last_updated: 2026-08-30T12:56:25.744Z
-last_activity: 2026-08-30 -- Phase 07 execution started
+last_activity: 2026-08-30 - Completed quick task 260830-o3h: Aggiorna playstore/ per la milestone v1.1
 progress:
   total_phases: 2
   completed_phases: 1
@@ -84,6 +84,7 @@ None yet.
 | 260710-tuh | Impedire wrapping numero velocità (maxLines dinamico su messageText) | 2026-07-10 | 3600992 | [260710-tuh-impedire-wrapping-del-numero-velocit-max](./quick/260710-tuh-impedire-wrapping-del-numero-velocit-max/) |
 | 260822-huf | Genera asset e testi per pubblicazione Play Store in playstore/ | 2026-08-22 | 8bcae15 | [260822-huf-genera-asset-e-testi-per-pubblicazione-p](./quick/260822-huf-genera-asset-e-testi-per-pubblicazione-p/) |
 | 260829-tgw | Icona di ricarica più grande e animazione con svuotamento istantaneo invece di simmetrico | 2026-08-29 | 6303338 | [260829-tgw-icona-di-ricarica-pi-grande-e-animazione](./quick/260829-tgw-icona-di-ricarica-pi-grande-e-animazione/) |
+| 260830-o3h | Aggiorna playstore/ per la milestone v1.1 (bump versione, note di rilascio, descrizioni, README) | 2026-08-30 | a276712 | [260830-o3h-aggiorna-playstore-per-la-milestone-v1-1](./quick/260830-o3h-aggiorna-playstore-per-la-milestone-v1-1/) |
 
 ## Deferred Items
 
@@ -96,5 +97,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-08-30
-Stopped at: Session resumed, proceeding to execute Phase 7
-Resume file: .planning/phases/07-distanza-percorsa-e-reset-unificato/07-01-PLAN.md
+Stopped at: Completed quick task 260830-o3h: Aggiorna playstore/ per la milestone v1.1
+Resume file: none — milestone v1.1 complete, playstore/ text content synced
