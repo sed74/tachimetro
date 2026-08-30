@@ -9,7 +9,11 @@
     <string name="speed_kmh_format">%1$d km/h</string>
     <string name="unit_kmh">km/h</string>
     <string name="max_speed_format">MAX %1$d</string>
-    <string name="reset_max_button">Azzera massimo</string>
+    <string name="reset_max_button">Azzera</string>
+    <string name="distance_meters_format">%1$d</string>
+    <string name="distance_km_format">%1$.1f</string>
+    <string name="unit_meters">m</string>
+    <string name="unit_km">km</string>
     <string name="keep_screen_on_label">Sempre acceso</string>
     <string name="charging_indicator_description">In carica</string>
 </resources>
