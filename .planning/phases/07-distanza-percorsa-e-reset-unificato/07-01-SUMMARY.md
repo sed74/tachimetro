@@ -106,3 +106,9 @@ None - no external service configuration required.
 ---
 *Phase: 07-distanza-percorsa-e-reset-unificato*
 *Completed: 2026-08-30*
+
+## Self-Check: PASSED
+
+All 5 created source/test files verified present on disk; all 5 task commit hashes
+(`9dd6ed4`, `15c4f07`, `358b745`, `4f1871f`) plus the metadata commit (`49d516d`)
+verified present in `git log --oneline --all`.
