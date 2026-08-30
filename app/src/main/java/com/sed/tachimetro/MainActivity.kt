@@ -112,27 +112,43 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    // WR-02: onCreate() delegates each independent setup concern to its own private
+    // setupXxx() function, called here in the exact sequence the original inline code used --
+    // this preserves every cross-concern ordering dependency documented in the functions below
+    // (distance-before-max, screen-switch-before-collectors, etc.) while keeping onCreate()
+    // itself a short, readable list of initialization steps (see CLAUDE.md "Function Design").
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         enableImmersiveFullscreen()
 
+        setupPermissionViews()
+        setupDistanceArea()
+        setupMaxSpeedArea()
+        setupScreenOnSwitch()
+        setupGpsCollection()
+        setupChargingIndicator()
+
+        checkAndRequestPermission()
+    }
+
+    // WR-02: extracted from onCreate() -- wires messageText/unitText/retryButton, the
+    // permission-denied retry click handler, and unitText's window-insets listener.
+    private fun setupPermissionViews() {
         messageText = findViewById(R.id.messageText)
         unitText = findViewById(R.id.unitText)
         retryButton = findViewById(R.id.retryButton)
         retryButton.setOnClickListener { onRetryClicked() }
         applyUnitTextWindowInsets()
+    }
 
-        maxSpeedText = findViewById(R.id.maxSpeedText)
-        resetMaxButton = findViewById(R.id.resetMaxButton)
-        resetMaxButton.setOnClickListener { onResetClicked() }
-        applyMaxAreaWindowInsets()
-
-        // DIST-01/DIST-03: (a) leggere la distanza persistita PRIMA di costruire
-        // gpsSpeedProvider evita il flash di "0 m" all'avvio, stesso motivo di D-09 sotto
-        // per il massimo; (b) currentDistanceMeters deve essere valorizzato PRIMA della
-        // prima chiamata a updateMaxArea(), perche' la visibilita' di resetMaxButton
-        // dipendera' anche da questo campo (Piano 03, MAX-04).
+    // WR-02: extracted from onCreate() -- DIST-01/DIST-03: leggere la distanza persistita PRIMA
+    // di costruire gpsSpeedProvider evita il flash di "0 m" all'avvio (stesso motivo di D-09 in
+    // setupMaxSpeedArea() per il massimo). Deve essere chiamata PRIMA di setupMaxSpeedArea():
+    // currentDistanceMeters deve essere valorizzato prima della prima chiamata a
+    // updateMaxArea(), perche' la visibilita' di resetMaxButton dipende anche da questo campo
+    // (Piano 03, MAX-04).
+    private fun setupDistanceArea() {
         distanceText = findViewById(R.id.distanceText)
         distanceUnitText = findViewById(R.id.distanceUnitText)
         applyDistanceAreaWindowInsets()
@@ -140,13 +156,28 @@ class MainActivity : AppCompatActivity() {
         distanceStore = DistanceStore(applicationContext)
         currentDistanceMeters = distanceStore.read()
         updateDistanceArea()
+    }
 
-        // D-09: leggere il massimo salvato PRIMA di avviare la raccolta GPS, cosi' l'area MAX
-        // appare gia' con lo stato corretto senza flash di "MAX 0".
+    // WR-02: extracted from onCreate() -- D-09: leggere il massimo salvato PRIMA di avviare la
+    // raccolta GPS, cosi' l'area MAX appare gia' con lo stato corretto senza flash di "MAX 0".
+    // Deve essere chiamata DOPO setupDistanceArea() -- vedi commento li'.
+    private fun setupMaxSpeedArea() {
+        maxSpeedText = findViewById(R.id.maxSpeedText)
+        resetMaxButton = findViewById(R.id.resetMaxButton)
+        resetMaxButton.setOnClickListener { onResetClicked() }
+        applyMaxAreaWindowInsets()
         maxSpeedStore = MaxSpeedStore(applicationContext)
         currentMax = maxSpeedStore.read()
         updateMaxArea()
+    }
 
+    // WR-02: extracted from onCreate() -- wires the "keep screen on" switch and its charging-
+    // derived default. chargingIcon's view lookup + resolveChargingFillLayer() live here too
+    // (rather than in setupChargingIndicator()) because applyBottomLeftWindowInsets() sets up a
+    // single listener that updates BOTH keepScreenOnSwitch's and chargingIcon's margins
+    // together (see that function's own comment) -- both views must already be bound before it
+    // runs.
+    private fun setupScreenOnSwitch() {
         screenOnStore = ScreenOnPreferenceStore(applicationContext)
         keepScreenOnSwitch = findViewById(R.id.keepScreenOnSwitch)
         chargingIcon = findViewById(R.id.chargingIcon)
@@ -171,7 +202,11 @@ class MainActivity : AppCompatActivity() {
             screenOnStore.write(isChecked)
         }
         applyBottomLeftWindowInsets()
+    }
 
+    // WR-02: extracted from onCreate() -- constructs gpsSpeedProvider and starts the
+    // permission-gated, lifecycle-scoped collector that drives updatePlaceholder().
+    private fun setupGpsCollection() {
         // WR-04: pass applicationContext, not the Activity, so GpsSpeedProvider (and the
         // FusedLocationProviderClient it wraps) never retains an Activity reference.
         gpsSpeedProvider = GpsSpeedProvider(applicationContext)
@@ -190,7 +225,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
+    // WR-02: extracted from onCreate() -- constructs chargingStateProvider and starts its
+    // lifecycle-scoped collector that drives updateChargingIcon(). Must run after
+    // setupScreenOnSwitch(), which binds the chargingIcon view this collector updates.
+    private fun setupChargingIndicator() {
         // WR-04: application context only, same rationale as gpsSpeedProvider above.
         chargingStateProvider = ChargingStateProvider(applicationContext)
         // Charging observation has no permission gate (unlike GPS), so this is a plain
@@ -201,8 +241,6 @@ class MainActivity : AppCompatActivity() {
                 chargingStateProvider.state.collect { state -> updateChargingIcon(state) }
             }
         }
-
-        checkAndRequestPermission()
     }
 
     override fun onResume() {
