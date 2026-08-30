@@ -39,6 +39,14 @@ import kotlinx.coroutines.flow.stateIn
  */
 class GpsSpeedProvider(context: Context) {
 
+    companion object {
+        // WR-03: single source of truth for the noise-floor threshold used both here (to filter
+        // the displayed km/h) and by DistanceReducer.reduceDistance()'s noiseFloorKmh parameter
+        // (passed explicitly from MainActivity) -- avoids the two thresholds silently drifting
+        // apart if this value is ever tuned.
+        const val NOISE_FLOOR_KMH = 2.0
+    }
+
     // WR-04: FusedLocationProviderClient doesn't need an Activity context; use
     // applicationContext defensively so this provider never retains/leaks an Activity,
     // regardless of what the caller passes in.
@@ -52,7 +60,7 @@ class GpsSpeedProvider(context: Context) {
     private val accuracyThresholdMeters = 50f
 
     // D-03: locked example value.
-    private val noiseFloorKmh = 2.0
+    private val noiseFloorKmh = NOISE_FLOOR_KMH
 
     // Owns the StateFlow sharing; scoped to this provider's own lifetime (mirrors the
     // Activity that owns it — no ViewModel/DI layer in this project).

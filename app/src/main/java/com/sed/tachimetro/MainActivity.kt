@@ -360,7 +360,13 @@ class MainActivity : AppCompatActivity() {
                 // D-04: il gate della soglia di rumore vive dentro reduceDistance(), non qui: a
                 // veicolo fermo state.kmh vale 0 e la funzione restituisce il totale invariato,
                 // quindi in quel caso non c'e' nemmeno una scrittura su disco.
-                val newDistance = reduceDistance(currentDistanceMeters, state.deltaMeters, state.kmh)
+                // WR-03: passa esplicitamente GpsSpeedProvider.NOISE_FLOOR_KMH invece di
+                // affidarsi al default duplicato di reduceDistance(), cosi' le due soglie non
+                // possono divergere silenziosamente se quella di GpsSpeedProvider viene tarata.
+                val newDistance = reduceDistance(
+                    currentDistanceMeters, state.deltaMeters, state.kmh,
+                    noiseFloorKmh = GpsSpeedProvider.NOISE_FLOOR_KMH,
+                )
                 if (newDistance != currentDistanceMeters) {
                     currentDistanceMeters = newDistance
                     distanceStore.write(currentDistanceMeters)
