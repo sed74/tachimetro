@@ -14,9 +14,9 @@ Requirements for the v1.1 milestone (ricarica e distanza). Each maps to roadmap 
 
 ### Distanza
 
-- [ ] **DIST-01**: L'utente vede la distanza percorsa dall'ultimo azzeramento in un'area in basso a destra, con font più grande dell'area velocità massima
+- [x] **DIST-01**: L'utente vede la distanza percorsa dall'ultimo azzeramento in un'area in basso a destra, con font più grande dell'area velocità massima
 - [ ] **DIST-02**: La distanza si accumula solo mentre l'app è attiva e riceve aggiornamenti GPS, senza tracking in background
-- [ ] **DIST-03**: La distanza persiste su disco e sopravvive a chiusura app e riavvio del telefono
+- [x] **DIST-03**: La distanza persiste su disco e sopravvive a chiusura app e riavvio del telefono
 
 ### Velocità Massima
 
@@ -44,9 +44,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | CHRG-01 | Phase 6 | Complete |
 | CHRG-02 | Phase 6 | Complete |
-| DIST-01 | Phase 7 | Pending |
+| DIST-01 | Phase 7 | Complete |
 | DIST-02 | Phase 7 | Pending |
-| DIST-03 | Phase 7 | Pending |
+| DIST-03 | Phase 7 | Complete |
 | MAX-04 | Phase 7 | Pending |
 
 **Coverage:**
