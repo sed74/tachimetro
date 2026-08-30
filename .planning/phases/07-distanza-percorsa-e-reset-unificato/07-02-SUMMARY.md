@@ -119,3 +119,8 @@ None - no external service configuration required.
 ---
 *Phase: 07-distanza-percorsa-e-reset-unificato*
 *Completed: 2026-08-30*
+
+## Self-Check: PASSED
+
+All claimed files verified present: SpeedState.kt, GpsSpeedProvider.kt, GpsSpeedProviderStateTest.kt, 07-02-SUMMARY.md.
+All claimed commits verified present: 44e9836, 7e1efb8, 6796e42.
