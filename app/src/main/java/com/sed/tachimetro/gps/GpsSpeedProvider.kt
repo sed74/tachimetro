@@ -72,6 +72,11 @@ class GpsSpeedProvider(context: Context) {
     // collected (permission check lives solely there — see class doc above).
     @Suppress("MissingPermission")
     private val rawLocations: Flow<Location> = callbackFlow {
+        // WR-01: defensive reset -- every fresh subscription (first launch, or a resume after
+        // WhileSubscribed() tore the previous one down on background/permission-revoke) must
+        // not reuse a reference point from before the gap, otherwise the first fix after the
+        // gap would compute a spurious one-off distance jump against a stale position.
+        lastAcceptedLocation = null
         val callback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 result.lastLocation?.let { trySend(it) }
