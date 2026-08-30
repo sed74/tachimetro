@@ -127,3 +127,9 @@ None - no external service configuration required.
 ---
 *Phase: 07-distanza-percorsa-e-reset-unificato*
 *Completed: 2026-08-30*
+
+## Self-Check: PASSED
+
+All 3 modified files verified present on disk (strings.xml, activity_main.xml, MainActivity.kt).
+All 4 commit hashes (`0377a68`, `77b78a0`, `c6e02f6`, `114aad1`) verified present in
+`git log --oneline --all`.
