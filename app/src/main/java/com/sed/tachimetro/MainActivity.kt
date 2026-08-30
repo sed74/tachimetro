@@ -39,6 +39,9 @@ import kotlinx.coroutines.launch
 
 import com.sed.tachimetro.charging.ChargingState
 import com.sed.tachimetro.charging.ChargingStateProvider
+import com.sed.tachimetro.distance.DistanceDisplay
+import com.sed.tachimetro.distance.DistanceStore
+import com.sed.tachimetro.distance.formatDistanceDisplay
 import com.sed.tachimetro.gps.GpsSpeedProvider
 import com.sed.tachimetro.gps.SpeedState
 import com.sed.tachimetro.maxspeed.MaxSpeedStore
@@ -80,6 +83,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var resetMaxButton: Button
     private lateinit var maxSpeedStore: MaxSpeedStore
     private var currentMax: Int = 0
+    private lateinit var distanceText: TextView
+    private lateinit var distanceUnitText: TextView
+    private lateinit var distanceStore: DistanceStore
+    private var currentDistanceMeters: Float = 0f
     private lateinit var keepScreenOnSwitch: SwitchCompat
     private lateinit var screenOnStore: ScreenOnPreferenceStore
     private lateinit var gpsSpeedProvider: GpsSpeedProvider
@@ -119,6 +126,20 @@ class MainActivity : AppCompatActivity() {
         resetMaxButton = findViewById(R.id.resetMaxButton)
         resetMaxButton.setOnClickListener { onResetMaxClicked() }
         applyMaxAreaWindowInsets()
+
+        // DIST-01/DIST-03: (a) leggere la distanza persistita PRIMA di costruire
+        // gpsSpeedProvider evita il flash di "0 m" all'avvio, stesso motivo di D-09 sotto
+        // per il massimo; (b) currentDistanceMeters deve essere valorizzato PRIMA della
+        // prima chiamata a updateMaxArea(), perche' la visibilita' di resetMaxButton
+        // dipendera' anche da questo campo (Piano 03, MAX-04).
+        distanceText = findViewById(R.id.distanceText)
+        distanceUnitText = findViewById(R.id.distanceUnitText)
+        applyDistanceAreaWindowInsets()
+        // WR-04: il chiamante passa applicationContext, mai l'Activity.
+        distanceStore = DistanceStore(applicationContext)
+        currentDistanceMeters = distanceStore.read()
+        updateDistanceArea()
+
         // D-09: leggere il massimo salvato PRIMA di avviare la raccolta GPS, cosi' l'area MAX
         // appare gia' con lo stato corretto senza flash di "MAX 0".
         maxSpeedStore = MaxSpeedStore(applicationContext)
@@ -283,6 +304,7 @@ class MainActivity : AppCompatActivity() {
         applyMessageAutosize()
         messageText.text = getString(R.string.status_ready)
         updateMaxArea()
+        updateDistanceArea()
     }
 
     private fun showDenied() {
@@ -290,6 +312,8 @@ class MainActivity : AppCompatActivity() {
         unitText.visibility = View.GONE
         maxSpeedText.visibility = View.GONE
         resetMaxButton.visibility = View.GONE
+        distanceText.visibility = View.GONE
+        distanceUnitText.visibility = View.GONE
         applyMessageAutosize()
         val permanentlyDenied =
             !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -353,6 +377,30 @@ class MainActivity : AppCompatActivity() {
             maxSpeedText.visibility = View.GONE
             resetMaxButton.visibility = View.GONE
         }
+    }
+
+    // D-01: soglia adattiva metri/km via formatDistanceDisplay(). D-02: l'unita' di misura
+    // vive SEMPRE in distanceUnitText, mai concatenata dentro distanceText. Pitfall 3: si usa
+    // sempre getString(...) e MAI la formattazione nuda della classe standard Java/Kotlin,
+    // cosi' il ramo km formatta la virgola decimale secondo la locale corrente del
+    // dispositivo (es. "1,2" su it-IT) invece di produrre sempre il punto invariante della
+    // locale di default della JVM.
+    // Divergenza deliberata da updateMaxArea(): l'area distanza resta SEMPRE visibile, anche
+    // a "0 m" dopo un azzeramento -- a differenza di "MAX 0", che sarebbe fuorviante prima di
+    // qualsiasi lettura, "0 m" e' un valore accurato e non va nascosto.
+    private fun updateDistanceArea() {
+        when (val display = formatDistanceDisplay(currentDistanceMeters)) {
+            is DistanceDisplay.Meters -> {
+                distanceText.text = getString(R.string.distance_meters_format, display.value)
+                distanceUnitText.text = getString(R.string.unit_meters)
+            }
+            is DistanceDisplay.Kilometers -> {
+                distanceText.text = getString(R.string.distance_km_format, display.value)
+                distanceUnitText.text = getString(R.string.unit_km)
+            }
+        }
+        distanceText.visibility = View.VISIBLE
+        distanceUnitText.visibility = View.VISIBLE
     }
 
     // CHRG-01/CHRG-02/D-01/D-02/D-03: StateFlow conflates equal values, so the continuous
@@ -584,6 +632,31 @@ class MainActivity : AppCompatActivity() {
             val iconLp = chargingIcon.layoutParams as ConstraintLayout.LayoutParams
             iconLp.marginStart = baseIconStart + extraStart
             chargingIcon.layoutParams = iconLp
+            insets
+        }
+    }
+
+    // Specchio di applyUnitTextWindowInsets() per il nuovo angolo bottom-right (DIST-01):
+    // aggiunge il live inset bottom+end di system bars/display cutout sopra ai margini base
+    // dichiarati in XML per distanceUnitText. Registrato SOLO su distanceUnitText, l'unica
+    // view del gruppo ancorata direttamente a `parent` -- a differenza di
+    // applyMaxAreaWindowInsets(), dove entrambe le view sono ancorate a `parent` e serve
+    // aggiornare due layoutParams nello stesso listener, qui distanceText e' agganciata a
+    // distanceUnitText su entrambi gli assi (end + baseline) e si sposta di conseguenza senza
+    // bisogno di un secondo listener.
+    private fun applyDistanceAreaWindowInsets() {
+        val unitParams = distanceUnitText.layoutParams as ConstraintLayout.LayoutParams
+        val baseBottomMargin = unitParams.bottomMargin
+        val baseEndMargin = unitParams.marginEnd
+        ViewCompat.setOnApplyWindowInsetsListener(distanceUnitText) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val extraBottom = maxOf(systemBars.bottom, cutout.bottom)
+            val extraEnd = maxOf(systemBars.right, cutout.right)
+            val params = view.layoutParams as ConstraintLayout.LayoutParams
+            params.bottomMargin = baseBottomMargin + extraBottom
+            params.marginEnd = baseEndMargin + extraEnd
+            view.layoutParams = params
             insets
         }
     }
