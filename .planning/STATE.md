@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Ricarica e distanza
-status: Awaiting next milestone
-stopped_at: "Completed quick task 260830-o3h: Aggiorna playstore/ per la milestone v1.1"
-last_updated: "2026-08-30T18:07:03.754Z"
-last_activity: 2026-08-30 — Milestone v1.1 completed and archived
+milestone: v2.0
+milestone_name: Android Auto Support
+status: planning
+last_updated: "2026-08-30T21:19:50.930Z"
+last_activity: 2026-08-30
 progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 8
-  completed_plans: 8
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -25,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-08-30)
 
 ## Current Position
 
-Phase: Milestone v1.1 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-08-30 — Milestone v1.1 completed and archived
+Status: Defining requirements
+Last activity: 2026-08-30 — Milestone v2.0 started
 
 ## Performance Metrics
 

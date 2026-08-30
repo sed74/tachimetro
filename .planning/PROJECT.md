@@ -2,7 +2,18 @@
 
 ## Status
 
-**v1.1 Ricarica e distanza — SHIPPED (2026-08-30).** Nessuna milestone attiva. Prossima da definire via `/gsd-new-milestone`.
+**v2.0 Android Auto Support — in definizione.** v1.1 Ricarica e distanza shipped (2026-08-30).
+
+## Current Milestone: v2.0 Android Auto Support
+
+**Goal:** Proiettare la velocità GPS sullo schermo dell'auto/moto via Android Auto (Car App Library), mantenendo il Core Value di leggibilità istantanea anche sul display del veicolo.
+
+**Target features:**
+- Velocità attuale visualizzata sul display Android Auto come numero grande, ad alto contrasto
+- Stato "nessun segnale GPS" replicato sul display auto
+- Comportamento del telefono quando Android Auto è connesso (rilascio schermo sempre acceso / stato neutro — i limiti di piattaforma su uno spegnimento forzato saranno chiariti in fase di ricerca/requisiti)
+
+**Out of scope per questa milestone:** velocità massima e distanza percorsa sul display auto (restano solo sul telefono).
 
 ## What This Is
 
@@ -37,7 +48,7 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 ### Active
 
-_Nessun requisito attivo — milestone v1.1 completa (Fasi 6-7)._
+_In definizione — milestone v2.0 Android Auto Support, requisiti da scrivere in REQUIREMENTS.md._
 
 ### Out of Scope
 
@@ -103,4 +114,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-30 after v1.1 milestone completion*
+*Last updated: 2026-08-30 — milestone v2.0 Android Auto Support avviata*
