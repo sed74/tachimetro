@@ -65,8 +65,16 @@ Dettagli completi delle fasi: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADM
 **Plans**: 3 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 08-01-PLAN.md — Fondamenta condivise: GpsSpeedProvider Application-scoped, dipendenza Car App Library 1.7.0, stringa "Ricerca segnale..." e contratto di contenuto puro (wave 1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 08-02-PLAN.md — Servizio Car App categoria POI, Session e SpeedScreen con PaneTemplate aggiornato a 1 Hz (wave 2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 08-03-PLAN.md — Gate SC4: test strumentato del template, automazione della misura refresh su DHU e checkpoint umano di verifica quota (wave 3)
 
 ### Phase 9: Permesso di Localizzazione dallo Schermo Auto
