@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- D-00a: dichiara solo l'esperienza a template (categoria POI). Nessun `<uses name="media" />`
+     ne' altro uso: questa fase non implementa un'app di navigazione ne' un player media. -->
+<automotiveApp>
+    <uses name="template" />
+</automotiveApp>
