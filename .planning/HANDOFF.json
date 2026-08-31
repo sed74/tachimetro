@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-08-31T09:16:50.320Z",
+  "timestamp": "2026-08-31T09:26:23.865Z",
   "phase": "08",
   "phase_name": "Fondamenta Condivise e Velocità sullo Schermo Auto",
   "phase_dir": ".planning/phases/08-fondamenta-condivise-e-velocit-sullo-schermo-auto",
@@ -26,5 +26,5 @@
   ],
   "uncommitted_files": [],
   "next_action": "Quando pronto per il test DHU: seguire la checklist in 08-03-PLAN.md Task 3 how-to-verify (o chiedere di riprendere), poi eseguire `powershell -File scripts/dhu-quota-check.ps1 -DurationSeconds 600` osservando lo schermo DHU per l'intera sessione. Rispondere con l'esito punto per punto SC1-SC5 e il riepilogo dello script.",
-  "context_notes": "Wave 1 (08-01) e Wave 2 (08-02) sono complete, mergiate su master, build+test verdi, tracking (ROADMAP/STATE) aggiornato. Wave 3 (08-03) ha i Task 1 e 2 completati ma NON ancora mergiati su master: vivono nel worktree/branch 'worktree-agent-a8f853a996afb80e4' (percorso: .claude/worktrees/agent-a8f853a996afb80e4), attualmente locked perche' l'agente esecutore e' in pausa al checkpoint e resumibile via SendMessage. Un telefono fisico OnePlus8T (serial 359592a5) e' collegato via USB con una build incompatibile gia' installata: NON va toccato, solo l'AVD emulator-5554 va usato per il test DHU."
+  "context_notes": "Wave 1 (08-01) e Wave 2 (08-02) sono complete, mergiate su master, build+test verdi, tracking (ROADMAP/STATE) aggiornato. Wave 3 (08-03) ha i Task 1 e 2 completati ma NON ancora mergiati su master: vivono nel worktree/branch 'worktree-agent-a8f853a996afb80e4' (percorso: .claude/worktrees/agent-a8f853a996afb80e4), attualmente locked perche' l'agente esecutore e' in pausa al checkpoint e resumibile via SendMessage. Un telefono fisico OnePlus8T (serial 359592a5) e' collegato via USB con una build incompatibile gia' installata: NON va toccato, solo l'AVD emulator-5554 va usato per il test DHU. Nota: dopo la pausa e' arrivata una notifica innocua di chiusura del processo emulatore lanciato in precedenza dall'agente in pausa — non richiede azione, il piano resta fermo al checkpoint Task 3 esattamente come descritto qui."
 }
