@@ -106,3 +106,7 @@ None - no external service configuration required.
 ---
 *Phase: 08-fondamenta-condivise-e-velocit-sullo-schermo-auto*
 *Completed: 2026-08-31*
+
+## Self-Check: PASSED
+
+All created files verified present on disk: `automotive_app_desc.xml`, `TachimetroCarAppService.kt`, `TachimetroCarSession.kt`, `SpeedScreen.kt`, this SUMMARY.md. All task commits verified present in `git log --oneline --all`: `e788bac`, `5c8f2d3`, `7c1baa8`, `723ee58`.
