@@ -62,7 +62,12 @@ Dettagli completi delle fasi: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADM
   4. Durante una sessione continua di alcuni minuti a cadenza 1Hz, l'host Android Auto non chiude l'app per superamento della quota di refresh dei template (verifica empirica preventiva del rischio quota, DHU + Developer Mode)
   5. Il comportamento e l'aspetto del telefono restano invariati rispetto alla v1.1 (nessuna regressione visibile), a conferma che il GPS è condiviso da un'unica sottoscrizione Application-scoped tra telefono e auto
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Fondamenta condivise: GpsSpeedProvider Application-scoped, dipendenza Car App Library 1.7.0, stringa "Ricerca segnale..." e contratto di contenuto puro (wave 1)
+- [ ] 08-02-PLAN.md — Servizio Car App categoria POI, Session e SpeedScreen con PaneTemplate aggiornato a 1 Hz (wave 2)
+- [ ] 08-03-PLAN.md — Gate SC4: test strumentato del template, automazione della misura refresh su DHU e checkpoint umano di verifica quota (wave 3)
 
 ### Phase 9: Permesso di Localizzazione dallo Schermo Auto
 
@@ -117,7 +122,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Gestione Schermo | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 6. Indicatore di Ricarica | v1.1 | 4/4 | Complete | 2026-08-29 |
 | 7. Distanza Percorsa e Reset Unificato | v1.1 | 4/4 | Complete | 2026-08-30 |
-| 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 0/TBD | Not started | - |
+| 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 0/3 | Planned | - |
 | 9. Permesso di Localizzazione dallo Schermo Auto | v2.0 | 0/TBD | Not started | - |
 | 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 0/TBD | Not started | - |
 | 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 0/TBD | Not started | - |
