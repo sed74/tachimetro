@@ -71,7 +71,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 08-02-PLAN.md — Servizio Car App categoria POI, Session e SpeedScreen con PaneTemplate aggiornato a 1 Hz (wave 2)
+- [x] 08-02-PLAN.md — Servizio Car App categoria POI, Session e SpeedScreen con PaneTemplate aggiornato a 1 Hz (wave 2)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -130,7 +130,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Gestione Schermo | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 6. Indicatore di Ricarica | v1.1 | 4/4 | Complete | 2026-08-29 |
 | 7. Distanza Percorsa e Reset Unificato | v1.1 | 4/4 | Complete | 2026-08-30 |
-| 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 1/3 | In Progress|  |
+| 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 2/3 | In Progress|  |
 | 9. Permesso di Localizzazione dallo Schermo Auto | v2.0 | 0/TBD | Not started | - |
 | 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 0/TBD | Not started | - |
 | 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 0/TBD | Not started | - |
