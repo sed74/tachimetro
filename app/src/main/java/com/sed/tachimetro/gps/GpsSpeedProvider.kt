@@ -62,8 +62,9 @@ class GpsSpeedProvider(context: Context) {
     // D-03: locked example value.
     private val noiseFloorKmh = NOISE_FLOOR_KMH
 
-    // Owns the StateFlow sharing; scoped to this provider's own lifetime (mirrors the
-    // Activity that owns it — no ViewModel/DI layer in this project).
+    // Owns the StateFlow sharing. D-00b: this provider is now Application-scoped -- the
+    // single instance lives in TachimetroApplication and this scope's lifetime is the
+    // process itself, not any one Activity/Screen (no ViewModel/DI layer in this project).
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     @Volatile
@@ -149,9 +150,11 @@ class GpsSpeedProvider(context: Context) {
     // WR-04: explicit teardown for the provider's own scope, for symmetry/defensiveness.
     // D-07 already has repeatOnLifecycle(STARTED) stop collecting `state` on
     // onStop()/activity destroy, which (via WhileSubscribed()) stops the upstream location
-    // updates; this additionally cancels the SupervisorJob scope itself. Call from
-    // MainActivity.onDestroy() when the Activity (and this provider instance) is being torn
-    // down for good, e.g. on a configuration change that recreates the Activity.
+    // updates; this additionally cancels the SupervisorJob scope itself. D-00b: since this
+    // provider became Application-scoped, nothing in the normal app lifecycle calls this --
+    // the shared scope lives as long as the process, and MainActivity.onDestroy() no longer
+    // calls it (closing it there would kill GPS updates for any other active collector, e.g.
+    // the car screen). It remains available as an explicit, unused-by-default teardown hook.
     fun close() {
         scope.cancel()
     }

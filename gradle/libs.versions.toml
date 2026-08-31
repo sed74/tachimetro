@@ -10,6 +10,7 @@ activity = "1.9.3"
 playServicesLocation = "21.4.0"
 kotlinxCoroutines = "1.10.2"
 lifecycleRuntimeKtx = "2.11.0"
+carApp = "1.7.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -22,6 +23,8 @@ activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+car-app = { group = "androidx.car.app", name = "app", version.ref = "carApp" }
+car-app-testing = { group = "androidx.car.app", name = "app-testing", version.ref = "carApp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

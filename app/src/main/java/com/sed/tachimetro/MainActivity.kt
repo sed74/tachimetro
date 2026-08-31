@@ -204,12 +204,14 @@ class MainActivity : AppCompatActivity() {
         applyBottomLeftWindowInsets()
     }
 
-    // WR-02: extracted from onCreate() -- constructs gpsSpeedProvider and starts the
+    // WR-02: extracted from onCreate() -- reads the shared gpsSpeedProvider and starts the
     // permission-gated, lifecycle-scoped collector that drives updatePlaceholder().
     private fun setupGpsCollection() {
-        // WR-04: pass applicationContext, not the Activity, so GpsSpeedProvider (and the
-        // FusedLocationProviderClient it wraps) never retains an Activity reference.
-        gpsSpeedProvider = GpsSpeedProvider(applicationContext)
+        // WR-04/D-00b: GpsSpeedProvider is now Application-scoped (TachimetroApplication),
+        // constructed with applicationContext exactly once per process and shared with the
+        // future car screen -- MainActivity reads the existing instance instead of
+        // constructing its own, so the two surfaces never open independent GPS subscriptions.
+        gpsSpeedProvider = (application as TachimetroApplication).gpsSpeedProvider
         // D-07: start/stop is entirely driven by repeatOnLifecycle(STARTED) below -- no
         // manual onStart()/onStop() overrides call collect/cancel by hand (see 02-PATTERNS.md).
         lifecycleScope.launch {
@@ -286,13 +288,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        // WR-04: tear down gpsSpeedProvider's own CoroutineScope for symmetry/defensiveness
-        // when this Activity instance is going away for good (e.g. a configuration change
-        // recreates it with a fresh GpsSpeedProvider). D-07's repeatOnLifecycle(STARTED)
-        // already stops collection on stop, so this is a secondary safety net, not the
-        // primary stop/start mechanism.
-        gpsSpeedProvider.close()
-        // WR-04: same rationale as gpsSpeedProvider.close() above -- cancels
+        // D-00b: gpsSpeedProvider is no longer closed here. It is now Application-scoped
+        // (TachimetroApplication) and outlives this Activity by design -- the future
+        // Android Auto host can keep SpeedScreen alive as the sole collector even after
+        // MainActivity is destroyed (e.g. the phone screen closed while still driving).
+        // Cancelling the shared scope from here would kill GPS updates for the car screen
+        // too. SharingStarted.WhileSubscribed() remains the sole mechanism that stops the
+        // upstream location updates once no collector (phone or car) is active.
+        // WR-04: same rationale as before -- cancels
         // chargingStateProvider's own CoroutineScope for symmetry/defensiveness.
         chargingStateProvider.close()
         super.onDestroy()

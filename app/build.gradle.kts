@@ -60,6 +60,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    // AGP 8+ no longer generates BuildConfig by default. Enabled here so Piano 02 can gate
+    // the car-screen refresh-count diagnostic log behind BuildConfig.DEBUG, keeping speed
+    // values out of logcat in release builds (T-08-03).
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 kotlin {
@@ -76,7 +83,9 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.car.app)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.car.app.testing)
 }

@@ -6,6 +6,8 @@
     <string name="retry">Riprova</string>
     <string name="open_settings">Apri impostazioni</string>
     <string name="searching_gps_signal">Ricerca segnale GPS...</string>
+    <!-- D-02: copy dedicata allo schermo auto, distinta e piu' corta di searching_gps_signal -->
+    <string name="car_searching_gps_signal">Ricerca segnale...</string>
     <string name="speed_kmh_format">%1$d km/h</string>
     <string name="unit_kmh">km/h</string>
     <string name="max_speed_format">MAX %1$d</string>
