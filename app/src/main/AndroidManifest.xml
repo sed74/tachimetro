@@ -21,6 +21,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tachimetro">
 
+        <!-- D-00a: dichiara l'esperienza a template Android Auto (categoria POI, non
+             NAVIGATION, vedi service sotto). minCarApiLevel 1 massimizza la compatibilita'
+             con head unit vecchi; tutte le API usate in questa fase sono disponibili da
+             CarAppApiLevel 1. -->
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
+        <meta-data
+            android:name="androidx.car.app.minCarApiLevel"
+            android:value="1" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -31,6 +42,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- D-00a: categoria POI (non NAVIGATION), app di sola lettura velocita', nessuna
+             funzionalita' di instradamento reale. D-04: riusa l'icona di lancio esistente,
+             nessun asset grafico dedicato per l'auto. android:exported="true" e' un requisito
+             di piattaforma perche' l'host possa bindare il servizio (vedi 08-02-PLAN.md
+             threat_model T-08-05 per la disposizione del rischio: HostValidator permissivo
+             accettato solo per questa fase di scaffold, sostituzione con allow-list reale
+             pianificata in Fase 11). -->
+        <service
+            android:name=".car.TachimetroCarAppService"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher">
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.category.POI" />
+            </intent-filter>
+        </service>
 
     </application>
 
