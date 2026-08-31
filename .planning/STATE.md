@@ -3,8 +3,9 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Android Auto Support
 status: planning
-last_updated: "2026-08-31T09:00:00.000Z"
-last_activity: 2026-08-31
+stopped_at: Phase 8 context gathered
+last_updated: "2026-08-31T07:17:19.607Z"
+last_activity: 2026-08-31 — Roadmap v2.0 creato (Fasi 8-11), in attesa di approvazione utente
 progress:
   total_phases: 4
   completed_phases: 0
@@ -99,9 +100,9 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-31
-Stopped at: Roadmap v2.0 creato (Fasi 8-11) e REQUIREMENTS.md aggiornato con la traceability — in attesa di approvazione utente
-Resume file: none
+Last session: 2026-08-31T07:17:19.597Z
+Stopped at: Phase 8 context gathered
+Resume file: .planning/phases/08-fondamenta-condivise-e-velocit-sullo-schermo-auto/08-CONTEXT.md
 
 ## Operator Next Steps
 
