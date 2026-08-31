@@ -4,8 +4,8 @@ milestone: v2.0
 milestone_name: Android Auto Support
 status: executing
 stopped_at: Phase 8 UI-SPEC approved
-last_updated: "2026-08-31T07:59:30.694Z"
-last_activity: 2026-08-31 -- Phase 08 planning complete
+last_updated: "2026-08-31T08:01:03.900Z"
+last_activity: 2026-08-31 -- Phase 08 execution started
 progress:
   total_phases: 4
   completed_phases: 0
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-30)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto
+**Current focus:** Phase 08 — Fondamenta Condivise e Velocità sullo Schermo Auto
 
 ## Current Position
 
-Phase: 8 of 11 (Fondamenta Condivise e Velocità sullo Schermo Auto)
-Plan: — (fase non ancora pianificata)
-Status: Ready to execute
-Last activity: 2026-08-31 -- Phase 08 planning complete
+Phase: 08 (Fondamenta Condivise e Velocità sullo Schermo Auto) — EXECUTING
+Plan: 1 of 3
+Status: Executing Phase 08
+Last activity: 2026-08-31 -- Phase 08 execution started
 
 ## Performance Metrics
 
