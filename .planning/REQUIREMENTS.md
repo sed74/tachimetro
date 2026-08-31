@@ -9,9 +9,9 @@ Requirements for the v2.0 milestone (Android Auto Support). Each maps to roadmap
 
 ### Schermo Android Auto
 
-- [ ] **AA-01**: L'utente vede la velocità attuale come testo grande sullo schermo Android Auto mentre l'app è connessa (categoria POI, template standard Car App Library — stile/typografia gestiti dall'host)
-- [ ] **AA-02**: Quando manca il segnale GPS, lo schermo Android Auto mostra uno stato equivalente al messaggio "Ricerca segnale GPS..." del telefono, invece di restare bloccato su un valore vecchio
-- [ ] **AA-03**: Lo schermo Android Auto si aggiorna alla stessa cadenza del telefono (1 volta al secondo)
+- [x] **AA-01**: L'utente vede la velocità attuale come testo grande sullo schermo Android Auto mentre l'app è connessa (categoria POI, template standard Car App Library — stile/typografia gestiti dall'host)
+- [x] **AA-02**: Quando manca il segnale GPS, lo schermo Android Auto mostra uno stato equivalente al messaggio "Ricerca segnale GPS..." del telefono, invece di restare bloccato su un valore vecchio
+- [x] **AA-03**: Lo schermo Android Auto si aggiorna alla stessa cadenza del telefono (1 volta al secondo)
 - [ ] **AA-04**: Se il permesso di localizzazione non è ancora stato concesso quando l'utente si connette per la prima volta via Android Auto, lo schermo auto lo richiede esplicitamente (`CarContext.requestPermissions()`) invece di restare vuoto/bloccato
 
 ### Connessione Android Auto
@@ -37,9 +37,9 @@ Requirements for the v2.0 milestone (Android Auto Support). Each maps to roadmap
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AA-01 | Phase 8 | Pending |
-| AA-02 | Phase 8 | Pending |
-| AA-03 | Phase 8 | Pending |
+| AA-01 | Phase 8 | Complete |
+| AA-02 | Phase 8 | Complete |
+| AA-03 | Phase 8 | Complete |
 | AA-04 | Phase 9 | Pending |
 | CONN-01 | Phase 10 | Pending |
 | CONN-02 | Phase 10 | Pending |
