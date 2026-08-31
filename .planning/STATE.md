@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Android Auto Support
 status: planning
-last_updated: "2026-08-30T21:19:50.930Z"
-last_activity: 2026-08-30
+last_updated: "2026-08-31T09:00:00.000Z"
+last_activity: 2026-08-31
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-30)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** Planning next milestone
+**Current focus:** Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-08-30 — Milestone v2.0 started
+Phase: 8 of 11 (Fondamenta Condivise e Velocità sullo Schermo Auto)
+Plan: — (fase non ancora pianificata)
+Status: Ready to plan
+Last activity: 2026-08-31 — Roadmap v2.0 creato (Fasi 8-11), in attesa di approvazione utente
 
 ## Performance Metrics
 
@@ -48,10 +48,14 @@ Last activity: 2026-08-30 — Milestone v2.0 started
 | 05 | 2 | - | - |
 | 06 | 4 | - | - |
 | 07 | 4 | - | - |
+| 08 | TBD | - | - |
+| 09 | TBD | - | - |
+| 10 | TBD | - | - |
+| 11 | TBD | - | - |
 
 **Recent Trend:**
 
-- Last 5 plans: none yet
+- Last 5 plans: none yet (v2.0 non ancora pianificata)
 - Trend: -
 
 *Updated after each plan completion*
@@ -65,6 +69,7 @@ Recent decisions affecting current work:
 
 - Roadmap v1.0: Horizontal-layer structure (Fondamenta → GPS → UI → Max Speed → Schermo), coarse granularity, 5 phases
 - Roadmap v1.1: Due fasi indipendenti per feature (coarse granularity) — Fase 6 Indicatore di Ricarica (CHRG-01/02), Fase 7 Distanza Percorsa e Reset Unificato (DIST-01/02/03, MAX-04); Fase 7 dipende da Fase 4 per il pattern di reset condiviso
+- Roadmap v2.0: Categoria/percorso di distribuzione già risolti dall'utente (template standard Car App Library, categoria POI, Play-Store-safe — non serve una fase dedicata). Quattro fasi sequenziali (coarse granularity): Fase 8 Fondamenta Condivise e Velocità sullo Schermo Auto (AA-01/02/03 — `GpsSpeedProvider` promosso ad Application-scoped, scaffold `TachimetroCarAppService`/`Session`/`SpeedScreen`, verifica empirica della quota di refresh dei template sotto aggiornamento continuo 1Hz); Fase 9 Permesso di Localizzazione dallo Schermo Auto (AA-04, dipende dallo scaffold di Fase 8); Fase 10 Comportamento del Telefono alla Connessione Android Auto (CONN-01/02, estende `ScreenOnPreferenceStore` v1.0, indipendente dal lavoro sullo schermo auto ma sequenziata dopo per coerenza); Fase 11 Hardening di Produzione e Verifica su Dispositivo Reale (nessun nuovo requisito — `HostValidator` reale al posto di `ALLOW_ALL_HOSTS_VALIDATOR`, verifica su strada del comportamento background-location a telefono bloccato)
 
 ### Pending Todos
 
@@ -72,7 +77,8 @@ None yet.
 
 ### Blockers/Concerns
 
-None yet.
+- Fase 8/11: il comportamento della quota di refresh dei template Android Auto per un valore numerico che cambia ogni secondo non è chiaramente documentato da Google — richiede verifica empirica (DHU + Developer Mode) prima di impegnarsi sul percorso a template per l'intera milestone (v. `.planning/research/SUMMARY.md`, Pitfall 2)
+- Fase 11: il comportamento del GPS in background quando il telefono è bloccato durante una sessione Android Auto attiva non è documentato — genuino gap di piattaforma da verificare su dispositivo reale, non solo su DHU (v. `.planning/research/SUMMARY.md`, Pitfall 5)
 
 ### Quick Tasks Completed
 
@@ -93,10 +99,10 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-30
-Stopped at: Completed quick task 260830-o3h: Aggiorna playstore/ per la milestone v1.1
-Resume file: none — milestone v1.1 complete, playstore/ text content synced
+Last session: 2026-08-31
+Stopped at: Roadmap v2.0 creato (Fasi 8-11) e REQUIREMENTS.md aggiornato con la traceability — in attesa di approvazione utente
+Resume file: none
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Rivedere il roadmap v2.0 (Fasi 8-11) e, se approvato, avviare `/gsd:discuss-phase 8` o `/gsd:plan-phase 8` per iniziare la pianificazione della Fase 8

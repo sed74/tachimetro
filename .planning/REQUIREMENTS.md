@@ -35,4 +35,13 @@ Requirements for the v2.0 milestone (Android Auto Support). Each maps to roadmap
 
 ## Traceability
 
-_Da compilare dal roadmapper._
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| AA-01 | Phase 8 | Pending |
+| AA-02 | Phase 8 | Pending |
+| AA-03 | Phase 8 | Pending |
+| AA-04 | Phase 9 | Pending |
+| CONN-01 | Phase 10 | Pending |
+| CONN-02 | Phase 10 | Pending |
+
+Coverage: 6/6 v2.0 requirements mapped. Phase 11 (Hardening di Produzione e Verifica su Dispositivo Reale) introduces no new requirement IDs — it validates AA-01..AA-04 and CONN-01/CONN-02 under production conditions (real `HostValidator`, real-device background-location behavior).

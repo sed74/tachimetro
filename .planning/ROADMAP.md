@@ -2,12 +2,13 @@
 
 ## Overview
 
-Tachimetro nasce da uno scaffold Android Studio vuoto e arriva a un'app completa: si parte dalle fondamenta (avvio diretto, permesso GPS), si costruisce il motore di lettura della velocità, poi l'interfaccia a schermo intero che la mostra, quindi le funzionalità di velocità massima con persistenza, e infine il controllo dello schermo sempre acceso. Con la milestone v1.1 si aggiungono due indicatori secondari indipendenti: uno stato di ricarica riconoscibile a colpo d'occhio (unica animazione e unico colore accento ammessi nell'interfaccia) e una distanza percorsa persistente, azzerabile nella stessa azione del record di velocità massima già esistente.
+Tachimetro nasce da uno scaffold Android Studio vuoto e arriva a un'app completa: si parte dalle fondamenta (avvio diretto, permesso GPS), si costruisce il motore di lettura della velocità, poi l'interfaccia a schermo intero che la mostra, quindi le funzionalità di velocità massima con persistenza, e infine il controllo dello schermo sempre acceso. Con la milestone v1.1 si aggiungono due indicatori secondari indipendenti: uno stato di ricarica riconoscibile a colpo d'occhio (unica animazione e unico colore accento ammessi nell'interfaccia) e una distanza percorsa persistente, azzerabile nella stessa azione del record di velocità massima già esistente. Con la milestone v2.0 la velocità viene proiettata anche sullo schermo Android Auto dell'auto/moto: prima si condivide la fonte GPS tra telefono e auto senza duplicarla, poi si mostra la velocità (e lo stato di assenza di segnale) sul display auto con i template standard della Car App Library, si gestisce il permesso di localizzazione richiesto direttamente dallo schermo auto, si adatta il comportamento del telefono quando Android Auto è connesso, e infine si mette in sicurezza il tutto per l'uso reale su strada.
 
 ## Milestones
 
 - ✅ **v1.0 MVP** — Fasi 1-5 (shipped 2026-07-10) → [archivio completo](milestones/v1.0-ROADMAP.md)
 - ✅ **v1.1 Ricarica e distanza** — Fasi 6-7 (shipped 2026-08-30) → [archivio completo](milestones/v1.1-ROADMAP.md)
+- 🚧 **v2.0 Android Auto Support** — Fasi 8-11 (in progress)
 
 ## Phases
 
@@ -41,10 +42,71 @@ Dettagli completi delle fasi: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADM
 
 </details>
 
+- [ ] **Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto** - La velocità e lo stato "nessun segnale" appaiono sullo schermo Android Auto, aggiornati al secondo, condividendo un'unica fonte GPS con il telefono
+- [ ] **Phase 9: Permesso di Localizzazione dallo Schermo Auto** - Se il permesso non è ancora concesso, l'utente lo concede direttamente dallo schermo auto al primo collegamento
+- [ ] **Phase 10: Comportamento del Telefono alla Connessione Android Auto** - Il telefono rilascia lo schermo sempre acceso e mostra uno stato neutro quando Android Auto è connesso, ripristinando tutto alla disconnessione
+- [ ] **Phase 11: Hardening di Produzione e Verifica su Dispositivo Reale** - L'integrazione Android Auto è validata con un host reale e verificata su strada a telefono bloccato
+
+## Phase Details
+
+### Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto
+
+**Goal**: La velocità corrente e lo stato "nessun segnale" vengono mostrati sullo schermo Android Auto, aggiornati alla stessa cadenza del telefono (1/sec), condividendo un'unica fonte GPS con il telefono (nessuna sottoscrizione duplicata, nessuna regressione visibile sul telefono).
+**Depends on**: Phase 7 (v1.1 — GpsSpeedProvider e MainActivity esistenti da cui parte il refactor Application-scoped)
+**Requirements**: AA-01, AA-02, AA-03
+**Success Criteria** (what must be TRUE):
+
+  1. Connettendo il telefono ad Android Auto (o al Desktop Head Unit), lo schermo auto mostra la velocità attuale come testo grande e leggibile, coerente con il valore mostrato sul telefono
+  2. Quando il segnale GPS manca, lo schermo auto mostra uno stato equivalente a "Ricerca segnale GPS..." invece di restare bloccato su un valore vecchio
+  3. Il valore sullo schermo auto si aggiorna una volta al secondo, alla stessa cadenza del telefono, senza salti né disallineamenti tra i due schermi
+  4. Durante una sessione continua di alcuni minuti a cadenza 1Hz, l'host Android Auto non chiude l'app per superamento della quota di refresh dei template (verifica empirica preventiva del rischio quota, DHU + Developer Mode)
+  5. Il comportamento e l'aspetto del telefono restano invariati rispetto alla v1.1 (nessuna regressione visibile), a conferma che il GPS è condiviso da un'unica sottoscrizione Application-scoped tra telefono e auto
+
+**Plans**: TBD
+
+### Phase 9: Permesso di Localizzazione dallo Schermo Auto
+
+**Goal**: Se il permesso di localizzazione non è ancora stato concesso, l'utente può concederlo direttamente dallo schermo Android Auto al primo collegamento, senza dover prima aprire l'app sul telefono.
+**Depends on**: Phase 8 (lo schermo auto deve già esistere e mostrare dati prima di gestire il caso "permesso non ancora concesso")
+**Requirements**: AA-04
+**Success Criteria** (what must be TRUE):
+
+  1. Collegando Android Auto per la prima volta senza aver mai concesso il permesso di localizzazione sul telefono, lo schermo auto mostra una richiesta di permesso esplicita (`CarContext.requestPermissions()`) invece di restare vuoto o bloccato
+  2. Concedendo il permesso dalla richiesta mostrata sullo schermo auto, lo schermo passa automaticamente alla velocità (o allo stato "Ricerca segnale") senza richiedere il riavvio dell'app o del collegamento
+  3. Se l'utente nega il permesso dallo schermo auto, viene mostrato un messaggio chiaro che spiega l'impossibilità di leggere la velocità, invece di uno schermo vuoto
+
+**Plans**: TBD
+
+### Phase 10: Comportamento del Telefono alla Connessione Android Auto
+
+**Goal**: Quando Android Auto si connette, il telefono passa a uno stato neutro coerente e rilascia il controllo dello schermo sempre acceso; alla disconnessione, ripristina esattamente il comportamento precedente, senza reset indesiderati.
+**Depends on**: Phase 5 (v1.0 — estende `ScreenOnPreferenceStore` esistente; indipendente dal lavoro sullo schermo auto delle Fasi 8-9, sequenziata qui per coerenza della milestone)
+**Requirements**: CONN-01, CONN-02
+**Success Criteria** (what must be TRUE):
+
+  1. Quando Android Auto si connette, il telefono rilascia "schermo sempre acceso" (se era attivo) e mostra uno stato neutro "Connesso ad Android Auto" al posto della velocità
+  2. Alla disconnessione di Android Auto, il telefono ripristina esattamente la preferenza "sempre acceso" salvata in precedenza (attiva se era attiva, automatica se era automatica), senza alterare la preferenza memorizzata
+  3. Il toggle "Schermo sempre acceso" esistente continua a funzionare normalmente quando Android Auto non è connesso, senza regressioni rispetto al comportamento v1.0/v1.1
+
+**Plans**: TBD
+
+### Phase 11: Hardening di Produzione e Verifica su Dispositivo Reale
+
+**Goal**: L'integrazione Android Auto è pronta per l'uso reale: l'host della connessione viene validato correttamente (non più permissivo per default) e il comportamento a schermo bloccato/in background durante una connessione attiva è verificato su un dispositivo reale, non solo in emulazione.
+**Depends on**: Phase 9, Phase 10
+**Requirements**: Nessun nuovo requisito — verifica e messa in sicurezza di AA-01, AA-02, AA-03, AA-04, CONN-01, CONN-02
+**Success Criteria** (what must be TRUE):
+
+  1. L'app usa un `HostValidator` reale (non più `ALLOW_ALL_HOSTS_VALIDATOR`) che accetta solo host Android Auto legittimi, verificato che il collegamento a un head unit reale/DHU continui a funzionare
+  2. Su un dispositivo reale, con il telefono bloccato/in background e Android Auto connesso, la velocità sullo schermo auto continua ad aggiornarsi per diversi minuti consecutivi durante un tragitto reale (o il limite di piattaforma viene documentato esplicitamente se non risolvibile)
+  3. Connettendo e disconnettendo Android Auto ripetutamente in rapida successione, l'app non va in crash e lo schermo auto non resta bloccato in uno stato incoerente
+
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -55,5 +117,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 5. Gestione Schermo | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 6. Indicatore di Ricarica | v1.1 | 4/4 | Complete | 2026-08-29 |
 | 7. Distanza Percorsa e Reset Unificato | v1.1 | 4/4 | Complete | 2026-08-30 |
-
-**Next milestone:** not yet defined — run `/gsd-new-milestone` to start (questioning → research → requirements → roadmap).
+| 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 0/TBD | Not started | - |
+| 9. Permesso di Localizzazione dallo Schermo Auto | v2.0 | 0/TBD | Not started | - |
+| 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 0/TBD | Not started | - |
+| 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 0/TBD | Not started | - |
