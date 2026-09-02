@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Android Auto Support
-status: executing
-stopped_at: Phase 8 context updated post-DHU (SC1 PaneTemplate limitation, deferred Surface/NavigationTemplate to v2.1)
-last_updated: "2026-09-02T09:14:52.121Z"
-last_activity: 2026-08-31 -- Phase 08 execution started
+status: ready_to_plan
+stopped_at: "Phase 08 complete (3/3) -- SC4/SC5 confermati via sessione DHU dal vivo, SC1 accettato con nuance (08-CONTEXT.md D-13), SC2 accettato senza test live -- ready to plan Phase 9"
+last_updated: "2026-09-02T09:34:42.180Z"
+last_activity: 2026-09-02
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
-  percent: 0
+  completed_plans: 3
+  percent: 25
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-30)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** Phase 08 — Fondamenta Condivise e Velocità sullo Schermo Auto
+**Current focus:** Phase 9 — Permesso di Localizzazione dallo Schermo Auto
 
 ## Current Position
 
-Phase: 08 (Fondamenta Condivise e Velocità sullo Schermo Auto) — EXECUTING
-Plan: 1 of 3
-Status: Executing Phase 08
-Last activity: 2026-08-31 -- Phase 08 execution started
+Phase: 9 (Permesso di Localizzazione dallo Schermo Auto)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-02
 
 ## Performance Metrics
 
@@ -49,14 +49,14 @@ Last activity: 2026-08-31 -- Phase 08 execution started
 | 05 | 2 | - | - |
 | 06 | 4 | - | - |
 | 07 | 4 | - | - |
-| 08 | TBD | - | - |
+| 08 | 3 | - | - |
 | 09 | TBD | - | - |
 | 10 | TBD | - | - |
 | 11 | TBD | - | - |
 
 **Recent Trend:**
 
-- Last 5 plans: none yet (v2.0 non ancora pianificata)
+- Last 5 plans: 08-01 (~20min), 08-02 (~15min), 08-03 (checkpoint spans multiple human sessions)
 - Trend: -
 
 *Updated after each plan completion*
@@ -71,6 +71,9 @@ Recent decisions affecting current work:
 - Roadmap v1.0: Horizontal-layer structure (Fondamenta → GPS → UI → Max Speed → Schermo), coarse granularity, 5 phases
 - Roadmap v1.1: Due fasi indipendenti per feature (coarse granularity) — Fase 6 Indicatore di Ricarica (CHRG-01/02), Fase 7 Distanza Percorsa e Reset Unificato (DIST-01/02/03, MAX-04); Fase 7 dipende da Fase 4 per il pattern di reset condiviso
 - Roadmap v2.0: Categoria/percorso di distribuzione già risolti dall'utente (template standard Car App Library, categoria POI, Play-Store-safe — non serve una fase dedicata). Quattro fasi sequenziali (coarse granularity): Fase 8 Fondamenta Condivise e Velocità sullo Schermo Auto (AA-01/02/03 — `GpsSpeedProvider` promosso ad Application-scoped, scaffold `TachimetroCarAppService`/`Session`/`SpeedScreen`, verifica empirica della quota di refresh dei template sotto aggiornamento continuo 1Hz); Fase 9 Permesso di Localizzazione dallo Schermo Auto (AA-04, dipende dallo scaffold di Fase 8); Fase 10 Comportamento del Telefono alla Connessione Android Auto (CONN-01/02, estende `ScreenOnPreferenceStore` v1.0, indipendente dal lavoro sullo schermo auto ma sequenziata dopo per coerenza); Fase 11 Hardening di Produzione e Verifica su Dispositivo Reale (nessun nuovo requisito — `HostValidator` reale al posto di `ALLOW_ALL_HOSTS_VALIDATOR`, verifica su strada del comportamento background-location a telefono bloccato)
+- [Phase 08]: SC4 (quota refresh) confermato PASS via sessione DHU dal vivo su telefono fisico (586 refresh/608s, cadenza 0.964/s)
+- [Phase 08]: SC1 fallito come formulato (limite strutturale PaneTemplate); accettato per v2.0, NavigationTemplate+SurfaceCallback rimandato a milestone v2.1 (08-CONTEXT.md D-12..D-14)
+- [Phase 08]: SC2 (perdita segnale) accettato senza test live, su richiesta esplicita dell utente; copertura solo indiretta via test unitari gia esistenti
 
 ### Pending Todos
 
@@ -78,8 +81,10 @@ None yet.
 
 ### Blockers/Concerns
 
-- Fase 8/11: il comportamento della quota di refresh dei template Android Auto per un valore numerico che cambia ogni secondo non è chiaramente documentato da Google — richiede verifica empirica (DHU + Developer Mode) prima di impegnarsi sul percorso a template per l'intera milestone (v. `.planning/research/SUMMARY.md`, Pitfall 2)
+- ~~Fase 8/11: il comportamento della quota di refresh dei template Android Auto...~~ — **Risolto in Fase 8 (08-03)**: verifica empirica dal vivo su DHU conferma che l'host non chiude l'app sotto refresh continuo a 1Hz (586 refresh/608s, cadenza 0.964/s, PID mai cambiato). Vedi `08-CONTEXT.md` D-11 e `08-03-SUMMARY.md`.
 - Fase 11: il comportamento del GPS in background quando il telefono è bloccato durante una sessione Android Auto attiva non è documentato — genuino gap di piattaforma da verificare su dispositivo reale, non solo su DHU (v. `.planning/research/SUMMARY.md`, Pitfall 5)
+- v2.1 (milestone futura, non v2.0): `PaneTemplate` non permette un numero grande/centrato ne' unita' posizionabile ne' rimozione dell'icona app (limite strutturale, D-12 in `08-CONTEXT.md`) — accettato per v2.0, valutare `NavigationTemplate`+`SurfaceCallback` in una milestone v2.1 dedicata (D-14, visual spec gia' raccolta in `08-CONTEXT.md` sezione `<deferred>`)
+- Fase 9+: SC2 (comportamento schermo auto alla perdita di segnale GPS) non è mai stato verificato dal vivo su DHU — solo copertura indiretta via test unitari (`CarSpeedContentTest`, `GpsSpeedProviderStateTest`). Se un problema di visualizzazione emergesse in una fase futura (es. verifica su strada in Fase 11), non assumere che sia già stato escluso empiricamente qui
 
 ### Quick Tasks Completed
 
@@ -100,10 +105,11 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-02T09:14:52.109Z
-Stopped at: Phase 8 context updated post-DHU (SC1 PaneTemplate limitation, deferred Surface/NavigationTemplate to v2.1)
-Resume file: .planning/phases/08-fondamenta-condivise-e-velocit-sullo-schermo-auto/08-CONTEXT.md
+Last session: 2026-09-02T09:34:42.168Z
+Stopped at: Phase 08 complete (08-03 checkpoint resolved: SC4/SC5 confermati, SC1 accettato con nuance, SC2 accettato senza test live); prossimo passo Fase 09
+Resume file: None
 
 ## Operator Next Steps
 
-- Rivedere il roadmap v2.0 (Fasi 8-11) e, se approvato, avviare `/gsd:discuss-phase 8` o `/gsd:plan-phase 8` per iniziare la pianificazione della Fase 8
+- Fase 8 completa. Avviare `/gsd:discuss-phase 9` o `/gsd:plan-phase 9` per iniziare la pianificazione della Fase 9 (Permesso di Localizzazione dallo Schermo Auto, AA-04)
+- Passo di transizione/verifica di fase (convenzione osservata in questo progetto per le Fasi 4/6/7: `XX-VERIFICATION.md` + evoluzione di `PROJECT.md` via `/gsd-transition`) non ancora eseguito per la Fase 8 — valutare se eseguirlo prima di iniziare la Fase 9

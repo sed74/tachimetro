@@ -42,7 +42,7 @@ Dettagli completi delle fasi: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADM
 
 </details>
 
-- [ ] **Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto** - La velocità e lo stato "nessun segnale" appaiono sullo schermo Android Auto, aggiornati al secondo, condividendo un'unica fonte GPS con il telefono
+- [x] **Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto** - La velocità e lo stato "nessun segnale" appaiono sullo schermo Android Auto, aggiornati al secondo, condividendo un'unica fonte GPS con il telefono (SC1 accettato con nuance — vedi dettagli sotto)
 - [ ] **Phase 9: Permesso di Localizzazione dallo Schermo Auto** - Se il permesso non è ancora concesso, l'utente lo concede direttamente dallo schermo auto al primo collegamento
 - [ ] **Phase 10: Comportamento del Telefono alla Connessione Android Auto** - Il telefono rilascia lo schermo sempre acceso e mostra uno stato neutro quando Android Auto è connesso, ripristinando tutto alla disconnessione
 - [ ] **Phase 11: Hardening di Produzione e Verifica su Dispositivo Reale** - L'integrazione Android Auto è validata con un host reale e verificata su strada a telefono bloccato
@@ -54,13 +54,14 @@ Dettagli completi delle fasi: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADM
 **Goal**: La velocità corrente e lo stato "nessun segnale" vengono mostrati sullo schermo Android Auto, aggiornati alla stessa cadenza del telefono (1/sec), condividendo un'unica fonte GPS con il telefono (nessuna sottoscrizione duplicata, nessuna regressione visibile sul telefono).
 **Depends on**: Phase 7 (v1.1 — GpsSpeedProvider e MainActivity esistenti da cui parte il refactor Application-scoped)
 **Requirements**: AA-01, AA-02, AA-03
+**Status**: Complete (2026-09-02) — verificato con sessione DHU dal vivo su telefono fisico; vedi nuance SC1/SC2 sotto e `08-CONTEXT.md` D-11..D-14 per il record canonico delle decisioni
 **Success Criteria** (what must be TRUE):
 
-  1. Connettendo il telefono ad Android Auto (o al Desktop Head Unit), lo schermo auto mostra la velocità attuale come testo grande e leggibile, coerente con il valore mostrato sul telefono
-  2. Quando il segnale GPS manca, lo schermo auto mostra uno stato equivalente a "Ricerca segnale GPS..." invece di restare bloccato su un valore vecchio
-  3. Il valore sullo schermo auto si aggiorna una volta al secondo, alla stessa cadenza del telefono, senza salti né disallineamenti tra i due schermi
-  4. Durante una sessione continua di alcuni minuti a cadenza 1Hz, l'host Android Auto non chiude l'app per superamento della quota di refresh dei template (verifica empirica preventiva del rischio quota, DHU + Developer Mode)
-  5. Il comportamento e l'aspetto del telefono restano invariati rispetto alla v1.1 (nessuna regressione visibile), a conferma che il GPS è condiviso da un'unica sottoscrizione Application-scoped tra telefono e auto
+  1. ~~Connettendo il telefono ad Android Auto (o al Desktop Head Unit), lo schermo auto mostra la velocità attuale come testo grande e leggibile, coerente con il valore mostrato sul telefono~~ — **Accettato con limitazione nota**: osservato FALLIRE come letteralmente formulato (il `PaneTemplate` rende il numero piccolo, in alto a sinistra, con l'icona app anch'essa forzata in alto a sinistra — limite strutturale dell'API, non un bug). Formalmente accettato per v2.0 via decisione esplicita (D-13): `AA-01` resta soddisfatto nell'accezione "stile/tipografia gestiti dall'host" già scritta in REQUIREMENTS.md, non "grande come sul telefono". Alternativa (`NavigationTemplate`+`SurfaceCallback`) rimandata a milestone v2.1 dedicata (D-14). Vedi `08-CONTEXT.md` D-12/D-13/D-14.
+  2. Quando il segnale GPS manca, lo schermo auto mostra uno stato equivalente a "Ricerca segnale GPS..." invece di restare bloccato su un valore vecchio — **Accettato senza verifica live**: nessuna sessione DHU ha esercitato una perdita di segnale reale; accettato su istruzione esplicita dell'utente, coperto solo indirettamente da test unitari esistenti (`CarSpeedContentTest`, `GpsSpeedProviderStateTest`). Vedi `08-CONTEXT.md` D-11.
+  3. Il valore sullo schermo auto si aggiorna una volta al secondo, alla stessa cadenza del telefono, senza salti né disallineamenti tra i due schermi — **Confermato**: 586 refresh in 608s, cadenza media 0.964/s, gap massimo osservato 3.1s (sessione DHU dal vivo, D-11)
+  4. Durante una sessione continua di alcuni minuti a cadenza 1Hz, l'host Android Auto non chiude l'app per superamento della quota di refresh dei template (verifica empirica preventiva del rischio quota, DHU + Developer Mode) — **Confermato PASS**: PID mai cambiato/sparito per l'intera sessione, host non ha mai chiuso l'app (euristica script + conferma visiva utente)
+  5. Il comportamento e l'aspetto del telefono restano invariati rispetto alla v1.1 (nessuna regressione visibile), a conferma che il GPS è condiviso da un'unica sottoscrizione Application-scoped tra telefono e auto — **Confermato** dall'utente durante e dopo la sessione DHU
 
 **Plans**: 3 plans
 
@@ -75,7 +76,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 08-03-PLAN.md — Gate SC4: test strumentato del template, automazione della misura refresh su DHU e checkpoint umano di verifica quota (wave 3)
+- [x] 08-03-PLAN.md — Gate SC4: test strumentato del template, automazione della misura refresh su DHU e checkpoint umano di verifica quota (wave 3) — completo 2026-09-02, vedi nuance SC1/SC2 sopra
 
 ### Phase 9: Permesso di Localizzazione dallo Schermo Auto
 
@@ -130,7 +131,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Gestione Schermo | v1.0 | 2/2 | Complete | 2026-07-10 |
 | 6. Indicatore di Ricarica | v1.1 | 4/4 | Complete | 2026-08-29 |
 | 7. Distanza Percorsa e Reset Unificato | v1.1 | 4/4 | Complete | 2026-08-30 |
-| 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 2/3 | In Progress|  |
+| 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
 | 9. Permesso di Localizzazione dallo Schermo Auto | v2.0 | 0/TBD | Not started | - |
 | 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 0/TBD | Not started | - |
 | 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 0/TBD | Not started | - |
