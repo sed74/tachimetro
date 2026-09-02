@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Android Auto Support
-status: ready_to_plan
-stopped_at: "Phase 08 complete (3/3) -- SC4/SC5 confermati via sessione DHU dal vivo, SC1 accettato con nuance (08-CONTEXT.md D-13), SC2 accettato senza test live -- ready to plan Phase 9"
-last_updated: "2026-09-02T09:34:42.180Z"
+status: planning
+stopped_at: Phase 9 context gathered
+last_updated: "2026-09-02T10:06:59.591Z"
 last_activity: 2026-09-02
 progress:
   total_phases: 4
@@ -105,9 +105,9 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-02T09:34:42.168Z
-Stopped at: Phase 08 complete (08-03 checkpoint resolved: SC4/SC5 confermati, SC1 accettato con nuance, SC2 accettato senza test live); prossimo passo Fase 09
-Resume file: None
+Last session: 2026-09-02T10:06:59.580Z
+Stopped at: Phase 9 context gathered
+Resume file: .planning/phases/09-permesso-di-localizzazione-dallo-schermo-auto/09-CONTEXT.md
 
 ## Operator Next Steps
 
