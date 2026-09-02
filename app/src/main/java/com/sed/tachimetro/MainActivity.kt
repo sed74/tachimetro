@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.BatteryManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
@@ -22,6 +23,7 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import androidx.car.app.connection.CarConnection
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -37,6 +39,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+import com.sed.tachimetro.car.CarLinkState
+import com.sed.tachimetro.car.resolveCarLinkState
+import com.sed.tachimetro.car.resolveEffectiveKeepScreenOn
 import com.sed.tachimetro.charging.ChargingState
 import com.sed.tachimetro.charging.ChargingStateProvider
 import com.sed.tachimetro.distance.DistanceDisplay
@@ -75,6 +80,11 @@ class MainActivity : AppCompatActivity() {
         // senza durata (repeatMode = RESTART riparte istantaneamente dal valore iniziale
         // dell'animatore invece di rifare il percorso all'indietro).
         private const val CHARGING_FILL_CYCLE_MS = 2500L
+
+        // CONN-01/CONN-02: tag distinto da "TachimetroCar" (SpeedScreen) cosi' i log
+        // diagnostici dei due lati (telefono/auto) sono filtrabili separatamente in logcat
+        // durante la verifica DHU del Piano 03.
+        private const val LOG_TAG = "TachimetroPhone"
     }
 
     private lateinit var messageText: TextView
@@ -88,6 +98,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var distanceUnitText: TextView
     private lateinit var distanceStore: DistanceStore
     private var currentDistanceMeters: Float = 0f
+    // CONN-01: unico punto in memoria che rappresenta "Android Auto sta proiettando" sul
+    // telefono; il valore iniziale Disconnected garantisce che qualunque percorso eseguito
+    // prima della prima emissione dell'observer (Task 2) si comporti esattamente come in v1.1.
+    private var carLink: CarLinkState = CarLinkState.Disconnected
+    private lateinit var carConnection: CarConnection
+    // CONN-02: copia in memoria della PREFERENZA PERSISTITA (non del flag effettivo) -- e' il
+    // valore che verra' riapplicato tale e quale alla disconnessione. Viene aggiornato solo in
+    // due punti, la lettura iniziale in setupScreenOnSwitch() e il listener dello switch, mai
+    // da una transizione di connessione.
+    private var savedKeepOn: Boolean = false
     private lateinit var keepScreenOnSwitch: SwitchCompat
     private lateinit var screenOnStore: ScreenOnPreferenceStore
     private lateinit var gpsSpeedProvider: GpsSpeedProvider
@@ -128,6 +148,10 @@ class MainActivity : AppCompatActivity() {
         setupScreenOnSwitch()
         setupGpsCollection()
         setupChargingIndicator()
+        // CONN-01/CONN-02: deve venire DOPO setupScreenOnSwitch() (che valorizza savedKeepOn) e
+        // DOPO setupGpsCollection() (che valorizza gpsSpeedProvider), entrambi letti da
+        // onCarLinkChanged() -- ultima delle chiamate setupXxx().
+        setupCarConnectionObserver()
 
         checkAndRequestPermission()
     }
@@ -188,18 +212,24 @@ class MainActivity : AppCompatActivity() {
         // D-04/D-05: se nessuna preferenza è salvata (primo avvio), il default deriva dallo stato di
         // ricarica; quel valore derivato viene persistito UNA sola volta, così dagli avvii successivi
         // conta solo la scelta salvata (lo stato di ricarica non viene più ricontrollato).
-        val savedKeepOn = screenOnStore.read()
-        val keepOn = savedKeepOn ?: isDeviceCharging()
-        if (savedKeepOn == null) {
+        val savedPreference = screenOnStore.read()
+        val keepOn = savedPreference ?: isDeviceCharging()
+        if (savedPreference == null) {
             screenOnStore.write(keepOn)
         }
+        savedKeepOn = keepOn
         // Impostare checked PRIMA del listener: nessun trigger in init, nessun flash (UI-SPEC).
         keepScreenOnSwitch.isChecked = keepOn
-        applyKeepScreenOn(keepOn)
+        applyKeepScreenOn(resolveEffectiveKeepScreenOn(savedKeepOn, carLink))
         // D-06/D-07: il cambio applica immediatamente il flag e persiste la preferenza su disco.
+        // CONN-02: la persistenza della preferenza resta immediata e incondizionata anche
+        // mentre Android Auto e' connesso -- l'utente puo' cambiare idea durante la proiezione e
+        // la scelta verra' onorata alla disconnessione; e' solo l'APPLICAZIONE del flag a essere
+        // derivata da resolveEffectiveKeepScreenOn().
         keepScreenOnSwitch.setOnCheckedChangeListener { _, isChecked ->
-            applyKeepScreenOn(isChecked)
+            savedKeepOn = isChecked
             screenOnStore.write(isChecked)
+            applyKeepScreenOn(resolveEffectiveKeepScreenOn(savedKeepOn, carLink))
         }
         applyBottomLeftWindowInsets()
     }
@@ -243,6 +273,57 @@ class MainActivity : AppCompatActivity() {
                 chargingStateProvider.state.collect { state -> updateChargingIcon(state) }
             }
         }
+    }
+
+    // WR-02: extracted from onCreate() -- osserva CarConnection e ridisegna/rilascia il flag
+    // schermo-sempre-acceso a ogni cambio di collegamento (CONN-01, CONN-02).
+    private fun setupCarConnectionObserver() {
+        // WR-04: applicationContext, mai l'Activity -- il costruttore e' annotato @MainThread e
+        // onCreate() soddisfa il vincolo.
+        carConnection = CarConnection(applicationContext)
+        // Il LiveData registra il proprio BroadcastReceiver in onActive() e lo deregistra in
+        // onInactive(): osservandolo con il lifecycle dell'Activity la registrazione segue
+        // automaticamente START/STOP e l'observer viene rimosso a DESTROY. Per questo
+        // onDestroy() NON va toccata: nessuna deregistrazione manuale, nessun rischio di leak,
+        // coerente con repeatOnLifecycle(STARTED) usato dagli altri collector.
+        carConnection.type.observe(this) { connectionType ->
+            onCarLinkChanged(resolveCarLinkState(connectionType))
+        }
+    }
+
+    // CONN-01/CONN-02: unico punto che aggiorna carLink e ne applica le conseguenze -- flag
+    // schermo-sempre-acceso e rendering dell'area velocita'.
+    private fun onCarLinkChanged(link: CarLinkState) {
+        val changed = link != carLink
+        carLink = link
+        if (BuildConfig.DEBUG) {
+            // T-10-05: solo stato del collegamento e booleani di preferenza, MAI velocita' ne'
+            // dati di posizione.
+            Log.d(
+                LOG_TAG,
+                "carLink=$carLink savedKeepOn=$savedKeepOn effectiveKeepOn=" +
+                    "${resolveEffectiveKeepScreenOn(savedKeepOn, carLink)}",
+            )
+        }
+        // Chiamata incondizionata: e' idempotente (addFlags/clearFlags) e cosi' si auto-ripara
+        // anche se il LiveData riemette lo stesso valore.
+        applyKeepScreenOn(resolveEffectiveKeepScreenOn(savedKeepOn, carLink))
+        // Ridisegno immediato senza aspettare il prossimo tick del GPS. Due guardie, entrambe
+        // obbligatorie: (a) changed evita che la prima emissione dell'observer sovrascriva il
+        // "Pronto" iniziale con "Ricerca segnale GPS..."; (b) permissionGranted.value protegge
+        // la precedenza del messaggio di permesso, che showDenied() ha gia' scritto in
+        // messageText.
+        if (changed && permissionGranted.value) {
+            // NON updatePlaceholder(): quella funzione accumula la distanza da
+            // state.deltaMeters, e invocarla con il valore gia' consumato di
+            // gpsSpeedProvider.state.value conterebbe due volte gli stessi metri.
+            // renderSpeedArea() e' priva di effetti collaterali ed e' l'unica chiamata corretta
+            // in questo punto.
+            renderSpeedArea(gpsSpeedProvider.state.value)
+        }
+        // CONN-02: questa funzione NON chiama screenOnStore.write() in nessun ramo. La
+        // preferenza persistita e' immutata dalle transizioni di connessione -- e' il requisito
+        // "senza alterare la preferenza memorizzata".
     }
 
     override fun onResume() {
@@ -344,7 +425,14 @@ class MainActivity : AppCompatActivity() {
         retryButton.visibility = View.GONE
         unitText.visibility = View.GONE
         applyMessageAutosize()
-        messageText.text = getString(R.string.status_ready)
+        // CONN-01: showReady() e' invocata anche da onResume(), quindi senza questa condizione
+        // il ritorno in foreground con Android Auto gia' connesso mostrerebbe "Pronto" al posto
+        // del messaggio neutro.
+        messageText.text = if (carLink is CarLinkState.Connected) {
+            getString(R.string.android_auto_connected)
+        } else {
+            getString(R.string.status_ready)
+        }
         updateMaxArea()
         updateDistanceArea()
     }
@@ -357,6 +445,11 @@ class MainActivity : AppCompatActivity() {
         distanceText.visibility = View.GONE
         distanceUnitText.visibility = View.GONE
         applyMessageAutosize()
+        // CONN-01: precedenza deliberata -- quando il permesso di localizzazione manca, il
+        // messaggio di permesso e il pulsante Riprova hanno la precedenza sullo stato neutro
+        // di Android Auto, perche' sono l'unica via per rendere di nuovo utilizzabile l'app;
+        // sostituirli con "Connesso ad Android Auto" toglierebbe all'utente l'unica azione
+        // disponibile. Per questo showDenied() non consulta mai carLink.
         val permanentlyDenied =
             !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
         messageText.text = if (permanentlyDenied) {
@@ -371,8 +464,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updatePlaceholder(state: SpeedState) {
+    // CONN-01: unico punto di decisione del rendering dell'area velocita', a conoscenza dello
+    // stato del collegamento auto (carLink). Nessun aggiornamento di massimo/distanza qui
+    // dentro -- quelli restano in updatePlaceholder() (vedi commento li').
+    private fun renderSpeedArea(state: SpeedState) {
         retryButton.visibility = View.GONE
+        // CONN-01: quando Android Auto e' connesso, il telefono mostra lo stato neutro al
+        // posto del numero di velocita' -- return anticipato, il when sottostante non viene
+        // eseguito.
+        if (carLink is CarLinkState.Connected) {
+            unitText.visibility = View.GONE
+            // messageText puo' arrivare da applySpeedAutosize(), che lascia maxLines = 1 e un
+            // tetto di 300sp: senza il ripristino qui il messaggio verrebbe compresso su una
+            // riga sola invece di andare a capo (stesso motivo gia' documentato nel commento di
+            // applyMessageAutosize()).
+            applyMessageAutosize()
+            messageText.text = getString(R.string.android_auto_connected)
+            return
+        }
         when (state) {
             is SpeedState.Searching, is SpeedState.NoSignal -> {
                 unitText.visibility = View.GONE
@@ -387,33 +496,47 @@ class MainActivity : AppCompatActivity() {
                 unitText.visibility = View.VISIBLE
                 applySpeedAutosize()
                 messageText.text = state.kmh.toString()
-
-                // D-07: update and persist the session max immediately whenever the current
-                // reading exceeds it -- no batching to onPause()/onStop().
-                val newMax = reduceMax(currentMax, state.kmh)
-                if (newMax != currentMax) {
-                    currentMax = newMax
-                    maxSpeedStore.write(currentMax)
-                }
-
-                // DIST-03: scrittura immediata su disco ad ogni incremento, nessun batching su
-                // onPause()/onStop() -- cosi' un kill del processo non perde gli ultimi metri.
-                // D-04: il gate della soglia di rumore vive dentro reduceDistance(), non qui: a
-                // veicolo fermo state.kmh vale 0 e la funzione restituisce il totale invariato,
-                // quindi in quel caso non c'e' nemmeno una scrittura su disco.
-                // WR-03: passa esplicitamente GpsSpeedProvider.NOISE_FLOOR_KMH invece di
-                // affidarsi al default duplicato di reduceDistance(), cosi' le due soglie non
-                // possono divergere silenziosamente se quella di GpsSpeedProvider viene tarata.
-                val newDistance = reduceDistance(
-                    currentDistanceMeters, state.deltaMeters, state.kmh,
-                    noiseFloorKmh = GpsSpeedProvider.NOISE_FLOOR_KMH,
-                )
-                if (newDistance != currentDistanceMeters) {
-                    currentDistanceMeters = newDistance
-                    distanceStore.write(currentDistanceMeters)
-                }
             }
         }
+    }
+
+    private fun updatePlaceholder(state: SpeedState) {
+        renderSpeedArea(state)
+
+        // CONN-01: l'accumulo di massimo e distanza avviene FUORI dal ramo di rendering, quindi
+        // continua a funzionare identico mentre Android Auto e' connesso -- lo stato neutro
+        // sostituisce solo il numero della velocita', non sospende la registrazione del viaggio.
+        // Per lo stesso motivo updateMaxArea()/updateDistanceArea() NON vengono saltate nello
+        // stato neutro: le aree MAX e distanza restano visibili e aggiornate. Le scritture su
+        // disco restano esattamente le stesse di prima del refactor: maxSpeedStore.write() qui
+        // sotto e distanceStore.write() poco piu' in basso, mai spostate dentro renderSpeedArea().
+        if (state is SpeedState.Reading) {
+            // D-07: update and persist the session max immediately whenever the current
+            // reading exceeds it -- no batching to onPause()/onStop().
+            val newMax = reduceMax(currentMax, state.kmh)
+            if (newMax != currentMax) {
+                currentMax = newMax
+                maxSpeedStore.write(currentMax)
+            }
+
+            // DIST-03: scrittura immediata su disco ad ogni incremento, nessun batching su
+            // onPause()/onStop() -- cosi' un kill del processo non perde gli ultimi metri.
+            // D-04: il gate della soglia di rumore vive dentro reduceDistance(), non qui: a
+            // veicolo fermo state.kmh vale 0 e la funzione restituisce il totale invariato,
+            // quindi in quel caso non c'e' nemmeno una scrittura su disco.
+            // WR-03: passa esplicitamente GpsSpeedProvider.NOISE_FLOOR_KMH invece di
+            // affidarsi al default duplicato di reduceDistance(), cosi' le due soglie non
+            // possono divergere silenziosamente se quella di GpsSpeedProvider viene tarata.
+            val newDistance = reduceDistance(
+                currentDistanceMeters, state.deltaMeters, state.kmh,
+                noiseFloorKmh = GpsSpeedProvider.NOISE_FLOOR_KMH,
+            )
+            if (newDistance != currentDistanceMeters) {
+                currentDistanceMeters = newDistance
+                distanceStore.write(currentDistanceMeters)
+            }
+        }
+
         updateMaxArea()
         // DIST-02: chiamata incondizionatamente ad ogni emissione, esattamente come
         // updateMaxArea(), cosi' l'area resta visibile e coerente anche nei rami
