@@ -23,13 +23,15 @@
 
 <h2>Dove vanno i dati</h2>
 <p>Da nessuna parte fuori dal tuo dispositivo. L'app <strong>non richiede il permesso Internet</strong> e non può quindi trasmettere alcun dato a server remoti, servizi di terze parti, servizi pubblicitari o di analisi. La posizione GPS viene elaborata interamente in memoria, sul dispositivo, e non viene mai salvata su disco né condivisa.</p>
+<p>Quando l'app è collegata ad Android Auto, la stessa posizione GPS alimenta anche lo schermo dell'auto. Avviene interamente sul dispositivo, senza alcuna trasmissione e senza permessi aggiuntivi: non viene raccolto nulla di più rispetto a quando usi l'app sul solo telefono.</p>
 
 <h2>Dati salvati localmente</h2>
 <p>L'app salva localmente sul dispositivo (tramite SharedPreferences di Android), senza mai trasmetterli altrove:</p>
 <ul>
   <li>la velocità massima raggiunta nella sessione corrente (un numero intero);</li>
   <li>la distanza percorsa dall'ultimo azzeramento (un singolo numero in metri): è un totale aggregato, <strong>non</strong> un tracciato delle posizioni, e da esso non è ricostruibile alcun percorso né alcun luogo in cui sei stato;</li>
-  <li>la preferenza "mantieni schermo acceso" (un valore vero/falso).</li>
+  <li>la preferenza "mantieni schermo acceso" (un valore vero/falso);</li>
+  <li>un contatore di quante volte hai rifiutato la richiesta del permesso di localizzazione mostrata sullo schermo Android Auto (un numero intero): serve solo a scegliere quale messaggio mostrarti, non ti identifica e non lascia il dispositivo.</li>
 </ul>
 <p>Nessuno di questi dati è collegabile alla tua identità e nessuno di essi lascia il dispositivo. Il pulsante "Azzera" nell'app riporta a zero in qualsiasi momento sia la velocità massima sia la distanza percorsa; disinstallare l'app cancella tutto.</p>
 
@@ -57,13 +59,15 @@
 
 <h2>Where the data goes</h2>
 <p>Nowhere outside your device. The app <strong>does not request Internet access</strong>, and therefore cannot transmit any data to remote servers, third-party services, advertising networks, or analytics providers. GPS location is processed entirely in memory, on-device, and is never written to disk or shared.</p>
+<p>When the app is connected to Android Auto, the same GPS location also feeds the car screen. This happens entirely on the device, with no transmission and no additional permissions: nothing more is collected than when you use the app on the phone alone.</p>
 
 <h2>Data stored locally</h2>
 <p>The app stores locally on the device (via Android SharedPreferences), and never transmits elsewhere:</p>
 <ul>
   <li>the maximum speed reached in the current session (an integer);</li>
   <li>the distance travelled since the last reset (a single number, in metres): it is an aggregate total, <strong>not</strong> a location trail — no route and no place you have been can be reconstructed from it;</li>
-  <li>the "keep screen on" preference (a true/false value).</li>
+  <li>the "keep screen on" preference (a true/false value);</li>
+  <li>a counter of how many times you have declined the location permission request shown on the Android Auto screen (an integer): it is used only to choose which message to show you, it does not identify you, and it never leaves the device.</li>
 </ul>
 <p>None of these is linkable to your identity, and none of them ever leaves the device. The "Reset" button in the app clears both the max speed and the travelled distance at any time; uninstalling the app deletes everything.</p>
 
