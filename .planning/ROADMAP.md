@@ -44,7 +44,7 @@ Dettagli completi delle fasi: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADM
 
 - [x] **Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto** - La velocità e lo stato "nessun segnale" appaiono sullo schermo Android Auto, aggiornati al secondo, condividendo un'unica fonte GPS con il telefono (SC1 accettato con nuance — vedi dettagli sotto)
 - [x] **Phase 9: Permesso di Localizzazione dallo Schermo Auto** - Se il permesso non è ancora concesso, l'utente lo concede direttamente dallo schermo auto al primo collegamento (completed 2026-09-02)
-- [ ] **Phase 10: Comportamento del Telefono alla Connessione Android Auto** - Il telefono rilascia lo schermo sempre acceso e mostra uno stato neutro quando Android Auto è connesso, ripristinando tutto alla disconnessione
+- [x] **Phase 10: Comportamento del Telefono alla Connessione Android Auto** - Il telefono rilascia lo schermo sempre acceso e mostra uno stato neutro quando Android Auto è connesso, ripristinando tutto alla disconnessione (completed 2026-09-02)
 - [ ] **Phase 11: Hardening di Produzione e Verifica su Dispositivo Reale** - L'integrazione Android Auto è validata con un host reale e verificata su strada a telefono bloccato
 
 ## Phase Details
@@ -131,7 +131,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 10-03-PLAN.md — Verifica: test JVM di sequenza (nessuna deriva su cicli connessione/disconnessione) e checkpoint umano della sessione DHU sui tre Success Criteria (wave 3)
+- [x] 10-03-PLAN.md — Verifica: test JVM di sequenza (nessuna deriva su cicli connessione/disconnessione) e checkpoint umano della sessione DHU sui tre Success Criteria (wave 3)
 
 ### Phase 11: Hardening di Produzione e Verifica su Dispositivo Reale
 
@@ -162,5 +162,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Distanza Percorsa e Reset Unificato | v1.1 | 4/4 | Complete | 2026-08-30 |
 | 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
 | 9. Permesso di Localizzazione dallo Schermo Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
-| 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 2/3 | In Progress|  |
+| 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
 | 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 0/TBD | Not started | - |
