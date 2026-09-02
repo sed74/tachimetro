@@ -38,6 +38,19 @@ Punto di partenza noto: `SpeedScreen.kt` ha già un gate difensivo (T-08-08, Fas
 ### Transizione automatica dopo la concessione (già nei Success Criteria di roadmap, non riaperta come gray area)
 - **SC2 (roadmap):** Concedendo il permesso, lo schermo passa automaticamente alla velocità (o a "Ricerca segnale...") senza riavvio app/collegamento — il meccanismo reattivo esatto (es. uno `StateFlow` di permesso osservato dal collector esistente in `SpeedScreen`, mirror del pattern `permissionGranted` già usato in `MainActivity`) è lasciato all'implementazione, non è un gray area di UX.
 
+### Verifica DHU dal vivo (Piano 03, Task 2 — checkpoint umano risolto)
+
+- **D-08:** Sessione DHU dal vivo eseguita dall'utente, percorrendo tutti gli scenari richiesti dal checkpoint di chiusura fase (`09-03-PLAN.md` Task 2). Esito: **tutti gli scenari A-F confermati "tutto ok"** dall'utente in risposta punto per punto:
+  - **Scenario A** (richiesta automatica al primo collegamento, SC1 di roadmap): confermato — "Controlla il telefono" mostrato sull'auto, dialogo di sistema apparso sul telefono senza interazione sull'auto.
+  - **Scenario B** (concessione e transizione automatica, SC2 di roadmap): confermato — passaggio automatico a velocità/"Ricerca segnale..." senza riavvio app/collegamento.
+  - **Scenario C** (primo rifiuto e retry, SC3 di roadmap): confermato — "Permesso GPS necessario" + azione "Riprova" mostrati, nessun loop del dialogo, retry funzionante a veicolo fermo.
+  - **Scenario D** (rifiuto permanente e apertura impostazioni): confermato — "Permesso negato. Apri le impostazioni sul telefono" + azione "Apri impostazioni" funzionante, transizione post-concessione dalle impostazioni confermata.
+  - **Scenario E** (quota e forma del template, Pitfall 4 mai verificato prima su questa variazione strutturale Row-sola ↔ Row+Action): confermato — nessuna chiusura dell'app da parte dell'host, nessun errore host, PID stabile durante tutte le transizioni.
+  - **Scenario F** (nessuna regressione): confermato — comportamento telefono (velocità/MAX/distanza/icona ricarica/switch "sempre acceso") invariato rispetto a v1.1, nessun crash in `adb logcat -b crash`.
+  - I tre Success Criteria di roadmap della Fase 9 sono quindi **confermati dal vivo su DHU**, cosi' come Pitfall 4 (transizione di forma del template) e' chiuso empiricamente.
+
+- **D-09:** **Scenario G / Pitfall 1 — limite di piattaforma esplicitamente accettato per v2.0.** La Javadoc di `CarContext.requestPermissions()` dichiara che l'host può ignorare silenziosamente la richiesta quando ritiene non sicuro mostrarla (es. veicolo già in movimento al momento del collegamento). Se questo accade, lo schermo auto può restare bloccato su "Controlla il telefono" finché il veicolo non si ferma e un nuovo ingresso in `STARTED` (es. scollegando/ricollegando) non rivaluta lo stato — le decisioni D-05/D-06 di questa fase non prevedono un'azione di sblocco manuale in quello stato. Alla domanda di chiarimento esplicita posta durante il checkpoint, l'utente ha risposto **"Accettato"**: il limite è accettato così com'è per la milestone v2.0, nessuna modifica alle decisioni D-05/D-06 richiesta (niente azione di retry aggiunta allo stato `Waiting`). Registrato anche in `STATE.md` come concern noto, sulla falsariga di SC2 in Fase 8 (D-11).
+
 ### Claude's Discretion
 - Testo esatto italiano per i messaggi "Controlla il telefono" (D-01, wording bloccato), rifiuto singolo e rifiuto permanente (D-02/D-04, tono/contenuto bloccato ma stringa esatta libera) — nomi delle risorse stringa.
 - Meccanismo tecnico per rilevare lo stato "permanentemente negato" dallo `Screen` auto (nota sotto D-04) — il researcher deve investigare le opzioni disponibili in `CarContext`/callback di `requestPermissions()`.
