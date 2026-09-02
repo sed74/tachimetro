@@ -6,6 +6,11 @@
     <string name="retry">Riprova</string>
     <string name="open_settings">Apri impostazioni</string>
     <string name="searching_gps_signal">Ricerca segnale GPS...</string>
+    <!-- CONN-01: stato neutro mostrato SUL TELEFONO quando Android Auto e' connesso (proiezione in
+         corso). Le stringhe con prefisso car_ sono invece rese dall'host Android Auto sullo
+         schermo dell'auto (Fasi 8-9); questa e' l'unica del file che parla di Android Auto ma vive
+         nell'interfaccia del telefono, per questo NON usa il prefisso car_. -->
+    <string name="android_auto_connected">Connesso ad Android Auto</string>
     <!-- D-02: copy dedicata allo schermo auto, distinta e piu' corta di searching_gps_signal -->
     <string name="car_searching_gps_signal">Ricerca segnale...</string>
     <!-- D-01: testo esatto bloccato, distinto da car_searching_gps_signal (attesa dialogo permesso vs attesa fix GPS) -->
