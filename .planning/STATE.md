@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Android Auto Support
 status: executing
-stopped_at: Phase 9 context gathered
-last_updated: "2026-09-02T11:50:51.248Z"
+stopped_at: Completed 09-02-PLAN.md
+last_updated: "2026-09-02T12:03:59.826Z"
 last_activity: 2026-09-02
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 6
-  completed_plans: 4
+  completed_plans: 5
   percent: 25
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-09-02)
 ## Current Position
 
 Phase: 09 (permesso-di-localizzazione-dallo-schermo-auto) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-09-02
 
@@ -61,6 +61,7 @@ Last activity: 2026-09-02
 
 *Updated after each plan completion*
 | Phase 09 P01 | 12min | 3 tasks | 4 files |
+| Phase 09 P02 | 10min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,7 @@ Recent decisions affecting current work:
 - [Phase 08]: SC4 (quota refresh) confermato PASS via sessione DHU dal vivo su telefono fisico (586 refresh/608s, cadenza 0.964/s)
 - [Phase 08]: SC1 fallito come formulato (limite strutturale PaneTemplate); accettato per v2.0, NavigationTemplate+SurfaceCallback rimandato a milestone v2.1 (08-CONTEXT.md D-12..D-14)
 - [Phase 08]: SC2 (perdita segnale) accettato senza test live, su richiesta esplicita dell utente; copertura solo indiretta via test unitari gia esistenti
+- [Phase 09]: Piano 02: SpeedScreen sostituisce il gate T-08-08 con una macchina a stati reattiva (permissionState + requestInFlight); requestPermissions() automatico su NotRequested, nessun rilancio automatico dopo un rifiuto (D-06), Denied distingue permanente da singolo via denialCount letto PRIMA di recordDenial() (D-04)
 
 ### Pending Todos
 
@@ -106,8 +108,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-02T11:50:51.235Z
-Stopped at: Phase 9 context gathered
+Last session: 2026-09-02T12:03:59.815Z
+Stopped at: Completed 09-02-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
