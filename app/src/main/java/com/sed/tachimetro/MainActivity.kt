@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+import com.sed.tachimetro.car.CarLinkState
 import com.sed.tachimetro.charging.ChargingState
 import com.sed.tachimetro.charging.ChargingStateProvider
 import com.sed.tachimetro.distance.DistanceDisplay
@@ -88,6 +89,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var distanceUnitText: TextView
     private lateinit var distanceStore: DistanceStore
     private var currentDistanceMeters: Float = 0f
+    // CONN-01: unico punto in memoria che rappresenta "Android Auto sta proiettando" sul
+    // telefono; il valore iniziale Disconnected garantisce che qualunque percorso eseguito
+    // prima della prima emissione dell'observer (Task 2) si comporti esattamente come in v1.1.
+    private var carLink: CarLinkState = CarLinkState.Disconnected
     private lateinit var keepScreenOnSwitch: SwitchCompat
     private lateinit var screenOnStore: ScreenOnPreferenceStore
     private lateinit var gpsSpeedProvider: GpsSpeedProvider
@@ -344,7 +349,14 @@ class MainActivity : AppCompatActivity() {
         retryButton.visibility = View.GONE
         unitText.visibility = View.GONE
         applyMessageAutosize()
-        messageText.text = getString(R.string.status_ready)
+        // CONN-01: showReady() e' invocata anche da onResume(), quindi senza questa condizione
+        // il ritorno in foreground con Android Auto gia' connesso mostrerebbe "Pronto" al posto
+        // del messaggio neutro.
+        messageText.text = if (carLink is CarLinkState.Connected) {
+            getString(R.string.android_auto_connected)
+        } else {
+            getString(R.string.status_ready)
+        }
         updateMaxArea()
         updateDistanceArea()
     }
@@ -357,6 +369,11 @@ class MainActivity : AppCompatActivity() {
         distanceText.visibility = View.GONE
         distanceUnitText.visibility = View.GONE
         applyMessageAutosize()
+        // CONN-01: precedenza deliberata -- quando il permesso di localizzazione manca, il
+        // messaggio di permesso e il pulsante Riprova hanno la precedenza sullo stato neutro
+        // di Android Auto, perche' sono l'unica via per rendere di nuovo utilizzabile l'app;
+        // sostituirli con "Connesso ad Android Auto" toglierebbe all'utente l'unica azione
+        // disponibile. Per questo showDenied() non consulta mai carLink.
         val permanentlyDenied =
             !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
         messageText.text = if (permanentlyDenied) {
@@ -371,8 +388,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updatePlaceholder(state: SpeedState) {
+    // CONN-01: unico punto di decisione del rendering dell'area velocita', a conoscenza dello
+    // stato del collegamento auto (carLink). Nessun aggiornamento di massimo/distanza qui
+    // dentro -- quelli restano in updatePlaceholder() (vedi commento li').
+    private fun renderSpeedArea(state: SpeedState) {
         retryButton.visibility = View.GONE
+        // CONN-01: quando Android Auto e' connesso, il telefono mostra lo stato neutro al
+        // posto del numero di velocita' -- return anticipato, il when sottostante non viene
+        // eseguito.
+        if (carLink is CarLinkState.Connected) {
+            unitText.visibility = View.GONE
+            // messageText puo' arrivare da applySpeedAutosize(), che lascia maxLines = 1 e un
+            // tetto di 300sp: senza il ripristino qui il messaggio verrebbe compresso su una
+            // riga sola invece di andare a capo (stesso motivo gia' documentato nel commento di
+            // applyMessageAutosize()).
+            applyMessageAutosize()
+            messageText.text = getString(R.string.android_auto_connected)
+            return
+        }
         when (state) {
             is SpeedState.Searching, is SpeedState.NoSignal -> {
                 unitText.visibility = View.GONE
@@ -387,33 +420,47 @@ class MainActivity : AppCompatActivity() {
                 unitText.visibility = View.VISIBLE
                 applySpeedAutosize()
                 messageText.text = state.kmh.toString()
-
-                // D-07: update and persist the session max immediately whenever the current
-                // reading exceeds it -- no batching to onPause()/onStop().
-                val newMax = reduceMax(currentMax, state.kmh)
-                if (newMax != currentMax) {
-                    currentMax = newMax
-                    maxSpeedStore.write(currentMax)
-                }
-
-                // DIST-03: scrittura immediata su disco ad ogni incremento, nessun batching su
-                // onPause()/onStop() -- cosi' un kill del processo non perde gli ultimi metri.
-                // D-04: il gate della soglia di rumore vive dentro reduceDistance(), non qui: a
-                // veicolo fermo state.kmh vale 0 e la funzione restituisce il totale invariato,
-                // quindi in quel caso non c'e' nemmeno una scrittura su disco.
-                // WR-03: passa esplicitamente GpsSpeedProvider.NOISE_FLOOR_KMH invece di
-                // affidarsi al default duplicato di reduceDistance(), cosi' le due soglie non
-                // possono divergere silenziosamente se quella di GpsSpeedProvider viene tarata.
-                val newDistance = reduceDistance(
-                    currentDistanceMeters, state.deltaMeters, state.kmh,
-                    noiseFloorKmh = GpsSpeedProvider.NOISE_FLOOR_KMH,
-                )
-                if (newDistance != currentDistanceMeters) {
-                    currentDistanceMeters = newDistance
-                    distanceStore.write(currentDistanceMeters)
-                }
             }
         }
+    }
+
+    private fun updatePlaceholder(state: SpeedState) {
+        renderSpeedArea(state)
+
+        // CONN-01: l'accumulo di massimo e distanza avviene FUORI dal ramo di rendering, quindi
+        // continua a funzionare identico mentre Android Auto e' connesso -- lo stato neutro
+        // sostituisce solo il numero della velocita', non sospende la registrazione del viaggio.
+        // Per lo stesso motivo updateMaxArea()/updateDistanceArea() NON vengono saltate nello
+        // stato neutro: le aree MAX e distanza restano visibili e aggiornate. Le scritture su
+        // disco restano esattamente le stesse di prima del refactor: maxSpeedStore.write() qui
+        // sotto e distanceStore.write() poco piu' in basso, mai spostate dentro renderSpeedArea().
+        if (state is SpeedState.Reading) {
+            // D-07: update and persist the session max immediately whenever the current
+            // reading exceeds it -- no batching to onPause()/onStop().
+            val newMax = reduceMax(currentMax, state.kmh)
+            if (newMax != currentMax) {
+                currentMax = newMax
+                maxSpeedStore.write(currentMax)
+            }
+
+            // DIST-03: scrittura immediata su disco ad ogni incremento, nessun batching su
+            // onPause()/onStop() -- cosi' un kill del processo non perde gli ultimi metri.
+            // D-04: il gate della soglia di rumore vive dentro reduceDistance(), non qui: a
+            // veicolo fermo state.kmh vale 0 e la funzione restituisce il totale invariato,
+            // quindi in quel caso non c'e' nemmeno una scrittura su disco.
+            // WR-03: passa esplicitamente GpsSpeedProvider.NOISE_FLOOR_KMH invece di
+            // affidarsi al default duplicato di reduceDistance(), cosi' le due soglie non
+            // possono divergere silenziosamente se quella di GpsSpeedProvider viene tarata.
+            val newDistance = reduceDistance(
+                currentDistanceMeters, state.deltaMeters, state.kmh,
+                noiseFloorKmh = GpsSpeedProvider.NOISE_FLOOR_KMH,
+            )
+            if (newDistance != currentDistanceMeters) {
+                currentDistanceMeters = newDistance
+                distanceStore.write(currentDistanceMeters)
+            }
+        }
+
         updateMaxArea()
         // DIST-02: chiamata incondizionatamente ad ogni emissione, esattamente come
         // updateMaxArea(), cosi' l'area resta visibile e coerente anche nei rami
