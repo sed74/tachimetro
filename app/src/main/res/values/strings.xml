@@ -8,6 +8,12 @@
     <string name="searching_gps_signal">Ricerca segnale GPS...</string>
     <!-- D-02: copy dedicata allo schermo auto, distinta e piu' corta di searching_gps_signal -->
     <string name="car_searching_gps_signal">Ricerca segnale...</string>
+    <!-- D-01: testo esatto bloccato, distinto da car_searching_gps_signal (attesa dialogo permesso vs attesa fix GPS) -->
+    <string name="car_check_your_phone">Controlla il telefono</string>
+    <!-- D-02: copy dedicata allo schermo auto, piu' corta di permission_denied -->
+    <string name="car_permission_denied">Permesso GPS necessario</string>
+    <!-- D-04: rifiuto permanente, indirizza alle impostazioni sul telefono -->
+    <string name="car_permission_denied_permanent">Permesso negato. Apri le impostazioni sul telefono</string>
     <string name="speed_kmh_format">%1$d km/h</string>
     <string name="unit_kmh">km/h</string>
     <string name="max_speed_format">MAX %1$d</string>
