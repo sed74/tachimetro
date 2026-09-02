@@ -14,7 +14,7 @@
 <body>
 
 <h1>Tachimetro — Informativa sulla privacy</h1>
-<p class="updated">Ultimo aggiornamento: 2026-08-22</p>
+<p class="updated">Ultimo aggiornamento: 2026-09-02</p>
 
 <p>Tachimetro ("l'app") è un'app Android che mostra la velocità GPS attuale a schermo intero. Questa informativa spiega come vengono trattati i dati quando usi l'app.</p>
 
@@ -28,9 +28,10 @@
 <p>L'app salva localmente sul dispositivo (tramite SharedPreferences di Android), senza mai trasmetterli altrove:</p>
 <ul>
   <li>la velocità massima raggiunta nella sessione corrente (un numero intero);</li>
+  <li>la distanza percorsa dall'ultimo azzeramento (un singolo numero in metri): è un totale aggregato, <strong>non</strong> un tracciato delle posizioni, e da esso non è ricostruibile alcun percorso né alcun luogo in cui sei stato;</li>
   <li>la preferenza "mantieni schermo acceso" (un valore vero/falso).</li>
 </ul>
-<p>Nessuno di questi dati è collegabile alla tua identità e nessuno di essi lascia il dispositivo.</p>
+<p>Nessuno di questi dati è collegabile alla tua identità e nessuno di essi lascia il dispositivo. Il pulsante "Azzera" nell'app riporta a zero in qualsiasi momento sia la velocità massima sia la distanza percorsa; disinstallare l'app cancella tutto.</p>
 
 <h2>Servizi di terze parti</h2>
 <p>L'app utilizza i Google Play Services esclusivamente per l'API di localizzazione (FusedLocationProviderClient). Non sono integrati SDK pubblicitari, di analisi (analytics) o di tracciamento di alcun tipo.</p>
@@ -47,7 +48,7 @@
 <div class="lang-divider"></div>
 
 <h1>Tachimetro — Privacy Policy</h1>
-<p class="updated">Last updated: 2026-08-22</p>
+<p class="updated">Last updated: 2026-09-02</p>
 
 <p>Tachimetro ("the app") is an Android app that displays your current GPS speed full-screen. This policy explains how data is handled when you use the app.</p>
 
@@ -61,9 +62,10 @@
 <p>The app stores locally on the device (via Android SharedPreferences), and never transmits elsewhere:</p>
 <ul>
   <li>the maximum speed reached in the current session (an integer);</li>
+  <li>the distance travelled since the last reset (a single number, in metres): it is an aggregate total, <strong>not</strong> a location trail — no route and no place you have been can be reconstructed from it;</li>
   <li>the "keep screen on" preference (a true/false value).</li>
 </ul>
-<p>Neither of these is linkable to your identity, and neither ever leaves the device.</p>
+<p>None of these is linkable to your identity, and none of them ever leaves the device. The "Reset" button in the app clears both the max speed and the travelled distance at any time; uninstalling the app deletes everything.</p>
 
 <h2>Third-party services</h2>
 <p>The app uses Google Play Services solely for the location API (FusedLocationProviderClient). No advertising SDKs, analytics, or tracking of any kind are integrated.</p>
