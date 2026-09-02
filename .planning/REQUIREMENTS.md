@@ -16,8 +16,8 @@ Requirements for the v2.0 milestone (Android Auto Support). Each maps to roadmap
 
 ### Connessione Android Auto
 
-- [ ] **CONN-01**: Quando Android Auto si connette, il telefono rilascia lo schermo sempre acceso (se attivo) e mostra uno stato neutro "Connesso ad Android Auto"
-- [ ] **CONN-02**: Alla disconnessione di Android Auto, il telefono ripristina esattamente il comportamento "sempre acceso" precedente (dalla preferenza salvata), senza reset indesiderati
+- [x] **CONN-01**: Quando Android Auto si connette, il telefono rilascia lo schermo sempre acceso (se attivo) e mostra uno stato neutro "Connesso ad Android Auto"
+- [x] **CONN-02**: Alla disconnessione di Android Auto, il telefono ripristina esattamente il comportamento "sempre acceso" precedente (dalla preferenza salvata), senza reset indesiderati
 
 ## Future Requirements (v1.x/v2+, non in questa milestone)
 
@@ -41,7 +41,7 @@ Requirements for the v2.0 milestone (Android Auto Support). Each maps to roadmap
 | AA-02 | Phase 8 | Complete |
 | AA-03 | Phase 8 | Complete |
 | AA-04 | Phase 9 | Complete |
-| CONN-01 | Phase 10 | Pending |
-| CONN-02 | Phase 10 | Pending |
+| CONN-01 | Phase 10 | Complete |
+| CONN-02 | Phase 10 | Complete |
 
 Coverage: 6/6 v2.0 requirements mapped. Phase 11 (Hardening di Produzione e Verifica su Dispositivo Reale) introduces no new requirement IDs — it validates AA-01..AA-04 and CONN-01/CONN-02 under production conditions (real `HostValidator`, real-device background-location behavior).
