@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-02T19:43:48.882Z",
+  "phase": null,
+  "phase_name": null,
+  "phase_dir": null,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "clean_stop",
+  "completed_tasks": [
+    {"id": "validate-phase-10", "name": "Nyquist validation audit for Phase 10", "status": "done", "commit": "3c401ea"},
+    {"id": "settings-update", "name": "Enable Nyquist validation, model profile -> quality", "status": "done", "commit": "0d9d798"},
+    {"id": "audit-milestone-v2.0", "name": "Milestone v2.0 audit (requirements + integration check)", "status": "done", "commit": "e42f7b7"},
+    {"id": "quick-260902-qr8-plan01", "name": "Fix v1.1 data-safety inaccuracy (distance not disclosed)", "status": "done", "commit": "2848ecd"},
+    {"id": "quick-260902-qr8-plan02", "name": "Sync playstore/ to v2.0 (Android Auto) after user's own version bump", "status": "done", "commit": "9f8159c"}
+  ],
+  "remaining_tasks": [
+    {"id": "phase-11", "name": "Discuss/plan/execute Phase 11 (Hardening di Produzione e Verifica su Dispositivo Reale)", "status": "not_started"},
+    {"id": "validate-phase-08", "name": "Nyquist validation audit for Phase 8 (missing 08-VALIDATION.md)", "status": "not_started"},
+    {"id": "validate-phase-09", "name": "Nyquist validation audit for Phase 9 (missing 09-VALIDATION.md)", "status": "not_started"}
+  ],
+  "blockers": [],
+  "human_actions_pending": [
+    {"action": "Build playstore/apk/tachimetro-2.0-unsigned.apk and tachimetro-2.0.aab from HEAD (not the old v1.1 tag)", "context": "User explicitly took ownership of the build (\"il file aab lo creo io\"); playstore/README.md documents exact gradle commands and output paths", "blocking": false},
+    {"action": "Sign the release build", "context": "keystore.properties does not exist in the repo (gitignored, must be created from keystore.properties.example with real credentials)", "blocking": true},
+    {"action": "Capture v2.0 screenshots including at least one Android Auto screen", "context": "Requires a real device (charging state + real GPS movement) and a DHU session or physical head unit for the car screen — not automatable", "blocking": false},
+    {"action": "Host privacy_policy.html at a public URL and fill in the two email placeholders (IT+EN)", "context": "Play Console requires a public URL, not a file; placeholders are '[inserire indirizzo email di contatto]' / '[insert contact email address]'", "blocking": true},
+    {"action": "Fill Play Console forms manually using playstore/listing, data_safety.md, content_rating.md as reference", "context": "Not automatable via files", "blocking": true},
+    {"action": "Decide when to run Phase 11 (real HostValidator instead of ALLOW_ALL_HOSTS_VALIDATOR)", "context": "User already bumped the app to versionCode=3/versionName=2.0 and chose to publish v2.0 marketing material with this gap explicitly disclosed only in playstore/README.md (internal note), accepting the risk for this release. Phase 11 is the roadmap item that closes it.", "blocking": false}
+  ],
+  "decisions": [
+    {"decision": "Enabled workflow.nyquist_validation and set model_profile to 'quality' in .planning/config.json", "rationale": "User ran /gsd-settings after /gsd-validate-phase 10 exited because Nyquist was disabled", "phase": null},
+    {"decision": "Phase 10 Nyquist audit found zero gaps — all tasks already had automated verify commands and CONN-01/CONN-02 have 16 JVM tests", "rationale": "State B reconstruction from SUMMARY.md files, no auditor agent spawn needed", "phase": "10"},
+    {"decision": "Milestone v2.0 audit returned gaps_found status, sole gap being Phase 11 not started (expected/planned, not a regression)", "rationale": "All 6 requirements (AA-01..04, CONN-01/02) satisfied and cross-phase-wired per gsd-integration-checker; 4 INFO-level findings, none blocking", "phase": null},
+    {"decision": "playstore/ quick task 260902-qr8 was split into two plans mid-execution: plan 01 assumed the app would stay on v1.1 (recommended building the release from the v1.1 git tag, not HEAD, to avoid shipping un-hardened Android Auto code); plan 02 reversed that framing after the user bumped the version to 2.0 themselves and explicitly confirmed they want v2.0/Android Auto described in the store listing, accepting the ALLOW_ALL_HOSTS_VALIDATOR gap as a disclosed, Phase-11-pending risk", "rationale": "User's own commit (69de1e2) and explicit AskUserQuestion answer superseded the original assumption mid-task", "phase": null},
+    {"decision": "ALLOW_ALL_HOSTS_VALIDATOR risk note is confined to playstore/README.md (internal working doc) and explicitly excluded from listing/release-notes/data_safety/content_rating/privacy_policy (consumer/Play-Console-facing) — verified by an automated grep gate", "rationale": "It's not a data-safety disclosure item (concerns which Android Auto hosts can bind to the car service, not data collection/sharing) and has no meaning to an end user or Play Console reviewer", "phase": null}
+  ],
+  "uncommitted_files": [],
+  "next_action": "Run /gsd:discuss-phase 11 to start the last v2.0 milestone phase (Hardening di Produzione e Verifica su Dispositivo Reale — real HostValidator + real-device background-location verification), or handle the playstore/ human_actions_pending items (build/sign/screenshot/host/Play-Console-forms) if publishing is the immediate priority instead.",
+  "context_notes": "Nothing is actually mid-flight — every task this session (phase-10 validation, settings, milestone audit, both playstore quick-task plans) completed cleanly and is committed on master. This handoff exists mostly to record two process hazards discovered this session (see Critical Anti-Patterns in .continue-here.md) and to surface the still-open manual publishing steps and the still-open Phase 11 work, not to resume an interrupted task."
+}
