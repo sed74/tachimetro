@@ -1,3 +1,4 @@
+<it-IT>
 Novità della versione 2.0:
 
 • Supporto Android Auto: la velocità compare anche sullo schermo dell'auto, aggiornata ogni secondo
@@ -5,3 +6,13 @@ Novità della versione 2.0:
 • Il permesso di localizzazione può essere concesso direttamente dallo schermo auto
 • Quando Android Auto è connesso il telefono mostra un messaggio neutro e rilascia lo schermo sempre acceso; alla disconnessione ripristina l'impostazione precedente
 • Nessuna pubblicità, nessuna connessione a Internet
+</it-IT>
+<en-US>
+What's new in version 2.0:
+
+• Android Auto support: your speed also appears on the car screen, updated every second
+• The car screen shows "Searching for signal..." when GPS is unavailable, instead of a stale value
+• Location permission can be granted directly from the car screen
+• When Android Auto is connected the phone shows a neutral message and releases the always-on screen; on disconnect it restores the previous setting
+• No ads, no Internet connection
+</en-US>

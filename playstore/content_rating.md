@@ -3,6 +3,8 @@
 Sezione Play Console: **Criteri per i contenuti > Classificazione dei contenuti**.
 Categoria app suggerita: **Auto e veicoli** (Auto & Vehicles) — alternativa: **Strumenti** (Tools).
 
+Con il supporto Android Auto introdotto nella versione 2.0, la categoria primaria **Auto e veicoli** risulta ancora più appropriata. Le risposte al questionario qui sotto sono state verificate contro il comportamento della 2.0 e restano invariate: le funzionalità Android Auto non introducono permessi nuovi, accesso a Internet, condivisione della posizione, contenuti generati dagli utenti né pubblicità.
+
 ## Risposte suggerite al questionario IARC
 
 Tachimetro non contiene alcun contenuto generato dall'app stessa: nessuna violenza, nessun contenuto sessuale, nessuna sostanza controllata, nessun linguaggio volgare, nessun contenuto pauroso/horror, nessun gioco d'azzardo simulato.

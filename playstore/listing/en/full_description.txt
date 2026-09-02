@@ -13,10 +13,17 @@ KEY FEATURES
 • Trip distance since the last reset, shown in the bottom-right corner, measured while the app is open and saved between sessions
 • Charging indicator: animated lightning icon, visible only while the phone is charging
 
+ANDROID AUTO
+• Your current speed also appears on the car's Android Auto screen, updated every second just like on the phone
+• When the GPS signal drops, the car screen shows "Searching for signal..." instead of a stale value
+• If location permission hasn't been granted yet, you can grant it starting from the car screen — no need to open the app on your phone first
+• While Android Auto is connected the phone stops keeping the screen on and shows a neutral message; on disconnect it goes back to exactly how it was
+• The car screen's look (text size and style) is controlled by Android Auto itself, as with every compatible app
+
 PRIVACY FIRST
 Tachimetro does not request Internet access: no data ever leaves your phone. GPS location is used solely to compute the speed shown on screen — it is never saved, shared, or transmitted anywhere.
 
 REQUIREMENTS
-Requires precise (GPS) location permission and Google Play Services. Compatible with Android 11 and later.
+Requires precise (GPS) location permission and Google Play Services. Compatible with Android 11 and later. Android Auto support requires an Android Auto compatible car or head unit.
 
 Tachimetro does one thing: show you how fast you're going, with nothing in the way.
