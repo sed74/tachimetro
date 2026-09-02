@@ -153,3 +153,7 @@ Nessuno stub rilevato. I file creati nei Task 1-2 (`SpeedScreenTemplateTest.kt`,
 ## Threat Flags
 
 Nessuna nuova superficie non coperta dal `<threat_model>` del piano. T-08-11 (quota refresh, mitigate) chiuso con esito PASS empirico; T-08-12 (log logcat catturati dallo script, mitigate) invariato; T-08-13/T-08-14 invariati. Nessun nuovo endpoint di rete, percorso di autenticazione o schema dati introdotto da questa chiusura documentale.
+
+## Self-Check: PASSED
+
+All files verified present on disk: `app/src/androidTest/java/com/sed/tachimetro/car/SpeedScreenTemplateTest.kt` (Task 1), `scripts/dhu-quota-check.ps1` and `docs/dhu-quota-verification.md` (Task 2), this `08-03-SUMMARY.md`. All commits verified present in `git log --oneline --all`: `76904a9` (Task 1), `2745314` (Task 2), `73c53e4` (this SUMMARY), `f842862` (ROADMAP.md/STATE.md tracking), `45b161f` (removal of consumed HANDOFF.json/.continue-here.md). Working tree clean, no untracked files.
