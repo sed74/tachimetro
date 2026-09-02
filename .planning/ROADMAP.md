@@ -89,7 +89,20 @@ Plans:
   2. Concedendo il permesso dalla richiesta mostrata sullo schermo auto, lo schermo passa automaticamente alla velocità (o allo stato "Ricerca segnale") senza richiedere il riavvio dell'app o del collegamento
   3. Se l'utente nega il permesso dallo schermo auto, viene mostrato un messaggio chiaro che spiega l'impossibilità di leggere la velocità, invece di uno schermo vuoto
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 09-01-PLAN.md — Fondamenta pure: modello `CarPermissionState`, resolver del rifiuto permanente, contatore persistito dei rifiuti e stringhe italiane dedicate all'auto (wave 1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 09-02-PLAN.md — `SpeedScreen`: richiesta automatica via `CarContext.requestPermissions()`, transizione reattiva alla concessione, Action Riprova/Apri impostazioni nel `PaneTemplate` (wave 2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 09-03-PLAN.md — Verifica: test strumentato della forma del template per ogni stato del permesso e checkpoint umano della sessione DHU sul flusso completo (wave 3)
 
 ### Phase 10: Comportamento del Telefono alla Connessione Android Auto
 
@@ -132,6 +145,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Indicatore di Ricarica | v1.1 | 4/4 | Complete | 2026-08-29 |
 | 7. Distanza Percorsa e Reset Unificato | v1.1 | 4/4 | Complete | 2026-08-30 |
 | 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
-| 9. Permesso di Localizzazione dallo Schermo Auto | v2.0 | 0/TBD | Not started | - |
+| 9. Permesso di Localizzazione dallo Schermo Auto | v2.0 | 0/3 | Planned | - |
 | 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 0/TBD | Not started | - |
 | 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 0/TBD | Not started | - |
