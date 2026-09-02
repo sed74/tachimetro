@@ -12,7 +12,7 @@ Basato sul comportamento reale del codice (vedi `AndroidManifest.xml`: unico per
 
 | Categoria | Tipo | Raccolto? | Condiviso? | Note |
 |---|---|---|---|---|
-| Posizione | Posizione precisa | Sì | No | Usata solo per calcolare la velocità mostrata a schermo; elaborata in memoria, mai salvata su disco, mai trasmessa (nessun permesso INTERNET). |
+| Posizione | Posizione precisa | Sì | No | Usata solo per calcolare la velocità mostrata a schermo; elaborata in memoria, mai trasmessa (nessun permesso INTERNET). **Nessuna coordinata GPS viene mai salvata su disco**: l'unico valore derivato dagli spostamenti che viene persistito localmente è la distanza percorsa, un singolo numero aggregato (metri totali) da cui non è ricostruibile alcun percorso né alcuna posizione. |
 | Posizione | Posizione approssimativa | No | No | Non richiesta (solo ACCESS_FINE_LOCATION, nessun fallback coarse — vedi commento in AndroidManifest.xml). |
 
 Tutte le altre categorie (informazioni personali, informazioni finanziarie, contatti, cronologia di navigazione, cronologia ricerche, identificativi dispositivo/altri, ecc.) → **non raccolte**.
@@ -21,9 +21,9 @@ Tutte le altre categorie (informazioni personali, informazioni finanziarie, cont
 
 - **Finalità della raccolta:** Funzionalità dell'app (mostrare la velocità corrente).
 - **Il dato è facoltativo o obbligatorio?** Obbligatorio (l'app non ha funzione senza).
-- **Il dato viene elaborato in modo effimero?** Sì — usato al volo per il calcolo, non persistito.
+- **Il dato viene elaborato in modo effimero?** Sì — la posizione è usata al volo per il calcolo e non è persistita; l'unico residuo su disco è la distanza percorsa, un totale aggregato in metri, non una posizione.
 - **Il dato viene trasmesso in modo crittografato in transito?** Non applicabile — non lascia mai il dispositivo.
-- **Gli utenti possono richiedere la cancellazione dei dati?** Non applicabile — nessun dato viene salvato o trasmesso da cancellare; disinstallare l'app rimuove ogni traccia locale (max velocità sessione, preferenza schermo).
+- **Gli utenti possono richiedere la cancellazione dei dati?** Non applicabile — nessun dato viene trasmesso da cancellare; disinstallare l'app rimuove ogni traccia locale (max velocità sessione, distanza percorsa, preferenza schermo). Il pulsante "Azzera" nell'app riporta a zero sia la velocità massima sia la distanza percorsa in qualsiasi momento.
 
 ## Pratiche di sicurezza
 
@@ -32,4 +32,10 @@ Tutte le altre categorie (informazioni personali, informazioni finanziarie, cont
 
 ## Nota per chi compila il form in Play Console
 
-Le uniche due voci persistite localmente (max velocità sessione, preferenza "schermo sempre acceso") sono semplici preferenze funzionali, non raccolgono identificatori e non vengono mai dichiarate come "raccolta dati" nel form standard di Play Console (che riguarda dati raccolti/trasmessi, non le SharedPreferences locali) — ma è corretto menzionarle qui per completezza e trasparenza.
+Alla versione 1.1 l'app persiste localmente **tre** sole voci, tutte in SharedPreferences app-private:
+
+1. **Velocità massima di sessione** — un numero intero in km/h (`MaxSpeedStore`);
+2. **Distanza percorsa dall'ultimo azzeramento** — un singolo numero in metri (`DistanceStore`), un totale aggregato, non un tracciato di posizioni;
+3. **Preferenza "schermo sempre acceso"** — un valore vero/falso (`ScreenOnPreferenceStore`).
+
+Sono semplici valori funzionali, non raccolgono identificatori, non lasciano mai il dispositivo e non vengono dichiarate come "raccolta dati" nel form standard di Play Console (che riguarda dati raccolti/trasmessi, non le SharedPreferences locali) — ma è corretto menzionarle qui per completezza e trasparenza. Tutte e tre sono cancellabili dall'utente: le prime due con il pulsante "Azzera" nell'app, tutte con la disinstallazione.
