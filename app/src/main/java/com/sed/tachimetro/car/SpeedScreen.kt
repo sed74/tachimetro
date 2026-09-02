@@ -12,6 +12,7 @@ import androidx.car.app.Screen
 import androidx.car.app.model.Action
 import androidx.car.app.model.Pane
 import androidx.car.app.model.PaneTemplate
+import androidx.car.app.model.ParkedOnlyOnClickListener
 import androidx.car.app.model.Row
 import androidx.car.app.model.Template
 import androidx.core.content.ContextCompat
@@ -205,35 +206,111 @@ class SpeedScreen(carContext: CarContext) : Screen(carContext) {
         carContext.startActivity(intent)
     }
 
-    override fun onGetTemplate(): Template {
-        templateBuildCount++
-        val content = carSpeedContent(latestState)
+    /**
+     * Costruisce il [PaneTemplate] per lo stato di permesso e velocita' correnti. Pubblica come
+     * seam di test: permette al test strumentato del Piano 03 di verificare la forma del
+     * template per ogni stato del permesso senza dipendere dallo stato reale del permesso sul
+     * dispositivo di test. Nessun effetto collaterale, non legge campi mutabili -- riceve tutto
+     * per parametro.
+     */
+    fun buildTemplate(permission: CarPermissionState, speed: SpeedState): PaneTemplate {
+        val pane = Pane.Builder()
 
-        if (BuildConfig.DEBUG) {
-            val contentLabel = when (content) {
+        when (permission) {
+            // Ramo invariato dalla Fase 8: il contenuto della Row proviene dal contratto puro
+            // carSpeedContent(). Nessuna Action in questo ramo.
+            CarPermissionState.Granted -> {
+                val content = carSpeedContent(speed)
+                val row = when (content) {
+                    // D-01: solo le cifre nel titolo, unita' in uno slot separato, mai concatenata.
+                    is CarSpeedContent.Speed -> Row.Builder()
+                        .setTitle(content.kmh.toString())
+                        .addText(carContext.getString(R.string.unit_kmh))
+                        .build()
+                    // D-02: nessun addText, l'unita' non va mostrata quando non c'e' un valore.
+                    is CarSpeedContent.Searching -> Row.Builder()
+                        .setTitle(carContext.getString(R.string.car_searching_gps_signal))
+                        .build()
+                }
+                pane.addRow(row)
+            }
+            // D-01: il dialogo e' sul telefono, sull'auto non c'e' nulla da toccare. D-06:
+            // nessun retry offerto prima che un rifiuto sia arrivato.
+            CarPermissionState.NotRequested, CarPermissionState.Waiting -> {
+                pane.addRow(
+                    Row.Builder()
+                        .setTitle(carContext.getString(R.string.car_check_your_phone))
+                        .build()
+                )
+            }
+            // D-02/D-03/D-04: mirror esatto dello switch a due stati di
+            // MainActivity.showDenied() -- messaggio e titolo dell'Action cambiano insieme sullo
+            // stesso booleano permanent.
+            is CarPermissionState.Denied -> {
+                val messageRes = if (permission.permanent) {
+                    R.string.car_permission_denied_permanent
+                } else {
+                    R.string.car_permission_denied
+                }
+                pane.addRow(
+                    Row.Builder().setTitle(carContext.getString(messageRes)).build()
+                )
+                val actionTitleRes = if (permission.permanent) {
+                    R.string.open_settings
+                } else {
+                    R.string.retry
+                }
+                // ParkedOnlyOnClickListener non e' opzionale: e' quanto prescrive la Javadoc di
+                // CarContext.requestPermissions() per le azioni che rimandano l'utente al
+                // telefono -- l'host mostra da solo il messaggio "solo da fermi" (T-09-08), nessuna
+                // logica di driving-state fatta in casa.
+                pane.addAction(
+                    Action.Builder()
+                        .setTitle(carContext.getString(actionTitleRes))
+                        .setOnClickListener(
+                            ParkedOnlyOnClickListener.create { onRetryOrSettingsClicked() }
+                        )
+                        .build()
+                )
+            }
+        }
+
+        // D-03 (Fase 8) / D-07 (Fase 9): nessun titolo testuale ne' branding dentro lo schermo,
+        // in nessuno stato. PaneTemplate richiede almeno uno tra titolo e header action;
+        // Action.APP_ICON soddisfa il vincolo senza mostrare testo.
+        return PaneTemplate.Builder(pane.build())
+            .setHeaderAction(Action.APP_ICON)
+            .build()
+    }
+
+    // T-08-07/T-09-09: etichetta del contenuto per il solo log diagnostico (BuildConfig.DEBUG) --
+    // nessun valore di velocita' ne' dato di posizione oltre a quanto gia' presente.
+    private fun templateLogLabel(permission: CarPermissionState, speed: SpeedState): String =
+        when (permission) {
+            CarPermissionState.Granted -> when (carSpeedContent(speed)) {
                 is CarSpeedContent.Speed -> "Speed"
                 is CarSpeedContent.Searching -> "Searching"
             }
-            Log.d(LOG_TAG, "onGetTemplate #$templateBuildCount content=$contentLabel")
+            CarPermissionState.NotRequested -> "PermissionNotRequested"
+            CarPermissionState.Waiting -> "PermissionWaiting"
+            is CarPermissionState.Denied -> if (permission.permanent) {
+                "PermissionDeniedPermanent"
+            } else {
+                "PermissionDenied"
+            }
         }
 
-        val row = when (content) {
-            // D-01: solo le cifre nel titolo, unita' in uno slot separato, mai concatenata.
-            is CarSpeedContent.Speed -> Row.Builder()
-                .setTitle(content.kmh.toString())
-                .addText(carContext.getString(R.string.unit_kmh))
-                .build()
-            // D-02: nessun addText, l'unita' non va mostrata quando non c'e' un valore.
-            is CarSpeedContent.Searching -> Row.Builder()
-                .setTitle(carContext.getString(R.string.car_searching_gps_signal))
-                .build()
+    override fun onGetTemplate(): Template {
+        templateBuildCount++
+        val permission = permissionState.value
+
+        if (BuildConfig.DEBUG) {
+            Log.d(
+                LOG_TAG,
+                "onGetTemplate #$templateBuildCount content=${templateLogLabel(permission, latestState)}",
+            )
         }
 
-        // D-03: nessun titolo testuale ne' branding dentro lo schermo. PaneTemplate richiede
-        // almeno uno tra titolo e header action; Action.APP_ICON soddisfa il vincolo senza
-        // mostrare testo.
-        return PaneTemplate.Builder(Pane.Builder().addRow(row).build())
-            .setHeaderAction(Action.APP_ICON)
-            .build()
+        return buildTemplate(permission, latestState)
     }
 }
