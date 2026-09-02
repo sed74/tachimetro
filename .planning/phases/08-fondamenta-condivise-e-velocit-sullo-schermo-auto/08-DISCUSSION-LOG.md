@@ -103,3 +103,41 @@
 ## Deferred Ideas
 
 None — discussion stayed within phase scope.
+
+---
+
+# Aggiornamento 2026-09-02 — dopo verifica DHU dal vivo
+
+> Sessione di discussione riaperta dopo l'esecuzione reale del checkpoint SC4/Task 3 del piano 08-03. La verifica DHU (su telefono fisico) ha confermato SC4/SC5 ma rivelato che SC1 fallisce con l'implementazione `PaneTemplate` attuale (numero piccolo, in alto a sinistra, icona app forzata) — limite strutturale dell'API, non un bug.
+
+**Areas discussed:** Layout schermo Android Auto (PaneTemplate vs Surface/NavigationTemplate), Tempistica del passaggio a Surface
+
+---
+
+## Layout schermo Android Auto
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| Resta su PaneTemplate ora | Chiudi la Fase 8 così com'è (numero piccolo, icona, categoria POI, pubblicazione Play Store semplice) | |
+| Passa a Surface/NavigationTemplate ora | Riapri la Fase 8: Canvas custom, categoria NAVIGATION, revisione Play Store più severa in produzione | |
+| PaneTemplate ora, Surface dopo | Chiudi la Fase 8 con PaneTemplate per sbloccare v2.0, pianifica esplicitamente Surface come lavoro futuro | ✓ |
+
+**User's choice:** PaneTemplate ora, Surface dopo
+**Notes:** Nessuna modifica di codice per SC1 in questa fase (D-13). Visual spec raccolta per il lavoro futuro: numero grande e centrato, unità in basso a destra, nessuna icona.
+
+---
+
+## Tempistica del passaggio a Surface
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| Dopo tutta v2.0 (milestone v2.1) | Completa Fasi 9-11 come pianificato, poi apri v2.1 dedicata | ✓ |
+| Inserita dentro v2.0 | Nuova fase nel roadmap v2.0 attuale prima di concludere la milestone | |
+
+**User's choice:** Dopo tutta v2.0 (milestone v2.1)
+
+---
+
+## Deferred Ideas (aggiornamento 2026-09-02)
+
+- Passaggio a `NavigationTemplate`+`SurfaceCallback` per lo schermo Android Auto (numero grande e centrato, unità in basso a destra, nessuna icona) — rimandato a milestone v2.1, riapre la categoria NAVIGATION. Vedi `08-CONTEXT.md` D-14 e sezione `<deferred>`.

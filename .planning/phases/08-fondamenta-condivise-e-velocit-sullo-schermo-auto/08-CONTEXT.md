@@ -1,6 +1,7 @@
 # Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto - Context
 
 **Gathered:** 2026-08-31
+**Updated:** 2026-09-02 (dopo verifica DHU dal vivo — vedi D-11..D-14)
 **Status:** Ready for planning
 
 <domain>
@@ -36,6 +37,12 @@ Fuori scope per questa fase (già deciso a livello di milestone/roadmap, non ria
 - **D-08:** La sessione di test empirico dura **5-10 minuti** di refresh continuo simulato a 1Hz — sufficiente a rivelare un esaurimento rapido della quota, coerente con "alcuni minuti" del goal di fase.
 - **D-09:** La verifica gira su un **AVD emulator di Android Studio** connesso a DHU (Desktop Head Unit) con Developer Mode/debug overlay attivo — non richiede un telefono fisico. Questo è un cambio rispetto all'assunzione iniziale di `.planning/research/PITFALLS.md` (Pitfall 7: "richiede un telefono reale via USB") — la documentazione ufficiale DHU supporta anche un emulatore (API 23+, Google Play). Il telefono fisico resta necessario solo per la Fase 11 (comportamento background-location a telefono bloccato durante una guida reale), fuori scope qui.
 - **D-10:** L'esecuzione va automatizzata dove possibile (script/istruzioni riproducibili per lanciare l'AVD + DHU + il conteggio dei refresh), ma la conferma finale di superamento resta un checkpoint umano — coerente con il pattern già usato in tutte le fasi precedenti (v1.0/v1.1), dato che il rendering visivo e il comportamento dell'host DHU non sono verificabili solo da codice/test automatici.
+
+### Esito verifica DHU e decisione layout (aggiunto 2026-09-02, dopo sessione DHU dal vivo)
+- **D-11:** Sessione DHU dal vivo eseguita su **telefono fisico** (OnePlus 8T via USB) invece dell'AVD instabile — deviazione da D-09 solo per problemi infrastrutturali di quella sessione, non una revisione della decisione. Esito: **SC4 (quota refresh) CONFERMATO PASS** (586 refresh in 608s, cadenza media 0.964/s, nessun gap oltre 3.1s, processo mai terminato/cambiato, host non ha mai chiuso l'app — confermato sia dallo script sia dall'utente a occhio) e **SC5 (nessuna regressione telefono) CONFERMATO**. **SC2 (perdita segnale GPS) NON ANCORA TESTATO** — resta da verificare prima di poter chiudere il Task 3/piano 08-03.
+- **D-12:** **SC1 (numero grande e leggibile) osservato FALLIRE** nell'implementazione `PaneTemplate` attuale — il numero appare piccolo, allineato in alto a sinistra, con l'icona dell'app anch'essa forzata in alto a sinistra (screenshot utente, sessione 2026-09-02). Causa strutturale, non un bug: `PaneTemplate`/`Row` non espone alcuna API per font size, allineamento o posizione del testo (rendering interamente host-controlled); e richiede un titolo testuale O un header action per costruirsi (D-03 esclude il titolo testuale, quindi `Action.APP_ICON` resta l'unica opzione valida, non rimovibile restando su questo template).
+- **D-13 (decisione presa in questa discussione):** Per v2.0 **si accetta il layout host-controlled di `PaneTemplate` così com'è** — nessun'altra modifica di codice va tentata su questo fronte per la Fase 8 (non esistono leve API per ottenerlo). `AA-01` resta soddisfatto nell'accezione già scritta in `REQUIREMENTS.md` ("stile/tipografia gestiti dall'host"), non nell'accezione "grande come sul telefono" — questa tensione è nota e accettata consapevolmente, non un compromesso silenzioso.
+- **D-14 (decisione presa in questa discussione):** Il passaggio a **`NavigationTemplate` + `SurfaceCallback`** (disegno Canvas custom: numero grande e centrato, unità di misura posizionabile, nessuna icona forzata) è rimandato esplicitamente a una **milestone v2.1 dedicata**, DOPO il completamento delle Fasi 9-11 di v2.0 — non inserito come fase aggiuntiva dentro v2.0. Questo riapre la decisione di categoria (`NAVIGATION` invece di `POI`), con revisione Play Store più severa in produzione (ma testabile su canali interni/Internal Test Track senza quella revisione) — da affrontare esplicitamente in fase di roadmap v2.1, non anticipato qui. Vedi `<deferred>` per la visual spec raccolta.
 
 ### Claude's Discretion
 - Nome esatto della nuova risorsa stringa per "Ricerca segnale..." (es. `car_searching_gps_signal`) — solo il testo è deciso, non l'identificatore.
@@ -93,14 +100,20 @@ No external specs (nessun SPEC.md per questa fase) — requisiti pienamente catt
 - Il numero sul template auto deve rispecchiare la separazione visiva phone (digit dominante + unità piccola separata, D-01), anche sapendo che lo stile finale è host-controlled.
 - Testo "nessun segnale" per l'auto: esattamente **"Ricerca segnale..."** (D-02) — non "Nessun segnale" (opzione scartata) né il testo identico al telefono.
 - Nessun titolo "Tachimetro" o branding testuale sul template (D-03).
-- Verifica quota via emulatore Android Studio + DHU, non telefono fisico, con automazione dove possibile (D-09/D-10) — deviazione esplicita e consapevole dall'assunzione "telefono reale" di PITFALLS.md Pitfall 7 per questo specifico test (rendering/quota), non per i test di background-location della Fase 11.
+- Verifica quota via emulatore Android Studio + DHU, non telefono fisico, con automazione dove possibile (D-09/D-10) — deviazione esplicita e consapevole dall'assunzione "telefono reale" di PITFALLS.md Pitfall 7 per questo specifico test (rendering/quota), non per i test di background-location della Fase 11. **Aggiornamento 2026-09-02:** la verifica effettivamente eseguita ha usato un telefono fisico via DHU (non l'AVD) per aggirare un'instabilità infrastrutturale — vedi D-11.
+- **Visual spec per l'eventuale schermo Surface/NavigationTemplate (v2.1, NON v2.0)**, raccolta dall'utente in questa sessione: numero grande e centrato nello schermo (come sul telefono); unità di misura ("km/h") allineata in basso a destra; nessuna icona app visibile. Non applicabile a `PaneTemplate`/v2.0 (D-13) — riferimento per quando si pianificherà v2.1 (D-14).
 
 </specifics>
 
 <deferred>
 ## Deferred Ideas
 
-None — discussion stayed within phase scope.
+### Passaggio a Surface/NavigationTemplate per lo schermo auto (milestone v2.1, non v2.0)
+- Emerso il 2026-09-02 dopo la sessione DHU dal vivo: `PaneTemplate` (categoria POI) non può dare un numero grande/centrato con posizione custom dell'unità e nessuna icona — limite strutturale dell'API (D-12), non un bug.
+- Decisione presa: rimandare esplicitamente a una milestone v2.1 dedicata, dopo il completamento delle Fasi 9-11 di v2.0 (D-14) — non una fase aggiuntiva dentro v2.0.
+- Visual spec già raccolta dall'utente (vedi `<specifics>`): numero grande e centrato, unità in basso a destra, nessuna icona.
+- Implica riaprire la decisione di categoria da `POI` a `NAVIGATION` — revisione Play Store più severa in produzione, ma testabile su canali interni (Internal Test Track/Internal App Sharing) senza quella revisione. Da riconfermare esplicitamente quando si pianificherà v2.1.
+- Riferimento tecnico già in archivio: `.planning/research/STACK.md` (sezioni "What NOT to Use" e "Alternatives Considered") — confronto PaneTemplate vs NavigationTemplate+SurfaceCallback già documentato.
 
 </deferred>
 
