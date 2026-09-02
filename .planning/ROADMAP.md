@@ -118,7 +118,20 @@ Plans:
   2. Alla disconnessione di Android Auto, il telefono ripristina esattamente la preferenza "sempre acceso" salvata in precedenza (attiva se era attiva, automatica se era automatica), senza alterare la preferenza memorizzata
   3. Il toggle "Schermo sempre acceso" esistente continua a funzionare normalmente quando Android Auto non è connesso, senza regressioni rispetto al comportamento v1.0/v1.1
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 10-01-PLAN.md — Fondamenta pure: modello `CarLinkState`, mappatura fail-safe del tipo di connessione, derivazione pura del flag schermo-sempre-acceso e stringa "Connesso ad Android Auto" (wave 1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 10-02-PLAN.md — `MainActivity`: osservazione di `CarConnection`, stato neutro al posto della velocità, rilascio e ripristino di `FLAG_KEEP_SCREEN_ON` senza toccare la preferenza salvata (wave 2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 10-03-PLAN.md — Verifica: test JVM di sequenza (nessuna deriva su cicli connessione/disconnessione) e checkpoint umano della sessione DHU sui tre Success Criteria (wave 3)
 
 ### Phase 11: Hardening di Produzione e Verifica su Dispositivo Reale
 
@@ -149,5 +162,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Distanza Percorsa e Reset Unificato | v1.1 | 4/4 | Complete | 2026-08-30 |
 | 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
 | 9. Permesso di Localizzazione dallo Schermo Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
-| 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 0/TBD | Not started | - |
+| 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 0/3 | Not started | - |
 | 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 0/TBD | Not started | - |
