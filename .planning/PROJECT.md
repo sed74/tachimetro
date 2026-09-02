@@ -2,7 +2,7 @@
 
 ## Status
 
-**v2.0 Android Auto Support — in definizione.** v1.1 Ricarica e distanza shipped (2026-08-30).
+**v2.0 Android Auto Support — Fase 8/4 completa, in corso.** v1.1 Ricarica e distanza shipped (2026-08-30).
 
 ## Current Milestone: v2.0 Android Auto Support
 
@@ -45,10 +45,14 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 - ✓ Icona a fulmine animata (riempimento bianco → lime → bianco) accanto al toggle "sempre acceso", visibile solo quando il telefono è in carica — Fase 6 (verificato su dispositivo reale)
 - ✓ Campo distanza percorsa in basso a destra, calcolata solo mentre l'app è attiva, persistente su disco — Fase 7 (verificato su strada, dispositivo reale)
 - ✓ Il pulsante "Azzera massimo" (ora "Azzera") azzera sia velocità massima sia distanza insieme — Fase 7 (verificato su strada, dispositivo reale)
+- ✓ L'utente vede la velocità attuale sullo schermo Android Auto mentre l'app è connessa (AA-01) — Fase 8, nell'accezione "stile/tipografia gestiti dall'host" già scritta nel requisito, non "grande come sul telefono" (vedi Constraints e Key Decisions per la nuance — `PaneTemplate` non espone controllo su font/posizione, limite strutturale accettato consapevolmente per v2.0)
+- ✓ Stato "nessun segnale" replicato sullo schermo Android Auto (AA-02) — Fase 8, logica coperta da test unitari (`CarSpeedContentTest`, `GpsSpeedProviderStateTest`); non ancora osservata dal vivo su una sessione DHU con perdita di segnale reale
+- ✓ Schermo Android Auto aggiornato alla stessa cadenza del telefono, 1/sec (AA-03) — Fase 8, confermato empiricamente via sessione DHU dal vivo (586 refresh in 608s, cadenza media 0,964/s, nessuna regressione sul telefono)
 
 ### Active
 
-_In definizione — milestone v2.0 Android Auto Support, requisiti da scrivere in REQUIREMENTS.md._
+- [ ] Se il permesso di localizzazione non è ancora stato concesso quando l'utente si connette per la prima volta via Android Auto, lo schermo auto lo richiede esplicitamente (AA-04) — Fase 9
+- [ ] Il telefono rilascia "schermo sempre acceso" e mostra uno stato neutro quando Android Auto si connette, ripristinando tutto alla disconnessione (CONN-01, CONN-02) — Fase 10
 
 ### Out of Scope
 
@@ -59,6 +63,7 @@ _In definizione — milestone v2.0 Android Auto Support, requisiti da scrivere i
 
 ## Context
 
+- Fase 8 completa (2026-09-02): fondamenta condivise Android Auto implementate — `GpsSpeedProvider` promosso ad Application-scoped (`TachimetroApplication`), `TachimetroCarAppService`/`TachimetroCarSession`/`SpeedScreen` (categoria POI, `PaneTemplate` a 1Hz). Sessione DHU dal vivo su telefono fisico (non AVD, instabile in questa sessione): SC4 (quota refresh) e SC5 (nessuna regressione telefono) confermati (586 refresh/608s, cadenza 0,964/s, nessun crash host). SC1 (numero grande/centrato) fallito come letteralmente formulato — `PaneTemplate` non offre controllo su font/posizione, rendering host-controlled; accettato consapevolmente per v2.0, passaggio a `NavigationTemplate`+`SurfaceCallback` rimandato a una milestone v2.1 dedicata (visual spec già raccolta: numero grande e centrato, unità in basso a destra, nessuna icona). SC2 (perdita segnale) accettato senza verifica dal vivo su richiesta esplicita dell'utente — copertura solo indiretta via test unitari esistenti. Dettagli completi in `.planning/phases/08-fondamenta-condivise-e-velocit-sullo-schermo-auto/08-CONTEXT.md` (D-11..D-14) e `08-03-SUMMARY.md`.
 - **v1.1 Ricarica e distanza SHIPPED (2026-08-30)** — 2 fasi, 8 piani, 6/6 requisiti validati con checkpoint umani su dispositivo reale. 1.631 LOC Kotlin (era ~695 a fine v1.0). Timeline 2026-08-29 → 2026-08-30 (2 giorni). Fase 7 con audit di sicurezza retroattivo completo (22/22 minacce chiuse). Archivio: `.planning/milestones/v1.1-*`. Prossima milestone da definire via `/gsd-new-milestone`.
 - Fase 7 completa (2026-08-30) — **v1.1 completa**: distanza percorsa implementata — `DistanceReducer.kt`/`DistanceFormat.kt` (funzioni pure `reduceDistance`/`sanitizePersistedDistance`/`formatDistanceDisplay`, TDD, gate soglia rumore condiviso con `mapSpeedToKmh`), `DistanceStore.kt` (mirror di `MaxSpeedStore`), `GpsSpeedProvider` esteso con `deltaMeters` per fix accettato via `Location.distanceTo()`. Area distanza in basso a destra (`distanceText` 32sp + `distanceUnitText` 16sp), formato adattivo metri/km con virgola decimale italiana sopra 1 km. Pulsante "Azzera massimo" rinominato "Azzera" e ora azzera massimo e distanza nella stessa azione. Checkpoint umano su strada superato (11/11, movimento reale, GPS reale). Review non bloccante: `GpsSpeedProvider.lastAcceptedLocation` non viene resettato quando la pipeline di collection riparte (background/foreground) — rischio latente di un salto di distanza spurio al primo fix dopo la ripresa, non riprodotto nel test su strada ma non strutturalmente garantito; candidato per un fix futuro.
 - Fase 6 completa (2026-08-29): indicatore di ricarica implementato — `ChargingStateProvider.kt` (rilevamento continuo via `BroadcastReceiver` su `ACTION_BATTERY_CHANGED`, sostituisce il precedente controllo one-shot `isDeviceCharging()` per questo scopo), `ChargingState.kt` (sealed Hidden/Pulsing/Full), icona `chargingIcon` (fulmine Material 24dp) a sinistra del toggle "sempre acceso", riempimento lime animato via `ValueAnimator`+`ClipDrawable` (loop 2500ms), stato "piena" congelato lime solido. Prima animazione e primo colore accento del progetto (deroga esplicita). Checkpoint umano su dispositivo reale superato (8/8). Review non bloccante: `isDeviceCharging()` in `MainActivity` andrebbe consolidato con `deriveChargingState()` (duplicazione minore, non blocca). L'utente ha richiesto 2 raffinamenti post-verifica (icona più grande, animazione con svuotamento istantaneo invece di simmetrico) — gestiti come quick task separato dopo la chiusura della fase.
@@ -95,6 +100,8 @@ _In definizione — milestone v2.0 Android Auto Support, requisiti da scrivere i
 | Solo km/h, nessun toggle unità | Riduce complessità UI, non richiesto per v1 | ✓ Good (shippato in v1.0 senza attriti) |
 | Deroga mirata a "nessuna animazione/nessun colore" per l'icona di ricarica (v1.1) | L'utente vuole un segnale di ricarica evidente e riconoscibile a colpo d'occhio; l'animazione di riempimento comunica lo stato meglio di un'icona statica | ✓ Good (verificato su dispositivo reale, Fase 6) |
 | Reset unico per massimo e distanza (v1.1) | La distanza è definita come "percorsa dall'ultimo reset del massimo", quindi i due valori condividono lo stesso ciclo di vita — evita un secondo pulsante su uno schermo minimale | ✓ Good (verificato su strada, Fase 7) |
+| Layout `PaneTemplate` host-controlled accettato com'è per v2.0 (Fase 8) | Il numero appare piccolo/in alto a sinistra con icona app forzata invece che grande/centrato — limite strutturale dell'API (nessuna leva su font/allineamento/posizione), non un bug risolvibile con codice; l'alternativa (`NavigationTemplate`+`SurfaceCallback`) riaprirebbe la categoria NAVIGATION (revisione Play Store più severa) | ✓ Accettato consapevolmente (verificato su DHU dal vivo, Fase 8) — rivalutare in v2.1 |
+| Passaggio a `NavigationTemplate`+`SurfaceCallback` rimandato a milestone v2.1 dedicata | Ottenere un layout auto grande/centrato come sul telefono richiede di riaprire la categoria di distribuzione (POI → NAVIGATION); decisione con impatto su tutta la milestone, non da prendere ad-hoc dentro una singola fase — visual spec già raccolta (numero grande e centrato, unità in basso a destra, nessuna icona) | Pending (v2.1, non ancora avviata) |
 
 ## Evolution
 
@@ -114,4 +121,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-30 — milestone v2.0 Android Auto Support avviata*
+*Last updated: 2026-09-02 — Fase 8 completata (v2.0)*
