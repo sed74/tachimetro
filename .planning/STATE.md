@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Android Auto Support
 status: executing
-stopped_at: Phase 8 UI-SPEC approved
-last_updated: "2026-08-31T08:01:03.900Z"
+stopped_at: Phase 8 context updated post-DHU (SC1 PaneTemplate limitation, deferred Surface/NavigationTemplate to v2.1)
+last_updated: "2026-09-02T09:14:52.121Z"
 last_activity: 2026-08-31 -- Phase 08 execution started
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 3
-  completed_plans: 0
+  completed_plans: 2
   percent: 0
 ---
 
@@ -100,9 +100,9 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-31T07:29:42.716Z
-Stopped at: Phase 8 UI-SPEC approved
-Resume file: .planning/phases/08-fondamenta-condivise-e-velocit-sullo-schermo-auto/08-UI-SPEC.md
+Last session: 2026-09-02T09:14:52.109Z
+Stopped at: Phase 8 context updated post-DHU (SC1 PaneTemplate limitation, deferred Surface/NavigationTemplate to v2.1)
+Resume file: .planning/phases/08-fondamenta-condivise-e-velocit-sullo-schermo-auto/08-CONTEXT.md
 
 ## Operator Next Steps
 
