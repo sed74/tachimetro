@@ -13,10 +13,17 @@ FUNZIONALITÀ PRINCIPALI
 • Distanza percorsa dall'ultimo azzeramento, mostrata in basso a destra, misurata mentre l'app è aperta e salvata tra le sessioni
 • Indicatore di ricarica: icona a fulmine animata, visibile solo mentre il telefono è in carica
 
+ANDROID AUTO
+• La velocità attuale compare anche sullo schermo Android Auto dell'auto, aggiornata ogni secondo come sul telefono
+• Quando il segnale GPS manca, lo schermo auto mostra "Ricerca segnale..." invece di restare su un valore vecchio
+• Se il permesso di localizzazione non è ancora stato concesso, puoi concederlo partendo dallo schermo auto, senza dover prima aprire l'app sul telefono
+• Mentre Android Auto è connesso il telefono smette di tenere lo schermo acceso e mostra un messaggio neutro; alla disconnessione torna esattamente come prima
+• L'aspetto della schermata in auto (dimensioni e stile del testo) è deciso da Android Auto, come per tutte le app compatibili
+
 PRIVACY AL PRIMO POSTO
 Tachimetro non richiede l'accesso a Internet: nessun dato lascia mai il tuo telefono. La posizione GPS viene usata esclusivamente per calcolare la velocità mostrata a schermo, non viene salvata, condivisa o trasmessa in alcun modo.
 
 REQUISITI
-Richiede il permesso di localizzazione precisa (GPS) e i Google Play Services. Compatibile con Android 11 e versioni successive.
+Richiede il permesso di localizzazione precisa (GPS) e i Google Play Services. Compatibile con Android 11 e versioni successive. Il supporto Android Auto richiede un'auto o un head unit compatibile con Android Auto.
 
 Tachimetro è pensato per un solo scopo: mostrarti quanto stai andando veloce, senza distrazioni.

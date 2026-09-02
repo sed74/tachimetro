@@ -1,6 +1,7 @@
-What's new in version 1.1:
+What's new in version 2.0:
 
-• Charging indicator: animated lightning icon next to the "Keep screen on" toggle, visible only while the phone is charging
-• Trip distance: new field in the bottom-right corner, measured while the app is open and saved between sessions
-• The "Reset" button now clears both max speed and distance
+• Android Auto support: your speed also appears on the car screen, updated every second
+• The car screen shows "Searching for signal..." when GPS is unavailable, instead of a stale value
+• Location permission can be granted directly from the car screen
+• When Android Auto is connected the phone shows a neutral message and releases the always-on screen; on disconnect it restores the previous setting
 • No ads, no Internet connection
