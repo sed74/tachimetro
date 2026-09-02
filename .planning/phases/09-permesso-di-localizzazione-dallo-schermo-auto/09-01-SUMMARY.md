@@ -106,3 +106,15 @@ None - no external service configuration required.
 ---
 *Phase: 09-permesso-di-localizzazione-dallo-schermo-auto*
 *Completed: 2026-09-02*
+
+## Self-Check: PASSED
+
+- FOUND: app/src/main/java/com/sed/tachimetro/car/CarPermissionState.kt
+- FOUND: app/src/main/java/com/sed/tachimetro/car/CarPermissionDenialStore.kt
+- FOUND: app/src/test/java/com/sed/tachimetro/car/CarPermissionStateTest.kt
+- FOUND: app/src/main/res/values/strings.xml contains car_check_your_phone
+- FOUND: commit 21a97b7 (test: RED)
+- FOUND: commit d3faf6c (feat: GREEN CarPermissionState)
+- FOUND: commit 40b3e98 (feat: CarPermissionDenialStore)
+- FOUND: commit c818459 (feat: strings.xml)
+- FOUND: commit d5c2652 (docs: SUMMARY.md)
