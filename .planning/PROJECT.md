@@ -2,7 +2,7 @@
 
 ## Status
 
-**v2.0 Android Auto Support — Fase 9/4 completa, in corso.** v1.1 Ricarica e distanza shipped (2026-08-30).
+**v2.0 Android Auto Support — Fase 10/4 completa, in corso.** v1.1 Ricarica e distanza shipped (2026-08-30).
 
 ## Current Milestone: v2.0 Android Auto Support
 
@@ -49,10 +49,11 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 - ✓ Stato "nessun segnale" replicato sullo schermo Android Auto (AA-02) — Fase 8, logica coperta da test unitari (`CarSpeedContentTest`, `GpsSpeedProviderStateTest`); non ancora osservata dal vivo su una sessione DHU con perdita di segnale reale
 - ✓ Schermo Android Auto aggiornato alla stessa cadenza del telefono, 1/sec (AA-03) — Fase 8, confermato empiricamente via sessione DHU dal vivo (586 refresh in 608s, cadenza media 0,964/s, nessuna regressione sul telefono)
 - ✓ Se il permesso di localizzazione non è ancora stato concesso quando l'utente si connette per la prima volta via Android Auto, lo schermo auto lo richiede esplicitamente (AA-04) — Fase 9, confermato dal vivo su DHU (richiesta automatica, concessione, primo rifiuto, rifiuto permanente, apertura impostazioni); limite noto accettato: `CarContext.requestPermissions()` può essere ignorato dall'host a veicolo in movimento
+- ✓ Il telefono rilascia "schermo sempre acceso" e mostra uno stato neutro quando Android Auto si connette, ripristinando tutto alla disconnessione (CONN-01, CONN-02) — Fase 10, `resolveEffectiveKeepScreenOn()` pura (CONN-01+CONN-02 in un solo punto) lockata da test di sequenza fino a 40 alternanze, confermato dal vivo su DHU (A1-G1)
 
 ### Active
 
-- [ ] Il telefono rilascia "schermo sempre acceso" e mostra uno stato neutro quando Android Auto si connette, ripristinando tutto alla disconnessione (CONN-01, CONN-02) — Fase 10
+(nessun requisito attivo — Fase 11 valida AA-01..AA-04 e CONN-01/CONN-02 sotto condizioni di produzione, non introduce nuovi requirement ID)
 
 ### Out of Scope
 
@@ -63,6 +64,7 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 ## Context
 
+- Fase 10 completa (2026-09-02): comportamento del telefono alla connessione Android Auto implementato — `CarLinkState`/`resolveCarLinkState()` (mappatura fail-safe del tipo di connessione, solo `CONNECTION_TYPE_PROJECTION` conta come connesso) e `resolveEffectiveKeepScreenOn()` (funzione pura senza accesso a `ScreenOnPreferenceStore`, unico punto che deriva CONN-01+CONN-02). `MainActivity` osserva `CarConnection` con il lifecycle dell'Activity, `renderSpeedArea()` mostra "Connesso ad Android Auto" al posto della velocità, lo switch "sempre acceso" continua a riflettere la sola preferenza salvata. `CarLinkSequenceTest` locka a costo zero l'assenza di deriva su sequenze ripetute (fino a 40 alternanze) — copertura logica anticipata del Success Criterion 3 di Fase 11. Sessione DHU dal vivo su device fisico: tutti i punti A1-G1 confermati (nessuna regressione su toggle, MAX, distanza, indicatore di ricarica, schermo auto). Code review: 0 critical, 1 warning non bloccante (finestra transitoria di `carLink` non aggiornato su cold-launch/resume con Android Auto già connesso, auto-correttiva, non coperta da test — candidato per verifica in Fase 11). Dettagli in `.planning/phases/10-comportamento-del-telefono-alla-connessione-android-auto/10-0{1,2,3}-SUMMARY.md` e `10-VERIFICATION.md`.
 - Fase 8 completa (2026-09-02): fondamenta condivise Android Auto implementate — `GpsSpeedProvider` promosso ad Application-scoped (`TachimetroApplication`), `TachimetroCarAppService`/`TachimetroCarSession`/`SpeedScreen` (categoria POI, `PaneTemplate` a 1Hz). Sessione DHU dal vivo su telefono fisico (non AVD, instabile in questa sessione): SC4 (quota refresh) e SC5 (nessuna regressione telefono) confermati (586 refresh/608s, cadenza 0,964/s, nessun crash host). SC1 (numero grande/centrato) fallito come letteralmente formulato — `PaneTemplate` non offre controllo su font/posizione, rendering host-controlled; accettato consapevolmente per v2.0, passaggio a `NavigationTemplate`+`SurfaceCallback` rimandato a una milestone v2.1 dedicata (visual spec già raccolta: numero grande e centrato, unità in basso a destra, nessuna icona). SC2 (perdita segnale) accettato senza verifica dal vivo su richiesta esplicita dell'utente — copertura solo indiretta via test unitari esistenti. Dettagli completi in `.planning/phases/08-fondamenta-condivise-e-velocit-sullo-schermo-auto/08-CONTEXT.md` (D-11..D-14) e `08-03-SUMMARY.md`.
 - **v1.1 Ricarica e distanza SHIPPED (2026-08-30)** — 2 fasi, 8 piani, 6/6 requisiti validati con checkpoint umani su dispositivo reale. 1.631 LOC Kotlin (era ~695 a fine v1.0). Timeline 2026-08-29 → 2026-08-30 (2 giorni). Fase 7 con audit di sicurezza retroattivo completo (22/22 minacce chiuse). Archivio: `.planning/milestones/v1.1-*`. Prossima milestone da definire via `/gsd-new-milestone`.
 - Fase 7 completa (2026-08-30) — **v1.1 completa**: distanza percorsa implementata — `DistanceReducer.kt`/`DistanceFormat.kt` (funzioni pure `reduceDistance`/`sanitizePersistedDistance`/`formatDistanceDisplay`, TDD, gate soglia rumore condiviso con `mapSpeedToKmh`), `DistanceStore.kt` (mirror di `MaxSpeedStore`), `GpsSpeedProvider` esteso con `deltaMeters` per fix accettato via `Location.distanceTo()`. Area distanza in basso a destra (`distanceText` 32sp + `distanceUnitText` 16sp), formato adattivo metri/km con virgola decimale italiana sopra 1 km. Pulsante "Azzera massimo" rinominato "Azzera" e ora azzera massimo e distanza nella stessa azione. Checkpoint umano su strada superato (11/11, movimento reale, GPS reale). Review non bloccante: `GpsSpeedProvider.lastAcceptedLocation` non viene resettato quando la pipeline di collection riparte (background/foreground) — rischio latente di un salto di distanza spurio al primo fix dopo la ripresa, non riprodotto nel test su strada ma non strutturalmente garantito; candidato per un fix futuro.
@@ -121,4 +123,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-02 — Fase 9 completata (v2.0)*
+*Last updated: 2026-09-02 — Fase 10 completata (v2.0)*
