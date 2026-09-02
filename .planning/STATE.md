@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Android Auto Support
-status: executing
-stopped_at: Completed 09-02-PLAN.md
-last_updated: "2026-09-02T12:03:59.826Z"
+status: verifying
+stopped_at: Completed 09-03-PLAN.md - Fase 9 completa
+last_updated: "2026-09-02T12:21:25.489Z"
 last_activity: 2026-09-02
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
-  percent: 25
+  completed_plans: 6
+  percent: 50
 ---
 
 # Project State
@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-09-02)
 
 ## Current Position
 
-Phase: 09 (permesso-di-localizzazione-dallo-schermo-auto) — EXECUTING
+Phase: 09 (permesso-di-localizzazione-dallo-schermo-auto) — COMPLETE
 Plan: 3 of 3
-Status: Ready to execute
+Status: Fase 9 completa (AA-04 verificato dal vivo su DHU) — pronta la Fase 10
 Last activity: 2026-09-02
 
 ## Performance Metrics
@@ -62,6 +62,7 @@ Last activity: 2026-09-02
 *Updated after each plan completion*
 | Phase 09 P01 | 12min | 3 tasks | 4 files |
 | Phase 09 P02 | 10min | 2 tasks | 1 files |
+| Phase 09 P03 | ~4min automated + human DHU session | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,7 @@ Recent decisions affecting current work:
 - [Phase 08]: SC1 fallito come formulato (limite strutturale PaneTemplate); accettato per v2.0, NavigationTemplate+SurfaceCallback rimandato a milestone v2.1 (08-CONTEXT.md D-12..D-14)
 - [Phase 08]: SC2 (perdita segnale) accettato senza test live, su richiesta esplicita dell utente; copertura solo indiretta via test unitari gia esistenti
 - [Phase 09]: Piano 02: SpeedScreen sostituisce il gate T-08-08 con una macchina a stati reattiva (permissionState + requestInFlight); requestPermissions() automatico su NotRequested, nessun rilancio automatico dopo un rifiuto (D-06), Denied distingue permanente da singolo via denialCount letto PRIMA di recordDenial() (D-04)
+- [Phase 09]: Fase 9 chiusa: sessione DHU dal vivo conferma i tre Success Criteria di roadmap (richiesta automatica, transizione automatica alla concessione, messaggio+retry al rifiuto) e chiude empiricamente Pitfall 4 (transizione Row-sola<->Row+Action non chiude l'app dall'host). Scenario G/Pitfall 1 (requestPermissions() ignorabile dall'host a veicolo in movimento) accettato esplicitamente dall'utente per v2.0, nessuna azione di sblocco manuale aggiunta (09-CONTEXT.md D-08/D-09)
 
 ### Pending Todos
 
@@ -88,6 +90,7 @@ None yet.
 - Fase 11: il comportamento del GPS in background quando il telefono è bloccato durante una sessione Android Auto attiva non è documentato — genuino gap di piattaforma da verificare su dispositivo reale, non solo su DHU (v. `.planning/research/SUMMARY.md`, Pitfall 5)
 - v2.1 (milestone futura, non v2.0): `PaneTemplate` non permette un numero grande/centrato ne' unita' posizionabile ne' rimozione dell'icona app (limite strutturale, D-12 in `08-CONTEXT.md`) — accettato per v2.0, valutare `NavigationTemplate`+`SurfaceCallback` in una milestone v2.1 dedicata (D-14, visual spec gia' raccolta in `08-CONTEXT.md` sezione `<deferred>`)
 - Fase 9+: SC2 (comportamento schermo auto alla perdita di segnale GPS) non è mai stato verificato dal vivo su DHU — solo copertura indiretta via test unitari (`CarSpeedContentTest`, `GpsSpeedProviderStateTest`). Se un problema di visualizzazione emergesse in una fase futura (es. verifica su strada in Fase 11), non assumere che sia già stato escluso empiricamente qui
+- Fase 9: Scenario G/Pitfall 1 accettato -- CarContext.requestPermissions() puo' essere ignorato silenziosamente dall'host se il veicolo e' gia' in movimento al collegamento, lasciando lo schermo auto bloccato su "Controlla il telefono" senza azione di sblocco manuale (D-05/D-06 non prevedono un retry in quello stato). Accettato esplicitamente dall'utente per v2.0 durante il checkpoint DHU di 09-03; vedi 09-CONTEXT.md D-09. Non un bug, limite di piattaforma noto e documentato.
 
 ### Quick Tasks Completed
 
@@ -108,11 +111,11 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-02T12:03:59.815Z
-Stopped at: Completed 09-02-PLAN.md
+Last session: 2026-09-02T12:21:25.476Z
+Stopped at: Completed 09-03-PLAN.md - Fase 9 completa
 Resume file: None
 
 ## Operator Next Steps
 
-- Fase 8 completa. Avviare `/gsd:discuss-phase 9` o `/gsd:plan-phase 9` per iniziare la pianificazione della Fase 9 (Permesso di Localizzazione dallo Schermo Auto, AA-04)
-- Passo di transizione/verifica di fase (convenzione osservata in questo progetto per le Fasi 4/6/7: `XX-VERIFICATION.md` + evoluzione di `PROJECT.md` via `/gsd-transition`) non ancora eseguito per la Fase 8 — valutare se eseguirlo prima di iniziare la Fase 9
+- Fase 9 completa (2026-09-02): AA-04 verificato dal vivo su DHU, tutti i 3 piani chiusi. Avviare `/gsd:discuss-phase 10` o `/gsd:plan-phase 10` per iniziare la pianificazione della Fase 10 (Comportamento del Telefono alla Connessione Android Auto, CONN-01/02)
+- Passo di transizione/verifica di fase (convenzione osservata in questo progetto per le Fasi 4/6/7/8: `XX-VERIFICATION.md` + evoluzione di `PROJECT.md` via `/gsd-transition`) non ancora eseguito per le Fasi 8 e 9 — valutare se eseguirlo prima di iniziare la Fase 10
