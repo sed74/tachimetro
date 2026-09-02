@@ -2,7 +2,7 @@
 
 ## Status
 
-**v2.0 Android Auto Support — Fase 8/4 completa, in corso.** v1.1 Ricarica e distanza shipped (2026-08-30).
+**v2.0 Android Auto Support — Fase 9/4 completa, in corso.** v1.1 Ricarica e distanza shipped (2026-08-30).
 
 ## Current Milestone: v2.0 Android Auto Support
 
@@ -48,10 +48,10 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 - ✓ L'utente vede la velocità attuale sullo schermo Android Auto mentre l'app è connessa (AA-01) — Fase 8, nell'accezione "stile/tipografia gestiti dall'host" già scritta nel requisito, non "grande come sul telefono" (vedi Constraints e Key Decisions per la nuance — `PaneTemplate` non espone controllo su font/posizione, limite strutturale accettato consapevolmente per v2.0)
 - ✓ Stato "nessun segnale" replicato sullo schermo Android Auto (AA-02) — Fase 8, logica coperta da test unitari (`CarSpeedContentTest`, `GpsSpeedProviderStateTest`); non ancora osservata dal vivo su una sessione DHU con perdita di segnale reale
 - ✓ Schermo Android Auto aggiornato alla stessa cadenza del telefono, 1/sec (AA-03) — Fase 8, confermato empiricamente via sessione DHU dal vivo (586 refresh in 608s, cadenza media 0,964/s, nessuna regressione sul telefono)
+- ✓ Se il permesso di localizzazione non è ancora stato concesso quando l'utente si connette per la prima volta via Android Auto, lo schermo auto lo richiede esplicitamente (AA-04) — Fase 9, confermato dal vivo su DHU (richiesta automatica, concessione, primo rifiuto, rifiuto permanente, apertura impostazioni); limite noto accettato: `CarContext.requestPermissions()` può essere ignorato dall'host a veicolo in movimento
 
 ### Active
 
-- [ ] Se il permesso di localizzazione non è ancora stato concesso quando l'utente si connette per la prima volta via Android Auto, lo schermo auto lo richiede esplicitamente (AA-04) — Fase 9
 - [ ] Il telefono rilascia "schermo sempre acceso" e mostra uno stato neutro quando Android Auto si connette, ripristinando tutto alla disconnessione (CONN-01, CONN-02) — Fase 10
 
 ### Out of Scope
@@ -121,4 +121,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-02 — Fase 8 completata (v2.0)*
+*Last updated: 2026-09-02 — Fase 9 completata (v2.0)*
