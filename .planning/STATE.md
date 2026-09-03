@@ -112,11 +112,12 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-02T17:53:46.000Z
-Stopped at: Completed quick task 260902-qr8: Aggiorna playstore/ alla v2.0 (Android Auto) — testi pronti, APK/AAB 2.0/firma/screenshot/hosting privacy policy ancora a carico dell'utente
+Last session: 2026-09-03T00:00:00.000Z
+Stopped at: Chiusi retroattivamente i gap Nyquist per Fase 8 e Fase 9 (/gsd:validate-phase 8, /gsd:validate-phase 9) — zero gap trovati in entrambe, tutti i task avevano già verifica automatizzata funzionante, i comportamenti manual-only erano già stati chiusi/accettati durante l'esecuzione originale delle fasi. 08-VALIDATION.md e 09-VALIDATION.md creati e committati.
 Resume file: None
 
 ## Operator Next Steps
 
-- Fase 9 completa (2026-09-02): AA-04 verificato dal vivo su DHU, tutti i 3 piani chiusi. Avviare `/gsd:discuss-phase 10` o `/gsd:plan-phase 10` per iniziare la pianificazione della Fase 10 (Comportamento del Telefono alla Connessione Android Auto, CONN-01/02)
-- Passo di transizione/verifica di fase (convenzione osservata in questo progetto per le Fasi 4/6/7/8: `XX-VERIFICATION.md` + evoluzione di `PROJECT.md` via `/gsd-transition`) non ancora eseguito per le Fasi 8 e 9 — valutare se eseguirlo prima di iniziare la Fase 10
+- Fase 11 ("Hardening di Produzione e Verifica su Dispositivo Reale") non ancora discussa — avviare `/gsd:discuss-phase 11` o `/gsd:plan-phase 11`. Nessun nuovo requisito, valida AA-01..04/CONN-01/CONN-02: `HostValidator` reale al posto di `ALLOW_ALL_HOSTS_VALIDATOR`, verifica su strada del comportamento background-location a telefono bloccato
+- Gap Nyquist Fasi 8/9: **chiusi** (2026-09-03) — vedi `08-VALIDATION.md`/`09-VALIDATION.md`, zero gap trovati
+- Passi manuali di pubblicazione Play Store ancora aperti (build/firma APK-AAB 2.0, screenshot con schermo Android Auto, hosting privacy policy, form Play Console) — documentati in `playstore/README.md`
