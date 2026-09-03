@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-03T09:33:16.202Z",
+  "phase": "11",
+  "phase_name": "hardening-di-produzione-e-verifica-su-dispositivo-reale",
+  "phase_dir": ".planning/phases/11-hardening-di-produzione-e-verifica-su-dispositivo-reale",
+  "plan": "11-03",
+  "task": 1,
+  "total_tasks": 3,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": "11-01", "name": "HostValidator reale con seam testabile", "status": "done", "commit": "a2582f7"},
+    {"id": "11-02", "name": "Strumenti di verifica empirica (runbook + script cicli rapidi)", "status": "done", "commit": "fb2e66d"}
+  ],
+  "remaining_tasks": [
+    {"id": "11-03/Task 1", "name": "Checkpoint SC1 - host reale su build di release firmato", "status": "not_started"},
+    {"id": "11-03/Task 2", "name": "Checkpoint SC3 - cicli rapidi connessione/disconnessione", "status": "not_started"},
+    {"id": "11-03/Task 3", "name": "Registrare esiti SC1/SC3 e ritirare nota di rischio in playstore/README.md", "status": "not_started"},
+    {"id": "11-04", "name": "Checkpoint SC2 - test su strada, telefono bloccato", "status": "not_started"}
+  ],
+  "blockers": [
+    {"description": "Android Auto reale (DHU o head unit) non accessibile adesso", "type": "external", "workaround": "L'utente eseguira' la verifica fisica (SC1 log CarApp.Val + SC3 script cicli rapidi) appena l'hardware sara' disponibile"},
+    {"description": "keystore.properties creato da template ma con credenziali placeholder (storePassword/keyAlias/keyPassword = CHANGE_ME)", "type": "human_action", "workaround": "L'utente compila le credenziali reali e genera/installa l'APK di release firmato per proprio conto"}
+  ],
+  "human_actions_pending": [
+    {"action": "Compilare storePassword/keyAlias/keyPassword in keystore.properties (storeFile gia' corretto, punta a C:\\Users\\fedes\\AndroidStudioProjects\\keystore\\keystore)", "context": "Necessario per generare un build di release firmato — SC1 non ha una verifica valida su build di debug", "blocking": true},
+    {"action": "Build, firma e installazione dell'APK di release sul telefono", "context": "L'utente ha detto se ne occupa personalmente, non l'executor", "blocking": true},
+    {"action": "Eseguire fisicamente SC1 (collegare host Android Auto reale/DHU, osservare schermo auto, confermare riga 'Accepted - Host in allow-list' nel logcat CarApp.Val) e SC3 (10 cicli di connect/disconnect rapidi via scripts/aa-connect-cycle-check.ps1, osservare schermo auto a ogni ciclo)", "context": "Nessun test automatico puo' sostituire questa osservazione (D-07, pattern gia' stabilito Fasi 8/9/10)", "blocking": true},
+    {"action": "Riportare l'esito PASS/FAIL/INCONCLUSIVO di SC1 (con la riga di log CarApp.Val osservata) e di SC3 (con il verdetto e i 5 conteggi dello script)", "context": "Serve per completare 11-03 Task 3 (registrazione esiti + eventuale ritiro della nota di rischio in playstore/README.md)", "blocking": true}
+  ],
+  "decisions": [
+    {"decision": "Non spawnare l'executor per 11-03 finche' l'ambiente reale non e' pronto", "rationale": "Task 1/2 di 11-03 sono checkpoint umani bloccanti che richiedono hardware Android Auto reale; l'utente ha detto di occuparsi personalmente sia delle credenziali keystore sia della generazione/installazione dell'artefatto firmato", "phase": "11"},
+    {"decision": "Wave 1 mergiata con build+test gate post-merge eseguiti manualmente (gradlew assembleDebug + test) perche' il gate generico del workflow non riconosce Gradle/Android nel suo sniffer di comandi", "rationale": "Nessun comando di build/test era configurato in .planning/config.json e nessuno dei linguaggi sniffati (npm/cargo/go/python/make) si applica a un progetto Gradle Kotlin — ho eseguito il comando corretto per il progetto invece di lasciare il gate silenziosamente skippato", "phase": "11"}
+  ],
+  "uncommitted_files": ["keystore.properties (gitignorato, valori placeholder, non committato)"],
+  "next_action": "Quando l'utente riporta gli esiti PASS/FAIL/INCONCLUSIVO di SC1 e SC3 (con log CarApp.Val e verdetto script), eseguire direttamente 11-03 Task 3 (aggiornare docs/android-auto-hardening-verification.md e playstore/README.md secondo l'esito riportato) senza ri-eseguire l'automazione dei Task 1/2 gia' fatta manualmente dall'utente. Poi procedere a Wave 3 (11-04, test su strada SC2).",
+  "context_notes": "Fase 11 in esecuzione con /gsd:execute-phase 11 in modalita' yolo. Wave 1 (11-01 HostValidator reale + 11-02 strumenti di verifica) completata in parallelo con worktree isolation, mergiata su master, build+test gate post-merge passati. Wave 2 (11-03) e Wave 3 (11-04) richiedono entrambe checkpoint umani bloccanti su hardware reale (Android Auto + guida su strada) che non possono essere automatizzati per definizione (D-07 in 11-CONTEXT.md). L'utente ha scelto di gestire personalmente sia il keystore che l'installazione del build firmato, testando quando l'hardware Android Auto sara' accessibile."
+}
