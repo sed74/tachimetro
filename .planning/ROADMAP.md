@@ -149,8 +149,8 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 11-01-PLAN.md — `HostValidator` reale: seam `createCarHostValidator(context, allowAllHosts)`, allow-list ufficiale della Car App Library nei build di release, `ALLOW_ALL` solo in debug (D-01/D-02), test strumentato su entrambi i rami (wave 1)
-- [ ] 11-02-PLAN.md — Strumenti di verifica: runbook `docs/android-auto-hardening-verification.md` per SC1/SC2/SC3 con criteri di esito misurabili e contingenze gia' decise, piu' `scripts/aa-connect-cycle-check.ps1` per la misura di crash/ANR nei cicli rapidi (wave 1)
+- [x] 11-01-PLAN.md — `HostValidator` reale: seam `createCarHostValidator(context, allowAllHosts)`, allow-list ufficiale della Car App Library nei build di release, `ALLOW_ALL` solo in debug (D-01/D-02), test strumentato su entrambi i rami (wave 1)
+- [x] 11-02-PLAN.md — Strumenti di verifica: runbook `docs/android-auto-hardening-verification.md` per SC1/SC2/SC3 con criteri di esito misurabili e contingenze gia' decise, piu' `scripts/aa-connect-cycle-check.ps1` per la misura di crash/ANR nei cicli rapidi (wave 1)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -177,4 +177,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
 | 9. Permesso di Localizzazione dallo Schermo Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
 | 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 3/3 | Complete    | 2026-09-02 |
-| 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 0/TBD | Not started | - |
+| 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 2/4 | In Progress|  |
