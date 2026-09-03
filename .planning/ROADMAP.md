@@ -144,7 +144,21 @@ Plans:
   2. Su un dispositivo reale, con il telefono bloccato/in background e Android Auto connesso, la velocità sullo schermo auto continua ad aggiornarsi per diversi minuti consecutivi durante un tragitto reale (o il limite di piattaforma viene documentato esplicitamente se non risolvibile)
   3. Connettendo e disconnettendo Android Auto ripetutamente in rapida successione, l'app non va in crash e lo schermo auto non resta bloccato in uno stato incoerente
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 11-01-PLAN.md — `HostValidator` reale: seam `createCarHostValidator(context, allowAllHosts)`, allow-list ufficiale della Car App Library nei build di release, `ALLOW_ALL` solo in debug (D-01/D-02), test strumentato su entrambi i rami (wave 1)
+- [ ] 11-02-PLAN.md — Strumenti di verifica: runbook `docs/android-auto-hardening-verification.md` per SC1/SC2/SC3 con criteri di esito misurabili e contingenze gia' decise, piu' `scripts/aa-connect-cycle-check.ps1` per la misura di crash/ANR nei cicli rapidi (wave 1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 11-03-PLAN.md — Sessione da scrivania su build di release firmato: checkpoint umano SC1 (host reale accettato dall'allow-list) e SC3 (10 cicli rapidi di connessione/disconnessione), registrazione esiti e ritiro della nota di rischio in `playstore/README.md` (wave 2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 11-04-PLAN.md — Checkpoint umano SC2: test su strada di 5-10 minuti a telefono bloccato (D-06/D-07) e registrazione dell'esito, con documentazione del limite di piattaforma se il GPS in background si ferma (D-03/D-04, nessun `ACCESS_BACKGROUND_LOCATION`) (wave 3)
 
 ## Progress
 
