@@ -146,6 +146,11 @@ None - no external service configuration required.
 - Attenzione per il Piano 03 (nota gia' in `11-PATTERNS.md`): il log diagnostico `onGetTemplate #` di `SpeedScreen` esiste solo sotto `BuildConfig.DEBUG`, cioe' nella stessa build che mantiene il validatore permissivo. La verifica di SC1 e le misure SC2/SC3 **non possono essere esercitate dallo stesso binario** — SC1 va confermato visivamente su una build release.
 - `playstore/README.md` contiene ancora la nota "Rischio noto accettato per questo rilascio" che descrive il validatore permissivo: ora superata dal codice, va ritirata (sostituita da una spiegazione del cambiamento, non cancellata) — fuori dallo scope di questo piano, tracciata da `11-CONTEXT.md`.
 
+## Self-Check: PASSED
+
+- File dichiarati presenti su disco: `CarHostValidation.kt`, `TachimetroCarAppService.kt`, `CarHostValidationTest.kt`, `11-01-SUMMARY.md` — tutti trovati.
+- Commit dichiarati presenti in `git log`: `3792bfd`, `55a8f77`, `66c9cc0` — tutti trovati.
+
 ---
 *Phase: 11-hardening-di-produzione-e-verifica-su-dispositivo-reale*
 *Completed: 2026-09-03*
