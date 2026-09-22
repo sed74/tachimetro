@@ -1,15 +1,19 @@
 # Tachimetro — pacchetto pubblicazione Play Store
 
 Materiale per pubblicare Tachimetro su Google Play, generato il 2026-08-22.
-Testi verificati e riallineati alla **versione 2.0 (`versionCode = 3`)** il 2026-09-02.
+Testi verificati contro il codice della **versione 2.0** il 2026-09-02; i riferimenti di
+versione sono stati riallineati a `versionCode = 4` il 2026-09-22 (il `versionName` resta
+invariato a "2.0").
 
 **Stato in una riga:** i testi e la grafica sono pronti; i binari e gli screenshot no.
 
 ## Questo pacchetto descrive la v2.0 con supporto Android Auto
 
-Tutti i testi in questa cartella descrivono la **versione 2.0 (`versionCode = 3`)**, che
+Tutti i testi in questa cartella descrivono la **versione 2.0 (`versionCode = 4`)**, che
 include il supporto Android Auto (milestone v2.0, Fasi 8-10). Il bump di versione è già
-committato in `app/build.gradle.kts`.
+committato in `app/build.gradle.kts`: il `versionName` resta **"2.0"**, mentre il
+`versionCode` è stato portato a 4 (commit `b62b879`) per poter caricare il pacchetto su Play
+Console.
 
 Conseguenze pratiche per chi costruisce l'artefatto:
 
@@ -20,6 +24,13 @@ Conseguenze pratiche per chi costruisce l'artefatto:
   che quell'avvertenza voleva evitare, e un problema di compliance su Play Console.
 - I testi di questa cartella **menzionano Android Auto**, ed è intenzionale: le funzionalità
   descritte (AA-01..AA-04, CONN-01, CONN-02) sono tutte implementate e verificate.
+- **Il build 2.0 / `versionCode` 4 è destinato al canale di test aperto di Play Store.**
+  L'utente genera il build di release **firmato** e lo pubblica lì (decisione registrata in
+  `.planning/HANDOFF.json` e nel `.continue-here.md` della Fase 11), invece di installarlo
+  localmente: lo stesso binario serve anche come artefatto per i checkpoint SC1/SC3 della
+  Fase 11 e resta un binario release (`DEBUGGABLE=false`) anche se ri-firmato da Play App
+  Signing. La pubblicazione sul canale di **produzione** è un passo successivo, non ancora
+  eseguito.
 
 ## Rischio noto accettato per questo rilascio (nota interna)
 
@@ -44,7 +55,7 @@ copiata** in `listing/`, `release_notes/`, `data_safety.md`, `content_rating.md`
 | Percorso | Cosa contiene | Stato |
 |---|---|---|
 | `apk/tachimetro-1.0-unsigned.apk` | APK release **1.0**, non firmato | **OBSOLETO** — da rigenerare come `tachimetro-2.0-unsigned.apk` (a carico dell'utente, vedi passo 1) |
-| `apk/tachimetro-1.0.aab` | Android App Bundle release **1.0** — formato richiesto da Play Console per il canale di produzione | **OBSOLETO** — da rigenerare come `tachimetro-2.0.aab` (a carico dell'utente, vedi passo 1) |
+| `apk/tachimetro-1.0.aab` | Android App Bundle release **1.0** — formato richiesto da Play Console sia per il canale di **test aperto** sia per la produzione | **OBSOLETO** — da rigenerare come `tachimetro-2.0.aab` (a carico dell'utente, vedi passo 1) |
 | `graphics/icon-512.png` | Icona 512×512 (copia di `app/src/main/res/playstore-icon.png`) | Pronto |
 | `graphics/feature-graphic-1024x500.png` | Feature graphic per la scheda dello store | Pronto |
 | `screenshots/` | 5 screenshot reali, catturati su emulatore Pixel_10_Pro con GPS mock (vedi sotto) | **Fermi alla v1.0** — da ricatturare a mano (passo 3) |
@@ -96,7 +107,7 @@ I due file in `apk/` sono ancora build **1.0**. La rigenerazione è stata esplic
 in carico dall'utente e **non** è stata eseguita da alcun task automatico: nessun file sotto
 `playstore/apk/` è stato creato, rinominato o rimosso.
 
-1. Costruire da `HEAD` (o dal tag `2.0` quando esisterà), che dichiara `versionCode = 3` /
+1. Costruire da `HEAD` (o dal tag `2.0` quando esisterà), che dichiara `versionCode = 4` /
    `versionName = "2.0"` e contiene il codice Android Auto descritto nei testi:
    ```
    ./gradlew.bat assembleRelease bundleRelease
@@ -107,7 +118,8 @@ in carico dall'utente e **non** è stata eseguita da alcun task automatico: ness
 3. Depositarli qui come `apk/tachimetro-2.0-unsigned.apk` e `apk/tachimetro-2.0.aab`, e
    rimuovere i due file 1.0 obsoleti (sono tracciati da git: usare `git rm`, non `rm`).
 
-Per il canale di produzione su Play Console si carica il file **.aab**, non l'APK.
+Su Play Console si carica il file **.aab**, non l'APK — sia per il canale di **test aperto**
+sia per quello di produzione.
 
 ### 2. Firma release (obbligatorio per pubblicare)
 
@@ -167,8 +179,13 @@ manualmente nei form di Play Console (non sono automatizzabili via file):
 ### 6. Versionamento
 
 La versione corrente dichiarata in `app/build.gradle.kts` è `versionName = "2.0"` con
-`versionCode = 3` (milestone v2.0: supporto Android Auto). È la versione che questo pacchetto
+`versionCode = 4` (milestone v2.0: supporto Android Auto). È la versione che questo pacchetto
 descrive e che va pubblicata.
 
-Il **prossimo** rilascio dovrà incrementare `versionCode` (a 4) e aggiornare `versionName`:
-Play Console rifiuta un caricamento con un `versionCode` già usato.
+Il `versionCode` è stato incrementato da 3 a 4 **senza** cambiare il `versionName`: Play
+Console rifiuta il caricamento di un `versionCode` già usato, mentre il contenuto funzionale
+del rilascio è rimasto quello della 2.0. Il bump è già committato (`b62b879`): su questo
+fronte non resta nulla da fare per il rilascio corrente.
+
+Il **prossimo** caricamento su Play Console dovrà usare `versionCode = 5`, e aggiornare anche
+il `versionName` se il contenuto funzionale cambia.
