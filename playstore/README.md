@@ -24,6 +24,13 @@ Conseguenze pratiche per chi costruisce l'artefatto:
   che quell'avvertenza voleva evitare, e un problema di compliance su Play Console.
 - I testi di questa cartella **menzionano Android Auto**, ed è intenzionale: le funzionalità
   descritte (AA-01..AA-04, CONN-01, CONN-02) sono tutte implementate e verificate.
+- **Il build 2.0 / `versionCode` 4 è destinato al canale di test aperto di Play Store.**
+  L'utente genera il build di release **firmato** e lo pubblica lì (decisione registrata in
+  `.planning/HANDOFF.json` e nel `.continue-here.md` della Fase 11), invece di installarlo
+  localmente: lo stesso binario serve anche come artefatto per i checkpoint SC1/SC3 della
+  Fase 11 e resta un binario release (`DEBUGGABLE=false`) anche se ri-firmato da Play App
+  Signing. La pubblicazione sul canale di **produzione** è un passo successivo, non ancora
+  eseguito.
 
 ## Rischio noto accettato per questo rilascio (nota interna)
 
@@ -48,7 +55,7 @@ copiata** in `listing/`, `release_notes/`, `data_safety.md`, `content_rating.md`
 | Percorso | Cosa contiene | Stato |
 |---|---|---|
 | `apk/tachimetro-1.0-unsigned.apk` | APK release **1.0**, non firmato | **OBSOLETO** — da rigenerare come `tachimetro-2.0-unsigned.apk` (a carico dell'utente, vedi passo 1) |
-| `apk/tachimetro-1.0.aab` | Android App Bundle release **1.0** — formato richiesto da Play Console per il canale di produzione | **OBSOLETO** — da rigenerare come `tachimetro-2.0.aab` (a carico dell'utente, vedi passo 1) |
+| `apk/tachimetro-1.0.aab` | Android App Bundle release **1.0** — formato richiesto da Play Console sia per il canale di **test aperto** sia per la produzione | **OBSOLETO** — da rigenerare come `tachimetro-2.0.aab` (a carico dell'utente, vedi passo 1) |
 | `graphics/icon-512.png` | Icona 512×512 (copia di `app/src/main/res/playstore-icon.png`) | Pronto |
 | `graphics/feature-graphic-1024x500.png` | Feature graphic per la scheda dello store | Pronto |
 | `screenshots/` | 5 screenshot reali, catturati su emulatore Pixel_10_Pro con GPS mock (vedi sotto) | **Fermi alla v1.0** — da ricatturare a mano (passo 3) |
@@ -111,7 +118,8 @@ in carico dall'utente e **non** è stata eseguita da alcun task automatico: ness
 3. Depositarli qui come `apk/tachimetro-2.0-unsigned.apk` e `apk/tachimetro-2.0.aab`, e
    rimuovere i due file 1.0 obsoleti (sono tracciati da git: usare `git rm`, non `rm`).
 
-Per il canale di produzione su Play Console si carica il file **.aab**, non l'APK.
+Su Play Console si carica il file **.aab**, non l'APK — sia per il canale di **test aperto**
+sia per quello di produzione.
 
 ### 2. Firma release (obbligatorio per pubblicare)
 
