@@ -4,8 +4,8 @@ milestone: v2.0
 milestone_name: Android Auto Support
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-09-03T08:40:11.903Z"
-last_activity: 2026-09-03 -- Phase 11 execution started
+last_updated: "2026-09-22T00:00:00.000Z"
+last_activity: 2026-09-22 -- Completed quick task 260922-du0: riallineamento playstore/ a versionCode 4
 progress:
   total_phases: 4
   completed_phases: 3
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-02)
 Phase: 11 (hardening-di-produzione-e-verifica-su-dispositivo-reale) — EXECUTING
 Plan: 1 of 4
 Status: Executing Phase 11
-Last activity: 2026-09-03 -- Phase 11 execution started
+Last activity: 2026-09-22 -- Completed quick task 260922-du0: riallineamento playstore/ a versionCode 4
 
 ## Performance Metrics
 
@@ -101,6 +101,7 @@ None yet.
 | 260829-tgw | Icona di ricarica più grande e animazione con svuotamento istantaneo invece di simmetrico | 2026-08-29 | 6303338 | [260829-tgw-icona-di-ricarica-pi-grande-e-animazione](./quick/260829-tgw-icona-di-ricarica-pi-grande-e-animazione/) |
 | 260830-o3h | Aggiorna playstore/ per la milestone v1.1 (bump versione, note di rilascio, descrizioni, README) | 2026-08-30 | a276712 | [260830-o3h-aggiorna-playstore-per-la-milestone-v1-1](./quick/260830-o3h-aggiorna-playstore-per-la-milestone-v1-1/) |
 | 260902-qr8 | Aggiorna playstore/ alla v2.0 (Android Auto): corregge dati persistiti mancanti (v1.1), poi riallinea tutto alla v2.0 dopo il bump di versione dell'utente — listing, note di rilascio, data safety, privacy policy, README con nota di rischio Fase 11/ALLOW_ALL_HOSTS_VALIDATOR | 2026-09-02 | 9f8159c | [260902-qr8-aggiorna-tutti-i-file-nella-cartella-pla](./quick/260902-qr8-aggiorna-tutti-i-file-nella-cartella-pla/) |
+| 260922-du0 | Riallinea playstore/ al versionCode 4 attuale (versionName resta 2.0), mantenendo il pacchetto deploy-ready | 2026-09-22 | 393a8e7 | [260922-du0-riallinea-playstore-al-versioncode-4-att](./quick/260922-du0-riallinea-playstore-al-versioncode-4-att/) |
 
 ## Deferred Items
 
@@ -112,9 +113,9 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-03T07:21:39.331Z
-Stopped at: Phase 11 context gathered
-Resume file: .planning/phases/11-hardening-di-produzione-e-verifica-su-dispositivo-reale/11-CONTEXT.md
+Last session: 2026-09-22 (resume)
+Stopped at: Fase 11 Wave 2 (11-03) in attesa di checkpoint umani SC1/SC3 su hardware Android Auto reale (quick task 260922-du0 chiusa nel frattempo)
+Resume file: .planning/phases/11-hardening-di-produzione-e-verifica-su-dispositivo-reale/.continue-here.md (+ .planning/HANDOFF.json)
 
 ## Operator Next Steps
 
