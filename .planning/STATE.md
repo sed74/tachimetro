@@ -4,13 +4,13 @@ milestone: v2.1
 milestone_name: Velocità a tutto schermo su Android Auto
 status: executing
 stopped_at: Phase 12 context gathered
-last_updated: "2026-09-23T14:33:26.734Z"
-last_activity: 2026-09-23 -- Phase 12 execution started
+last_updated: "2026-09-23T14:50:09.607Z"
+last_activity: 2026-09-23
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 6
-  completed_plans: 0
+  completed_plans: 3
   percent: 0
 ---
 
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-09-23)
 ## Current Position
 
 Phase: 12 (spike-surface-e-decisione-categoria-template) — EXECUTING
-Plan: 1 of 6
-Status: Executing Phase 12
-Last activity: 2026-09-23 -- Phase 12 execution started
+Plan: 2 of 6
+Status: Ready to execute
+Last activity: 2026-09-23
 
 Progress v2.1: [░░░░░░░░░░] 0%
 
@@ -65,6 +65,7 @@ Progress v2.1: [░░░░░░░░░░] 0%
 | Phase 09 P01 | 12min | 3 tasks | 4 files |
 | Phase 09 P02 | 10min | 2 tasks | 1 files |
 | Phase 09 P03 | ~4min automated + human DHU session | 2 tasks | 2 files |
+| Phase 12 P02 | 12 min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,8 @@ Recent decisions affecting current work:
 - [Phase 08]: SC2 (perdita segnale) accettato senza test live, su richiesta esplicita dell utente; copertura solo indiretta via test unitari gia esistenti
 - [Phase 09]: Piano 02: SpeedScreen sostituisce il gate T-08-08 con una macchina a stati reattiva (permissionState + requestInFlight); requestPermissions() automatico su NotRequested, nessun rilancio automatico dopo un rifiuto (D-06), Denied distingue permanente da singolo via denialCount letto PRIMA di recordDenial() (D-04)
 - [Phase 09]: Fase 9 chiusa: sessione DHU dal vivo conferma i tre Success Criteria di roadmap (richiesta automatica, transizione automatica alla concessione, messaggio+retry al rifiuto) e chiude empiricamente Pitfall 4 (transizione Row-sola<->Row+Action non chiude l'app dall'host). Scenario G/Pitfall 1 (requestPermissions() ignorabile dall'host a veicolo in movimento) accettato esplicitamente dall'utente per v2.0, nessuna azione di sblocco manuale aggiunta (09-CONTEXT.md D-08/D-09)
+- [Phase 12]: 12-02: template con Surface solo nel ramo Granted di SpeedScreen; invalidate a 1 Hz rimosso (template statico)
+- [Phase 12]: 12-02: card POI senza action strip e azione NAV con CarIcon.APP_ICON accettate da build(); comportamento host da confermare su DHU
 
 ### Pending Todos
 
@@ -118,9 +121,9 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-23T13:49:48.153Z
+Last session: 2026-09-23T14:50:01.221Z
 Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-spike-surface-e-decisione-categoria-template/12-CONTEXT.md
+Resume file: None
 
 ## Operator Next Steps
 
