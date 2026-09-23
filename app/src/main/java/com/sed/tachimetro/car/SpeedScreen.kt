@@ -35,6 +35,9 @@ import com.sed.tachimetro.gps.SpeedState
  * [invalidate], con cadenza ereditata dal ticker interno di `GpsSpeedProvider` (1 Hz, D-05) --
  * nessun timer separato lato auto. Il contenuto della Row e' delegato al contratto puro
  * [carSpeedContent].
+ *
+ * Fase 12 spike (D-04): a permesso concesso [onGetTemplate] restituisce il template con Surface
+ * del flavor ([buildSurfaceTemplate]); gli stati non-Granted e [buildTemplate] sono invariati.
  */
 class SpeedScreen(carContext: CarContext) : Screen(carContext) {
 
@@ -110,8 +113,11 @@ class SpeedScreen(carContext: CarContext) : Screen(carContext) {
                         // interno del provider, nessun timer separato lato auto.
                         CarPermissionState.Granted -> {
                             provider?.gpsSpeedProvider?.state?.collect { gpsState ->
+                                // Fase 12 (ARCHITECTURE.md Anti-Pattern 1): il template con
+                                // Surface e' statico, un invalidate a 1 Hz consumerebbe quota
+                                // senza cambiare nulla; l'invalidate() in testa a collectLatest
+                                // sul cambio di permesso resta.
                                 latestState = gpsState
-                                invalidate()
                             }
                         }
                         // D-01: il dialogo e' aperto sul telefono, il template mostra gia'
@@ -311,6 +317,13 @@ class SpeedScreen(carContext: CarContext) : Screen(carContext) {
             )
         }
 
-        return buildTemplate(permission, latestState)
+        // Fase 12 spike (REL-01, D-04): solo il ramo Granted passa al template con Surface; gli
+        // altri stati restano PaneTemplate. Unico punto dipendente da categoria/template
+        // (ARCHITECTURE.md Pattern 4).
+        return if (permission == CarPermissionState.Granted) {
+            buildSurfaceTemplate(carContext)
+        } else {
+            buildTemplate(permission, latestState)
+        }
     }
 }
