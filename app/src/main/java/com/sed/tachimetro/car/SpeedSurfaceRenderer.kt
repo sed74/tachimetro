@@ -26,14 +26,14 @@ import com.sed.tachimetro.BuildConfig
  *
  * - D-03: disegna solo una prova statica -- sfondo pieno, "888" centrato e dimensionato nella
  *   stable area con [fitTextSizePx], contorni della stable area (verde) e della visible area
- *   (magenta). NON e' collegato a `GpsSpeedProvider`: nessun dato di velocita' o posizione.
+ *   (magenta). NON e' collegato al provider GPS: nessun dato di velocita' o posizione.
  * - D-10: ogni callback della Surface e ogni frame disegnato producono una riga logcat con tag
  *   `TachimetroSurface` (solo in `BuildConfig.DEBUG`), nel formato chiave=valore consumato dallo
  *   script `scripts/surface-spike-check.ps1` (Piano 03).
  * - D-11: scrive in piccolo `api=<carAppApiLevel>` e la variante di build, leggibili da uno
  *   screenshot o in auto senza USB.
  *
- * Unico file del progetto che importa `android.graphics.*`: la geometria viene convertita in
+ * Unico file del progetto che disegna con `Canvas`/`Paint`: la geometria viene convertita in
  * [AreaPx] qui e le funzioni pure di `SurfaceTextFit.kt` restano framework-free.
  *
  * WR-04: tiene il [CarContext] della Session che lo possiede (vive quanto lei), mai
@@ -140,7 +140,11 @@ class SpeedSurfaceRenderer(private val carContext: CarContext) :
         this.stableArea = stableArea.toAreaPx()
         // D-10: valore grezzo, anche se vuoto (l'host usa il Rect vuoto per "non ancora nota").
         if (BuildConfig.DEBUG) {
-            Log.d(LOG_TAG, "onStableAreaChanged ${stableArea.toLogFields()}")
+            Log.d(
+                LOG_TAG,
+                "onStableAreaChanged l=${stableArea.left} t=${stableArea.top} " +
+                    "r=${stableArea.right} b=${stableArea.bottom}",
+            )
         }
         requestRender()
     }
@@ -148,7 +152,11 @@ class SpeedSurfaceRenderer(private val carContext: CarContext) :
     override fun onVisibleAreaChanged(visibleArea: Rect) {
         this.visibleArea = visibleArea.toAreaPx()
         if (BuildConfig.DEBUG) {
-            Log.d(LOG_TAG, "onVisibleAreaChanged ${visibleArea.toLogFields()}")
+            Log.d(
+                LOG_TAG,
+                "onVisibleAreaChanged l=${visibleArea.left} t=${visibleArea.top} " +
+                    "r=${visibleArea.right} b=${visibleArea.bottom}",
+            )
         }
         requestRender()
     }
@@ -166,8 +174,6 @@ class SpeedSurfaceRenderer(private val carContext: CarContext) :
 
     // Conversione da Rect SOLO qui (Anti-Pattern 6): le funzioni pure ricevono AreaPx.
     private fun Rect.toAreaPx() = AreaPx(left, top, right, bottom)
-
-    private fun Rect.toLogFields() = "l=$left t=$top r=$right b=$bottom"
 
     private fun drawFrame() {
         val target = surface ?: return
