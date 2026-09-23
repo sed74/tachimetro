@@ -15,7 +15,7 @@
 **Goal:** Rendere la velocità sul display Android Auto grande e centrata come sul telefono, sostituendo il layout host-controlled di `PaneTemplate` con un rendering diretto sulla Surface.
 
 **Target features:**
-- Velocità disegnata direttamente sulla Surface del display auto: numero grande e centrato, unità "km/h" in basso a destra, nessuna icona app (visual spec in `08-CONTEXT.md`, D-14)
+- Velocità disegnata direttamente sulla Surface del display auto: numero grande e centrato, unità "km/h" in basso a destra, nessuna icona app (visual spec in `.planning/milestones/v2.0-phases/08-*/08-CONTEXT.md`, D-14)
 - Stati "Ricerca segnale..." e flusso permesso (Fase 9) preservati con il nuovo rendering
 - Decisione di categoria Play Store: prima verificare (ricerca) se un'app POI può disegnare sulla Surface (es. `MapWithContentTemplate`, Car App Library 1.7+), NAVIGATION solo se non esiste alternativa
 - Pulizie minori: consolidare `isDeviceCharging()` con `deriveChargingState()`; chiudere la finestra transitoria di `carLink` su cold-launch/resume con Android Auto già connesso
