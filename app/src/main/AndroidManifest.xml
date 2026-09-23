@@ -21,16 +21,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tachimetro">
 
-        <!-- D-00a: dichiara l'esperienza a template Android Auto (categoria POI, non
-             NAVIGATION, vedi service sotto). minCarApiLevel 1 massimizza la compatibilita'
-             con head unit vecchi; tutte le API usate in questa fase sono disponibili da
-             CarAppApiLevel 1. -->
+        <!-- D-00a: dichiara l'esperienza a template Android Auto (vedi service sotto).
+             REL-02 (Fase 12): minCarApiLevel 7 perche' MapWithContentTemplate e'
+             @RequiresCarApi(7); nessun fallback PaneTemplate e nessun controllo runtime del
+             livello: le head unit con Car API < 7 non vedono l'app, accettato consapevolmente
+             dall'utente. D-01: i permessi ACCESS_SURFACE + template stanno nei manifest dei
+             flavor finche' esistono; qui non va dichiarato alcun permesso template Car App. -->
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
         <meta-data
             android:name="androidx.car.app.minCarApiLevel"
-            android:value="1" />
+            android:value="7" />
 
         <activity
             android:name=".MainActivity"

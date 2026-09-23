@@ -56,6 +56,37 @@ android {
             }
         }
     }
+
+    // D-01 (Fase 12): flavor TEMPORANEI dello spike Surface, rimossi a fine fase (D-02).
+    // D-05: mai distribuiti, nessun caricamento Play Store nemmeno su test interno: solo APK
+    // debug locali su DHU. Ciascun flavor ha il proprio manifest (src/spikePoi, src/spikeNav)
+    // cosi' nessun APK dichiara insieme MAP_TEMPLATES e NAVIGATION_TEMPLATES (T-12-01).
+    // Comandi: ./gradlew.bat :app:installSpikePoiDebug [-PpoiCard=message|list|pane|grid]
+    //          ./gradlew.bat :app:installSpikeNavDebug
+    flavorDimensions += "surfaceSpike"
+    productFlavors {
+        create("spikePoi") {
+            dimension = "surfaceSpike"
+            // D-06: variante della card obbligatoria di MapWithContentTemplate, scelta da riga
+            // di comando. Allow-list: nessuna stringa arbitraria finisce in BuildConfig (T-12-03).
+            val allowedPoiCards = setOf("message", "list", "pane", "grid")
+            val poiCard = project.findProperty("poiCard")?.toString() ?: "message"
+            if (poiCard !in allowedPoiCards) {
+                throw GradleException(
+                    "Valore -PpoiCard='$poiCard' non valido. Valori ammessi: " +
+                        allowedPoiCards.joinToString(", ")
+                )
+            }
+            buildConfigField("String", "SPIKE_POI_CARD", "\"$poiCard\"")
+        }
+        create("spikeNav") {
+            dimension = "surfaceSpike"
+            // Nessuna card nel percorso NAVIGATION: il campo esiste solo perche' il codice in
+            // main compili per entrambe le varianti.
+            buildConfigField("String", "SPIKE_POI_CARD", "\"none\"")
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
