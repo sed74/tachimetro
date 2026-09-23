@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-23T14:54:51.095Z",
+  "phase": "12",
+  "phase_name": "spike-surface-e-decisione-categoria-template",
+  "phase_dir": ".planning/phases/12-spike-surface-e-decisione-categoria-template",
+  "plan": 4,
+  "task": 2,
+  "total_tasks": 3,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": "12-01", "name": "Infrastruttura build spike (flavor spikePoi/spikeNav, minCarApiLevel 7, SurfaceTextFit)", "status": "done", "commit": "f1f8109"},
+    {"id": "12-03", "name": "Tooling misure DHU (surface-spike-check.ps1, .ini DHU, runbook)", "status": "done", "commit": "7d2353c"},
+    {"id": "12-02", "name": "SpeedSurfaceRenderer + SurfaceTemplateFactory per flavor", "status": "done", "commit": "db168d8"},
+    {"id": "12-04/T1", "name": "Pre-flight build 5 varianti + scheletro 12-SPIKE-RESULTS.md", "status": "done", "commit": "d50c3f4"},
+    {"id": "12-04/T2", "name": "Sessione di misura su DHU (15 sessioni, checkpoint human-verify)", "status": "in_progress", "progress": "Istruzioni consegnate all'utente; misure non ancora eseguite"}
+  ],
+  "remaining_tasks": [
+    {"id": "12-04/T3", "name": "Compilare 12-SPIKE-RESULTS.md dai summary in build/surface-spike + calcolo criterio D-12, poi 12-04-SUMMARY.md", "status": "not_started"},
+    {"id": "12-05", "name": "Gate umano: scelta categoria/template (POI vs NAVIGATION) e registrazione decisione", "status": "not_started"},
+    {"id": "12-06", "name": "Consolidamento sul percorso scelto (rimozione flavor, manifest finale, verifica DHU)", "status": "not_started"},
+    {"id": "phase-close", "name": "code review gate, regression gate, verifier, phase.complete", "status": "not_started"}
+  ],
+  "blockers": [
+    {"description": "OnePlus 8T non collegato: adb devices vuoto durante il pre-flight", "type": "human_action", "workaround": "Collegare via USB e autorizzare il debug prima delle sessioni"}
+  ],
+  "human_actions_pending": [
+    {"action": "Eseguire le 15 sessioni DHU (5 varianti x 3 risoluzioni) seguendo docs/surface-spike-verification.md, salvare gli screenshot in spike-screenshots/<variante>-<risoluzione>.png, annotare S1-S6", "context": "Checkpoint human-verify del piano 12-04 Task 2; senza misure reali non si puo' applicare il criterio D-12", "blocking": true}
+  ],
+  "decisions": [
+    {"decision": "Wave 2+ eseguite senza worktree (sequenziali sul main tree)", "rationale": "Un solo piano per wave; la rimozione del worktree con build Gradle fallisce su Windows per 'Filename too long'", "phase": "12"},
+    {"decision": "REL-01 lasciato aperto in REQUIREMENTS.md", "rationale": "Richiede misure DHU e decisione esplicita dell'utente (12-05)", "phase": "12"}
+  ],
+  "uncommitted_files": [".idea/markdown.xml (non correlato)"],
+  "next_action": "Chiedere all'utente le note 'misure completate' (S1-S6 + versioni DHU/Android Auto); poi spawnare un executor di continuazione per 12-04 dal Task 3 via /gsd:execute-phase 12",
+  "context_notes": "Esecuzione in corso di /gsd:execute-phase 12. Wave 1-2 completate e tracciate in ROADMAP/STATE. Wave 3 (12-04) ferma al checkpoint umano. Wave 4 (12-05) e 5 (12-06) sono anch'esse non autonome."
+}
