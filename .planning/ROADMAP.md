@@ -45,7 +45,7 @@ Dettagli completi delle fasi: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADM
 - [x] **Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto** - La velocità e lo stato "nessun segnale" appaiono sullo schermo Android Auto, aggiornati al secondo, condividendo un'unica fonte GPS con il telefono (SC1 accettato con nuance — vedi dettagli sotto)
 - [x] **Phase 9: Permesso di Localizzazione dallo Schermo Auto** - Se il permesso non è ancora concesso, l'utente lo concede direttamente dallo schermo auto al primo collegamento (completed 2026-09-02)
 - [x] **Phase 10: Comportamento del Telefono alla Connessione Android Auto** - Il telefono rilascia lo schermo sempre acceso e mostra uno stato neutro quando Android Auto è connesso, ripristinando tutto alla disconnessione (completed 2026-09-02)
-- [ ] **Phase 11: Hardening di Produzione e Verifica su Dispositivo Reale** - L'integrazione Android Auto è validata con un host reale e verificata su strada a telefono bloccato
+- [x] **Phase 11: Hardening di Produzione e Verifica su Dispositivo Reale** - L'integrazione Android Auto è validata con un host reale e verificata su strada a telefono bloccato (completed 2026-09-23)
 
 ## Phase Details
 
@@ -154,11 +154,11 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 11-03-PLAN.md — Sessione da scrivania su build di release firmato: checkpoint umano SC1 (host reale accettato dall'allow-list) e SC3 (10 cicli rapidi di connessione/disconnessione), registrazione esiti e ritiro della nota di rischio in `playstore/README.md` (wave 2)
+- [x] 11-03-PLAN.md — Sessione da scrivania su build di release firmato: checkpoint umano SC1 (host reale accettato dall'allow-list) e SC3 (10 cicli rapidi di connessione/disconnessione), registrazione esiti e ritiro della nota di rischio in `playstore/README.md` (wave 2)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 11-04-PLAN.md — Checkpoint umano SC2: test su strada di 5-10 minuti a telefono bloccato (D-06/D-07) e registrazione dell'esito, con documentazione del limite di piattaforma se il GPS in background si ferma (D-03/D-04, nessun `ACCESS_BACKGROUND_LOCATION`) (wave 3)
+- [x] 11-04-PLAN.md — Checkpoint umano SC2: test su strada di 5-10 minuti a telefono bloccato (D-06/D-07) e registrazione dell'esito, con documentazione del limite di piattaforma se il GPS in background si ferma (D-03/D-04, nessun `ACCESS_BACKGROUND_LOCATION`) (wave 3)
 
 ## Progress
 
@@ -177,4 +177,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Fondamenta Condivise e Velocità sullo Schermo Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
 | 9. Permesso di Localizzazione dallo Schermo Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
 | 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 3/3 | Complete    | 2026-09-02 |
-| 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 2/4 | In Progress|  |
+| 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 4/4 | Complete    | 2026-09-23 |

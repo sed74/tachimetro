@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Android Auto Support
-status: executing
-stopped_at: Phase 11 context gathered
-last_updated: "2026-09-22T00:00:00.000Z"
+status: milestone_complete
+stopped_at: Milestone complete (Phase 11 was final phase)
+last_updated: 2026-09-23T10:31:47.083Z
 last_activity: 2026-09-23 -- 11-03: SC1 PASS visivo registrato, nota di rischio ALLOW_ALL ritirata
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 13
-  completed_plans: 9
-  percent: 69
+  completed_plans: 13
+  percent: 75
 ---
 
 # Project State
@@ -21,20 +21,20 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-02)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** Phase 11 — hardening-di-produzione-e-verifica-su-dispositivo-reale
+**Current focus:** Milestone complete
 
 ## Current Position
 
-Phase: 11 (hardening-di-produzione-e-verifica-su-dispositivo-reale) — EXECUTING
-Plan: 1 of 4
-Status: Executing Phase 11
-Last activity: 2026-09-23 -- 11-03: SC1 PASS visivo registrato (head unit reale, release vC4 da Play Store), nota di rischio ALLOW_ALL ritirata; SC3 in attesa di verifica manuale in auto
+Phase: 11
+Plan: Not started
+Status: Milestone complete
+Last activity: 2026-09-23
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 24
+- Total plans completed: 28
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -52,7 +52,7 @@ Last activity: 2026-09-23 -- 11-03: SC1 PASS visivo registrato (head unit reale,
 | 08 | 3 | - | - |
 | 09 | 3 | - | - |
 | 10 | 3 | - | - |
-| 11 | TBD | - | - |
+| 11 | 4 | - | - |
 
 **Recent Trend:**
 
@@ -87,7 +87,7 @@ None yet.
 ### Blockers/Concerns
 
 - ~~Fase 8/11: il comportamento della quota di refresh dei template Android Auto...~~ — **Risolto in Fase 8 (08-03)**: verifica empirica dal vivo su DHU conferma che l'host non chiude l'app sotto refresh continuo a 1Hz (586 refresh/608s, cadenza 0.964/s, PID mai cambiato). Vedi `08-CONTEXT.md` D-11 e `08-03-SUMMARY.md`.
-- Fase 11: il comportamento del GPS in background quando il telefono è bloccato durante una sessione Android Auto attiva non è documentato — genuino gap di piattaforma da verificare su dispositivo reale, non solo su DHU (v. `.planning/research/SUMMARY.md`, Pitfall 5)
+- ~~Fase 11: GPS in background a telefono bloccato durante Android Auto~~ — **Risolto in Fase 11 (11-04)**: SC2 PASS visivo su head unit reale, la velocità continua ad aggiornarsi a telefono bloccato; nessun `ACCESS_BACKGROUND_LOCATION` necessario.
 - v2.1 (milestone futura, non v2.0): `PaneTemplate` non permette un numero grande/centrato ne' unita' posizionabile ne' rimozione dell'icona app (limite strutturale, D-12 in `08-CONTEXT.md`) — accettato per v2.0, valutare `NavigationTemplate`+`SurfaceCallback` in una milestone v2.1 dedicata (D-14, visual spec gia' raccolta in `08-CONTEXT.md` sezione `<deferred>`)
 - Fase 9+: SC2 (comportamento schermo auto alla perdita di segnale GPS) non è mai stato verificato dal vivo su DHU — solo copertura indiretta via test unitari (`CarSpeedContentTest`, `GpsSpeedProviderStateTest`). Se un problema di visualizzazione emergesse in una fase futura (es. verifica su strada in Fase 11), non assumere che sia già stato escluso empiricamente qui
 - Fase 9: Scenario G/Pitfall 1 accettato -- CarContext.requestPermissions() puo' essere ignorato silenziosamente dall'host se il veicolo e' gia' in movimento al collegamento, lasciando lo schermo auto bloccato su "Controlla il telefono" senza azione di sblocco manuale (D-05/D-06 non prevedono un retry in quello stato). Accettato esplicitamente dall'utente per v2.0 durante il checkpoint DHU di 09-03; vedi 09-CONTEXT.md D-09. Non un bug, limite di piattaforma noto e documentato.
@@ -109,7 +109,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| *(none)* | | | |
+| Verifica | Fase 11 SC3 — cicli rapidi connessione/disconnessione Android Auto su hardware reale (10 cicli, osservazione visiva in auto). Copertura indiretta: `CarLinkSequenceTest` | Rimandato dall'utente per chiudere v2.0 | 2026-09-23 |
 
 ## Session Continuity
 
