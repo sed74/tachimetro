@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: Android Auto Support
-status: Awaiting next milestone
-stopped_at: Milestone v2.0 shipped — prossimo passo /gsd:new-milestone (v2.1 velocità a tutto schermo su Android Auto)
-last_updated: "2026-09-23T10:32:34.714Z"
-last_activity: 2026-09-23 — Milestone v2.0 completed and archived
+milestone: v2.1
+milestone_name: Velocità a tutto schermo su Android Auto
+status: planning
+last_updated: "2026-09-23T11:51:02.371Z"
+last_activity: 2026-09-23
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 13
-  completed_plans: 13
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -25,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-09-23)
 
 ## Current Position
 
-Phase: Milestone v2.0 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-09-23 — Milestone v2.0 completed and archived
+Status: Defining requirements
+Last activity: 2026-09-23 — Milestone v2.1 started
 
 ## Performance Metrics
 

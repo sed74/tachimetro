@@ -2,7 +2,7 @@
 
 ## Status
 
-**v2.0 Android Auto Support SHIPPED (2026-09-23).** Prossima milestone (v2.1, velocità a tutto schermo sul display auto) da definire via `/gsd:new-milestone`.
+**v2.1 Velocità a tutto schermo su Android Auto — IN DEFINIZIONE (avviata 2026-09-23).** v2.0 Android Auto Support shippata il 2026-09-23.
 
 ## Current State
 
@@ -10,10 +10,17 @@
 - **In distribuzione:** 2.0 (versionCode 4) sul canale test aperto del Play Store, verificata dall'utente su una head unit Android Auto reale
 - **Codebase:** ~2.020 LOC Kotlin in 21 file `.kt` (era 1.631 a fine v1.1)
 
-## Next Milestone Goals
+## Current Milestone: v2.1 Velocità a tutto schermo su Android Auto
 
-- **v2.1 — Velocità a tutto schermo su Android Auto:** sostituire il `PaneTemplate` (numero piccolo, host-controlled) con `NavigationTemplate`+`SurfaceCallback` per disegnare direttamente un numero grande e centrato, unità in basso a destra, nessuna icona (visual spec già raccolta in `08-CONTEXT.md`, sezione `<deferred>`). Nodo da sciogliere: accettabilità Play Store per una categoria diversa da POI (NAVIGATION ha una revisione più severa).
-- Verifica rimandata: Fase 11 SC3 (cicli rapidi di connessione/disconnessione su hardware reale) — vedi `.planning/STATE.md` Deferred Items.
+**Goal:** Rendere la velocità sul display Android Auto grande e centrata come sul telefono, sostituendo il layout host-controlled di `PaneTemplate` con un rendering diretto sulla Surface.
+
+**Target features:**
+- Velocità disegnata direttamente sulla Surface del display auto: numero grande e centrato, unità "km/h" in basso a destra, nessuna icona app (visual spec in `08-CONTEXT.md`, D-14)
+- Stati "Ricerca segnale..." e flusso permesso (Fase 9) preservati con il nuovo rendering
+- Decisione di categoria Play Store: prima verificare (ricerca) se un'app POI può disegnare sulla Surface (es. `MapWithContentTemplate`, Car App Library 1.7+), NAVIGATION solo se non esiste alternativa
+- Pulizie minori: consolidare `isDeviceCharging()` con `deriveChargingState()`; chiudere la finestra transitoria di `carLink` su cold-launch/resume con Android Auto già connesso
+
+**Esplicitamente fuori da questa milestone:** fix del salto di distanza (`lastAcceptedLocation` non resettato alla ripartenza della pipeline), verifica rimandata Fase 11 SC3 (cicli rapidi su hardware reale).
 
 <details>
 <summary>Milestone v2.0 Android Auto Support (archiviata)</summary>
@@ -62,7 +69,7 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 ### Active
 
-(nessun requisito attivo — i requisiti della v2.1 verranno definiti con `/gsd:new-milestone`)
+(requisiti v2.1 in definizione — vedi `.planning/REQUIREMENTS.md`)
 
 ### Out of Scope
 
@@ -137,4 +144,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-23 after v2.0 milestone*
+*Last updated: 2026-09-23 — avvio milestone v2.1*
