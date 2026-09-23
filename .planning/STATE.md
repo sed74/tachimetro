@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: Velocità a tutto schermo su Android Auto
 status: planning
-last_updated: "2026-09-23T11:51:02.371Z"
+last_updated: "2026-09-23T12:30:00.000Z"
 last_activity: 2026-09-23
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-23)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** Pianificazione milestone v2.1 — velocità a tutto schermo sul display Android Auto (`NavigationTemplate`+`SurfaceCallback`)
+**Current focus:** Phase 12 — Spike Surface e Decisione Categoria/Template (milestone v2.1, Fasi 12-15)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-09-23 — Milestone v2.1 started
+Phase: 12 of 15 (Spike Surface e Decisione Categoria/Template) — prima fase della milestone v2.1
+Plan: — (fase non ancora pianificata)
+Status: Ready to plan
+Last activity: 2026-09-23 — Roadmap v2.1 creata (Fasi 12-15, 13/13 requisiti mappati)
+
+Progress v2.1: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -73,6 +75,7 @@ Recent decisions affecting current work:
 - Roadmap v1.0: Horizontal-layer structure (Fondamenta → GPS → UI → Max Speed → Schermo), coarse granularity, 5 phases
 - Roadmap v1.1: Due fasi indipendenti per feature (coarse granularity) — Fase 6 Indicatore di Ricarica (CHRG-01/02), Fase 7 Distanza Percorsa e Reset Unificato (DIST-01/02/03, MAX-04); Fase 7 dipende da Fase 4 per il pattern di reset condiviso
 - Roadmap v2.0: Categoria/percorso di distribuzione già risolti dall'utente (template standard Car App Library, categoria POI, Play-Store-safe — non serve una fase dedicata). Quattro fasi sequenziali (coarse granularity): Fase 8 Fondamenta Condivise e Velocità sullo Schermo Auto (AA-01/02/03 — `GpsSpeedProvider` promosso ad Application-scoped, scaffold `TachimetroCarAppService`/`Session`/`SpeedScreen`, verifica empirica della quota di refresh dei template sotto aggiornamento continuo 1Hz); Fase 9 Permesso di Localizzazione dallo Schermo Auto (AA-04, dipende dallo scaffold di Fase 8); Fase 10 Comportamento del Telefono alla Connessione Android Auto (CONN-01/02, estende `ScreenOnPreferenceStore` v1.0, indipendente dal lavoro sullo schermo auto ma sequenziata dopo per coerenza); Fase 11 Hardening di Produzione e Verifica su Dispositivo Reale (nessun nuovo requisito — `HostValidator` reale al posto di `ALLOW_ALL_HOSTS_VALIDATOR`, verifica su strada del comportamento background-location a telefono bloccato)
+- Roadmap v2.1: Quattro fasi (coarse granularity). Fase 12 Spike Surface e Decisione Categoria/Template (REL-01, REL-02 — spike DHU di entrambi i percorsi POI+`MapWithContentTemplate` / NAVIGATION+`NavigationTemplate`, gate di decisione umana, `minCarApiLevel` 7 senza fallback `PaneTemplate`); Fase 13 Velocità a Tutto Schermo sulla Surface (AA-05..AA-12 — formulata in modo indipendente dal template scelto; tema segue giorno/notte dell'auto); Fase 14 Pulizie Lato Telefono (CLEAN-01/02 — indipendente, sequenziata dopo il renderer per non mescolare regressioni telefono/auto); Fase 15 Verifica su Head Unit Reale e Rilascio (REL-03 — test chiuso prima dell'aperto, `playstore/` deploy-ready, PASS visivo accettato senza logcat)
 - [Phase 08]: SC4 (quota refresh) confermato PASS via sessione DHU dal vivo su telefono fisico (586 refresh/608s, cadenza 0.964/s)
 - [Phase 08]: SC1 fallito come formulato (limite strutturale PaneTemplate); accettato per v2.0, NavigationTemplate+SurfaceCallback rimandato a milestone v2.1 (08-CONTEXT.md D-12..D-14)
 - [Phase 08]: SC2 (perdita segnale) accettato senza test live, su richiesta esplicita dell utente; copertura solo indiretta via test unitari gia esistenti
@@ -87,7 +90,9 @@ None yet.
 
 - ~~Fase 8/11: il comportamento della quota di refresh dei template Android Auto...~~ — **Risolto in Fase 8 (08-03)**: verifica empirica dal vivo su DHU conferma che l'host non chiude l'app sotto refresh continuo a 1Hz (586 refresh/608s, cadenza 0.964/s, PID mai cambiato). Vedi `08-CONTEXT.md` D-11 e `08-03-SUMMARY.md`.
 - ~~Fase 11: GPS in background a telefono bloccato durante Android Auto~~ — **Risolto in Fase 11 (11-04)**: SC2 PASS visivo su head unit reale, la velocità continua ad aggiornarsi a telefono bloccato; nessun `ACCESS_BACKGROUND_LOCATION` necessario.
-- v2.1 (milestone futura, non v2.0): `PaneTemplate` non permette un numero grande/centrato ne' unita' posizionabile ne' rimozione dell'icona app (limite strutturale, D-12 in `08-CONTEXT.md`) — accettato per v2.0, valutare `NavigationTemplate`+`SurfaceCallback` in una milestone v2.1 dedicata (D-14, visual spec gia' raccolta in `08-CONTEXT.md` sezione `<deferred>`)
+- Fase 12: la scelta POI vs NAVIGATION è un gate umano — nessun codice di rendering definitivo (Fase 13) prima della decisione registrata in PROJECT.md Key Decisions. NAVIGATION comporta rischio concreto di rifiuto in revisione Android Auto (NF-1/NF-6); POI impone una card di contenuto host-obbligatoria che riduce l'area del numero
+- Fase 15: la revisione Android Auto è bloccante sul canale aperto — caricare sempre prima sul test chiuso
+- ~~v2.1 (milestone futura, non v2.0): `PaneTemplate` non permette un numero grande/centrato ne' unita' posizionabile ne' rimozione dell'icona app (limite strutturale, D-12 in `08-CONTEXT.md`) — accettato per v2.0, valutare `NavigationTemplate`+`SurfaceCallback` in una milestone v2.1 dedicata (D-14, visual spec gia' raccolta in `08-CONTEXT.md` sezione `<deferred>`)~~ — **Preso in carico dalla milestone v2.1** (Fasi 12-13)
 - Fase 9+: SC2 (comportamento schermo auto alla perdita di segnale GPS) non è mai stato verificato dal vivo su DHU — solo copertura indiretta via test unitari (`CarSpeedContentTest`, `GpsSpeedProviderStateTest`). Se un problema di visualizzazione emergesse in una fase futura (es. verifica su strada in Fase 11), non assumere che sia già stato escluso empiricamente qui
 - Fase 9: Scenario G/Pitfall 1 accettato -- CarContext.requestPermissions() puo' essere ignorato silenziosamente dall'host se il veicolo e' gia' in movimento al collegamento, lasciando lo schermo auto bloccato su "Controlla il telefono" senza azione di sblocco manuale (D-05/D-06 non prevedono un retry in quello stato). Accettato esplicitamente dall'utente per v2.0 durante il checkpoint DHU di 09-03; vedi 09-CONTEXT.md D-09. Non un bug, limite di piattaforma noto e documentato.
 
@@ -113,11 +118,11 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-09-23
-Stopped at: Milestone v2.0 chiusa e archiviata (tag v2.0). Fase 11: SC1/SC2 PASS visivi su head unit reale, SC3 rimandato (Deferred Items)
+Stopped at: Roadmap v2.1 creata (Fasi 12-15), in attesa di pianificare la Fase 12
 Resume file: None
 
 ## Operator Next Steps
 
-- Avviare la milestone v2.1 con `/gsd:new-milestone`: velocità grande e centrata sul display Android Auto via `NavigationTemplate`+`SurfaceCallback` (visual spec in `08-CONTEXT.md` `<deferred>`, decisione D-14); valutare l'impatto sulla categoria Play Store (POI → NAVIGATION)
+- Pianificare la Fase 12 con `/gsd:plan-phase 12` (spike DHU su entrambi i percorsi, gate di decisione categoria/template, `minCarApiLevel` 7)
 - Verifica rimandata: Fase 11 SC3 — 10 cicli rapidi di connessione/disconnessione Android Auto osservati a mano in auto; esito da registrare in `docs/android-auto-hardening-verification.md`
 - Passi manuali Play Store ancora aperti documentati in `playstore/README.md` (screenshot con schermo Android Auto, hosting privacy policy, promozione da test aperto a produzione)

@@ -51,7 +51,25 @@ Research: `.planning/research/SUMMARY.md`. Visual spec di partenza: `.planning/m
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (filled by roadmap) | | |
+| REL-01 | Phase 12 | Pending |
+| REL-02 | Phase 12 | Pending |
+| AA-05 | Phase 13 | Pending |
+| AA-06 | Phase 13 | Pending |
+| AA-07 | Phase 13 | Pending |
+| AA-08 | Phase 13 | Pending |
+| AA-09 | Phase 13 | Pending |
+| AA-10 | Phase 13 | Pending |
+| AA-11 | Phase 13 | Pending |
+| AA-12 | Phase 13 | Pending |
+| CLEAN-01 | Phase 14 | Pending |
+| CLEAN-02 | Phase 14 | Pending |
+| REL-03 | Phase 15 | Pending |
+
+**Coverage:**
+- v2.1 requirements: 13 total
+- Mapped to phases: 13
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-09-23*
+*Last updated: 2026-09-23 — traceability compilata dalla roadmap v2.1 (Fasi 12-15)*
