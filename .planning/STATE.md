@@ -4,8 +4,8 @@ milestone: v2.1
 milestone_name: Velocità a tutto schermo su Android Auto
 status: executing
 stopped_at: Phase 12 context gathered
-last_updated: "2026-09-23T14:21:27.386Z"
-last_activity: 2026-09-23 -- Phase 12 planning complete
+last_updated: "2026-09-23T14:33:26.734Z"
+last_activity: 2026-09-23 -- Phase 12 execution started
 progress:
   total_phases: 4
   completed_phases: 0
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-23)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** Phase 12 — Spike Surface e Decisione Categoria/Template (milestone v2.1, Fasi 12-15)
+**Current focus:** Phase 12 — spike-surface-e-decisione-categoria-template
 
 ## Current Position
 
-Phase: 12 of 15 (Spike Surface e Decisione Categoria/Template) — prima fase della milestone v2.1
-Plan: — (fase non ancora pianificata)
-Status: Ready to execute
-Last activity: 2026-09-23 -- Phase 12 planning complete
+Phase: 12 (spike-surface-e-decisione-categoria-template) — EXECUTING
+Plan: 1 of 6
+Status: Executing Phase 12
+Last activity: 2026-09-23 -- Phase 12 execution started
 
 Progress v2.1: [░░░░░░░░░░] 0%
 

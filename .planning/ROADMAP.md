@@ -76,12 +76,12 @@ Dettagli completi delle fasi: [milestones/v2.0-ROADMAP.md](milestones/v2.0-ROADM
   3. La scelta di categoria e template è una decisione esplicita dell'utente, registrata con motivazione in PROJECT.md Key Decisions, e il manifest contiene solo i permessi Car App del percorso scelto (mai `MAP_TEMPLATES` e `NAVIGATION_TEMPLATES` insieme)
   4. Il manifest dichiara `minCarApiLevel` 7 e non esiste alcun ramo di fallback a `PaneTemplate`; l'app si apre ancora regolarmente su DHU
 
-**Plans:** 6 plans
+**Plans:** 2/6 plans executed
 Plans:
 **Wave 1**
 
-- [ ] 12-01-PLAN.md — Flavor temporanei spikePoi/spikeNav, manifest disgiunti, minCarApiLevel 7, funzione pura di fit "888"
-- [ ] 12-03-PLAN.md — Script di misura DHU, ini 800x480/1280x720/1920x1080, runbook
+- [x] 12-01-PLAN.md — Flavor temporanei spikePoi/spikeNav, manifest disgiunti, minCarApiLevel 7, funzione pura di fit "888"
+- [x] 12-03-PLAN.md — Script di misura DHU, ini 800x480/1280x720/1920x1080, runbook
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -160,7 +160,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 9. Permesso di Localizzazione dallo Schermo Auto | v2.0 | 3/3 | Complete   | 2026-09-02 |
 | 10. Comportamento del Telefono alla Connessione Android Auto | v2.0 | 3/3 | Complete    | 2026-09-02 |
 | 11. Hardening di Produzione e Verifica su Dispositivo Reale | v2.0 | 4/4 | Complete    | 2026-09-23 |
-| 12. Spike Surface e Decisione Categoria/Template | v2.1 | 0/TBD | Not started | - |
+| 12. Spike Surface e Decisione Categoria/Template | v2.1 | 2/6 | In Progress|  |
 | 13. Velocità a Tutto Schermo sulla Surface | v2.1 | 0/TBD | Not started | - |
 | 14. Pulizie Lato Telefono | v2.1 | 0/TBD | Not started | - |
 | 15. Verifica su Head Unit Reale e Rilascio | v2.1 | 0/TBD | Not started | - |
