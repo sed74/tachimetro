@@ -3,8 +3,9 @@ gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: Velocità a tutto schermo su Android Auto
 status: planning
-last_updated: "2026-09-23T12:30:00.000Z"
-last_activity: 2026-09-23
+stopped_at: Phase 12 context gathered
+last_updated: "2026-09-23T13:49:48.169Z"
+last_activity: 2026-09-23 — Roadmap v2.1 creata (Fasi 12-15, 13/13 requisiti mappati)
 progress:
   total_phases: 4
   completed_phases: 0
@@ -117,9 +118,9 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-23
-Stopped at: Roadmap v2.1 creata (Fasi 12-15), in attesa di pianificare la Fase 12
-Resume file: None
+Last session: 2026-09-23T13:49:48.153Z
+Stopped at: Phase 12 context gathered
+Resume file: .planning/phases/12-spike-surface-e-decisione-categoria-template/12-CONTEXT.md
 
 ## Operator Next Steps
 
