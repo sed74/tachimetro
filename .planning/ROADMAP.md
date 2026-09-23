@@ -73,7 +73,14 @@ Dettagli completi delle fasi: [milestones/v2.0-ROADMAP.md](milestones/v2.0-ROADM
   2. Per entrambi i percorsi sono registrate le misure concrete di stable area e visible area su almeno una risoluzione DHU, insieme al Car API level riportato da DHU (e, se osservabile, dalla head unit reale)
   3. La scelta di categoria e template è una decisione esplicita dell'utente, registrata con motivazione in PROJECT.md Key Decisions, e il manifest contiene solo i permessi Car App del percorso scelto (mai `MAP_TEMPLATES` e `NAVIGATION_TEMPLATES` insieme)
   4. Il manifest dichiara `minCarApiLevel` 7 e non esiste alcun ramo di fallback a `PaneTemplate`; l'app si apre ancora regolarmente su DHU
-**Plans**: TBD
+**Plans:** 6 plans
+Plans:
+- [ ] 12-01-PLAN.md — Flavor temporanei spikePoi/spikeNav, manifest disgiunti, minCarApiLevel 7, funzione pura di fit "888"
+- [ ] 12-02-PLAN.md — SpeedSurfaceRenderer (disegno di prova, log misure, api=), factory template per flavor, ramo Granted su Surface
+- [ ] 12-03-PLAN.md — Script di misura DHU, ini 800x480/1280x720/1920x1080, runbook
+- [ ] 12-04-PLAN.md — Sessione DHU sul telefono fisico (checkpoint) e 12-SPIKE-RESULTS.md con criterio D-12
+- [ ] 12-05-PLAN.md — Gate decisione utente POI/NAVIGATION, registrazione in PROJECT.md Key Decisions
+- [ ] 12-06-PLAN.md — Rimozione flavor, consolidamento sul percorso scelto, manifest finale, verifica DHU (SC4)
 
 ### Phase 13: Velocità a Tutto Schermo sulla Surface
 **Goal**: Sul display Android Auto l'utente legge la velocità come un numero grande e centrato, disegnato direttamente sulla Surface con il template scelto in Fase 12, senza perdere nessuno degli stati e dei comportamenti della v2.0
