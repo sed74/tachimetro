@@ -81,6 +81,44 @@
 
 ---
 
+## Milestone: v2.0 — Android Auto Support
+
+**Shipped:** 2026-09-23
+**Phases:** 4 | **Plans:** 13
+
+### What Was Built
+- Fonte GPS unica Application-scoped (`TachimetroApplication`) condivisa tra telefono e auto; `TachimetroCarAppService`/`Session`/`SpeedScreen` su `PaneTemplate` aggiornato a 1Hz (Fase 8)
+- Richiesta del permesso di localizzazione direttamente dallo schermo auto, macchina a stati reattiva con distinzione rifiuto singolo/permanente (Fase 9)
+- Telefono che rilascia lo schermo sempre acceso e mostra uno stato neutro con Android Auto connesso, ripristino alla disconnessione (Fase 10)
+- `HostValidator` reale con allow-list ufficiale in release, runbook di verifica su hardware reale (Fase 11)
+
+### What Worked
+- Verifiche empiriche dal vivo (DHU su telefono fisico) per i rischi di piattaforma: la quota di refresh dei template sotto 1Hz, temuta in ricerca, è stata chiusa con misure oggettive (586 refresh/608s)
+- Funzioni pure come seam di test anche per codice legato alla Car App Library (`resolveCarLinkState`, `resolveEffectiveKeepScreenOn`, `createCarHostValidator(allowAllHosts)`)
+- Criteri di esito PASS/FAIL/INCONCLUSIVO scritti prima delle sessioni di verifica
+
+### What Was Inefficient
+- Il limite strutturale di `PaneTemplate` (numero piccolo, host-controlled) è emerso solo al checkpoint umano di Fase 8, non in ricerca: l'obiettivo "numero grande come sul telefono" era irraggiungibile con il template scelto e ha generato una milestone v2.1 intera
+- La Fase 11 è rimasta ferma ~3 settimane su checkpoint hardware; la procedura prevedeva una sessione da scrivania con logcat, ma l'uso reale (head unit in auto, USB occupata) non permette la cattura dei log — le verifiche si sono chiuse come PASS visivi
+- Merge di worktree con SUMMARY non committati: un SUMMARY perso e ricostruito a posteriori
+
+### Patterns Established
+- Split debug/release esplicito passato come parametro (non letto da `BuildConfig` dentro la funzione) per rendere entrambi i rami testabili
+- Nota di rischio interna confinata a `playstore/README.md`, ritirata sostituendola con la spiegazione di cosa l'ha chiusa
+- Copia dei `*-SUMMARY.md` fuori dalla worktree prima di `git worktree remove`
+
+### Key Lessons
+1. Per le UI su superfici host-controlled (Android Auto), verificare in ricerca cosa il template permette di controllare prima di scrivere success criteria visivi
+2. Pianificare le verifiche su hardware reale per come verranno davvero eseguite (in auto, senza adb), non per l'ambiente ideale da scrivania
+3. Le verifiche umane bloccanti a fine milestone vanno rese rimandabili esplicitamente (Deferred Items) invece di congelare la milestone
+
+### Cost Observations
+- Model mix: prevalentemente opus (profilo `quality`)
+- Sessioni: numerose, con checkpoint umani distribuiti su più giorni
+- Notable: Fasi 8-10 in 3 giorni; la Fase 11 ha occupato il resto della timeline in attesa di hardware
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -89,6 +127,7 @@
 |-----------|--------|------------|
 | v1.0 | 5 | Baseline: roadmap a strati orizzontali, checkpoint umani su device per fasi UI/hardware |
 | v1.1 | 2 | Esecuzione wave-based parallela via worktree isolation; checkpoint umano su strada (non solo emulatore); audit di sicurezza retroattivo evidence-based; riuso di pattern v1.0 invece di stabilirne di nuovi |
+| v2.0 | 4 | Verifiche empiriche dal vivo su DHU con misure oggettive; runbook con criteri di esito prefissati; verifiche su hardware reale chiuse come PASS visivi e voci rimandabili come Deferred Items |
 
 ### Cumulative Quality
 
@@ -96,8 +135,10 @@
 |-----------|-------------------|--------------------|
 | v1.0 | 3 (SpeedMapping, GpsProviderState, MaxSpeedReducer) | play-services-location, kotlinx-coroutines, lifecycle-runtime-ktx, ConstraintLayout |
 | v1.1 | +3 (ChargingStateProvider, DistanceReducer, DistanceFormat — GpsProviderState esteso, non nuovo) — 6 totali, 44 test | Nessuna — solo API di piattaforma (`BroadcastReceiver`, `Location.distanceTo()`) |
+| v2.0 | +4 JVM (CarLinkState, CarLinkSequence, CarPermissionState, CarSpeedContent) + 2 strumentati (SpeedScreenTemplate, CarHostValidation) — 10 JVM totali | `androidx.car.app` (Car App Library) — unica nuova dipendenza |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. Checkpoint umano su device indispensabile per fasi con superficie visiva/hardware — confermato in v1.1 (Fase 6 su emulatore, Fase 7 su strada reale; il mock GPS di un emulatore senza route playback non basta per feature che dipendono dalla velocità).
 2. Riusare pattern consolidati da una milestone precedente comprime i tempi di sviluppo — v1.1 (2 fasi in 2 giorni, mirror di store/pipeline esistenti) contro v1.0 (5 fasi in 4 giorni, pattern stabiliti da zero).
+3. Le superfici gestite dall'host (Android Auto) vanno verificate dal vivo presto: il limite di `PaneTemplate` e la quota di refresh sono emersi/chiusi solo con DHU reale, non in ricerca (v2.0).

@@ -10,6 +10,11 @@
 - SpeedScreen ora richiede automaticamente ACCESS_FINE_LOCATION al primo collegamento Android Auto (CarContext.requestPermissions()), transita reattivamente a Granted senza riavvii (SC2), e rende tutti e quattro gli stati di CarPermissionState nel PaneTemplate con un'Action di retry/impostazioni eseguibile solo a veicolo fermo.
 - SpeedScreenTemplateTest esteso a tutti e quattro gli stati di CarPermissionState (6 nuovi/aggiornati test) più chiusura del gate umano di fase: sessione DHU dal vivo conferma i tre Success Criteria di roadmap della Fase 9, chiude empiricamente Pitfall 4 (transizione Row-sola↔Row+Action), e l'utente accetta esplicitamente il limite noto di Pitfall 1 (Scenario G) per v2.0.
 - Test di sequenza JVM che locka l'assenza di deriva su connessioni/disconnessioni ripetute, seguito da sessione DHU dal vivo con conferma punto per punto di A1-G1 (SC1/SC2/SC3 di roadmap).
+- `GpsSpeedProvider` Application-scoped condiviso tra telefono e schermo auto; `SpeedScreen` su `PaneTemplate` a 1Hz confermato dal vivo su DHU (586 refresh/608s, nessuna chiusura dell'host) — Fase 8
+- `HostValidator` reale con allow-list ufficiale nei build di release, verificato su head unit Android Auto reale con il build 2.0 (vC4) del canale test aperto — Fase 11
+
+**Known deferred items at close:** 1 (see STATE.md Deferred Items) — Fase 11 SC3, cicli rapidi di connessione/disconnessione su hardware reale.
+**Known limitation:** velocità piccola sul display auto (limite di `PaneTemplate`) — oggetto della v2.1.
 
 ---
 
