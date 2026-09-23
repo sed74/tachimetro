@@ -8,7 +8,7 @@ Tachimetro nasce da uno scaffold Android Studio vuoto e arriva a un'app completa
 
 - ✅ **v1.0 MVP** — Fasi 1-5 (shipped 2026-07-10) → [archivio completo](milestones/v1.0-ROADMAP.md)
 - ✅ **v1.1 Ricarica e distanza** — Fasi 6-7 (shipped 2026-08-30) → [archivio completo](milestones/v1.1-ROADMAP.md)
-- 🚧 **v2.0 Android Auto Support** — Fasi 8-11 (in progress)
+- ✅ **v2.0 Android Auto Support** — Fasi 8-11 (shipped 2026-09-23) → [archivio completo](milestones/v2.0-ROADMAP.md)
 
 ## Phases
 
@@ -42,123 +42,17 @@ Dettagli completi delle fasi: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADM
 
 </details>
 
-- [x] **Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto** - La velocità e lo stato "nessun segnale" appaiono sullo schermo Android Auto, aggiornati al secondo, condividendo un'unica fonte GPS con il telefono (SC1 accettato con nuance — vedi dettagli sotto)
-- [x] **Phase 9: Permesso di Localizzazione dallo Schermo Auto** - Se il permesso non è ancora concesso, l'utente lo concede direttamente dallo schermo auto al primo collegamento (completed 2026-09-02)
-- [x] **Phase 10: Comportamento del Telefono alla Connessione Android Auto** - Il telefono rilascia lo schermo sempre acceso e mostra uno stato neutro quando Android Auto è connesso, ripristinando tutto alla disconnessione (completed 2026-09-02)
-- [x] **Phase 11: Hardening di Produzione e Verifica su Dispositivo Reale** - L'integrazione Android Auto è validata con un host reale e verificata su strada a telefono bloccato (completed 2026-09-23)
+<details>
+<summary>✅ v2.0 Android Auto Support (Fasi 8-11) — SHIPPED 2026-09-23</summary>
 
-## Phase Details
+- [x] Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto (3/3 plans) — completed 2026-09-02
+- [x] Phase 9: Permesso di Localizzazione dallo Schermo Auto (3/3 plans) — completed 2026-09-02
+- [x] Phase 10: Comportamento del Telefono alla Connessione Android Auto (3/3 plans) — completed 2026-09-02
+- [x] Phase 11: Hardening di Produzione e Verifica su Dispositivo Reale (4/4 plans) — completed 2026-09-23
 
-### Phase 8: Fondamenta Condivise e Velocità sullo Schermo Auto
+Dettagli completi delle fasi: [milestones/v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md)
 
-**Goal**: La velocità corrente e lo stato "nessun segnale" vengono mostrati sullo schermo Android Auto, aggiornati alla stessa cadenza del telefono (1/sec), condividendo un'unica fonte GPS con il telefono (nessuna sottoscrizione duplicata, nessuna regressione visibile sul telefono).
-**Depends on**: Phase 7 (v1.1 — GpsSpeedProvider e MainActivity esistenti da cui parte il refactor Application-scoped)
-**Requirements**: AA-01, AA-02, AA-03
-**Status**: Complete (2026-09-02) — verificato con sessione DHU dal vivo su telefono fisico; vedi nuance SC1/SC2 sotto e `08-CONTEXT.md` D-11..D-14 per il record canonico delle decisioni
-**Success Criteria** (what must be TRUE):
-
-  1. ~~Connettendo il telefono ad Android Auto (o al Desktop Head Unit), lo schermo auto mostra la velocità attuale come testo grande e leggibile, coerente con il valore mostrato sul telefono~~ — **Accettato con limitazione nota**: osservato FALLIRE come letteralmente formulato (il `PaneTemplate` rende il numero piccolo, in alto a sinistra, con l'icona app anch'essa forzata in alto a sinistra — limite strutturale dell'API, non un bug). Formalmente accettato per v2.0 via decisione esplicita (D-13): `AA-01` resta soddisfatto nell'accezione "stile/tipografia gestiti dall'host" già scritta in REQUIREMENTS.md, non "grande come sul telefono". Alternativa (`NavigationTemplate`+`SurfaceCallback`) rimandata a milestone v2.1 dedicata (D-14). Vedi `08-CONTEXT.md` D-12/D-13/D-14.
-  2. Quando il segnale GPS manca, lo schermo auto mostra uno stato equivalente a "Ricerca segnale GPS..." invece di restare bloccato su un valore vecchio — **Accettato senza verifica live**: nessuna sessione DHU ha esercitato una perdita di segnale reale; accettato su istruzione esplicita dell'utente, coperto solo indirettamente da test unitari esistenti (`CarSpeedContentTest`, `GpsSpeedProviderStateTest`). Vedi `08-CONTEXT.md` D-11.
-  3. Il valore sullo schermo auto si aggiorna una volta al secondo, alla stessa cadenza del telefono, senza salti né disallineamenti tra i due schermi — **Confermato**: 586 refresh in 608s, cadenza media 0.964/s, gap massimo osservato 3.1s (sessione DHU dal vivo, D-11)
-  4. Durante una sessione continua di alcuni minuti a cadenza 1Hz, l'host Android Auto non chiude l'app per superamento della quota di refresh dei template (verifica empirica preventiva del rischio quota, DHU + Developer Mode) — **Confermato PASS**: PID mai cambiato/sparito per l'intera sessione, host non ha mai chiuso l'app (euristica script + conferma visiva utente)
-  5. Il comportamento e l'aspetto del telefono restano invariati rispetto alla v1.1 (nessuna regressione visibile), a conferma che il GPS è condiviso da un'unica sottoscrizione Application-scoped tra telefono e auto — **Confermato** dall'utente durante e dopo la sessione DHU
-
-**Plans**: 3 plans
-
-Plans:
-**Wave 1**
-
-- [x] 08-01-PLAN.md — Fondamenta condivise: GpsSpeedProvider Application-scoped, dipendenza Car App Library 1.7.0, stringa "Ricerca segnale..." e contratto di contenuto puro (wave 1)
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [x] 08-02-PLAN.md — Servizio Car App categoria POI, Session e SpeedScreen con PaneTemplate aggiornato a 1 Hz (wave 2)
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [x] 08-03-PLAN.md — Gate SC4: test strumentato del template, automazione della misura refresh su DHU e checkpoint umano di verifica quota (wave 3) — completo 2026-09-02, vedi nuance SC1/SC2 sopra
-
-### Phase 9: Permesso di Localizzazione dallo Schermo Auto
-
-**Goal**: Se il permesso di localizzazione non è ancora stato concesso, l'utente può concederlo direttamente dallo schermo Android Auto al primo collegamento, senza dover prima aprire l'app sul telefono.
-**Depends on**: Phase 8 (lo schermo auto deve già esistere e mostrare dati prima di gestire il caso "permesso non ancora concesso")
-**Requirements**: AA-04
-**Status**: Complete (2026-09-02) — verificato con sessione DHU dal vivo; vedi `09-CONTEXT.md` D-08/D-09 per il record canonico delle decisioni e il limite noto accettato (Scenario G/Pitfall 1)
-**Success Criteria** (what must be TRUE):
-
-  1. Collegando Android Auto per la prima volta senza aver mai concesso il permesso di localizzazione sul telefono, lo schermo auto mostra una richiesta di permesso esplicita (`CarContext.requestPermissions()`) invece di restare vuoto o bloccato — **Confermato** dal vivo su DHU (D-08)
-  2. Concedendo il permesso dalla richiesta mostrata sullo schermo auto, lo schermo passa automaticamente alla velocità (o allo stato "Ricerca segnale") senza richiedere il riavvio dell'app o del collegamento — **Confermato** dal vivo su DHU (D-08)
-  3. Se l'utente nega il permesso dallo schermo auto, viene mostrato un messaggio chiaro che spiega l'impossibilità di leggere la velocità, invece di uno schermo vuoto — **Confermato** dal vivo su DHU, inclusa la distinzione rifiuto singolo/permanente (D-08)
-
-**Nota**: limite di piattaforma noto (Pitfall 1) accettato esplicitamente per v2.0 — `CarContext.requestPermissions()` può essere ignorato silenziosamente dall'host a veicolo in movimento, nessuna azione di sblocco manuale prevista in quello stato (D-09, registrato anche in `STATE.md` come concern noto).
-
-**Plans**: 3 plans
-
-Plans:
-**Wave 1**
-
-- [x] 09-01-PLAN.md — Fondamenta pure: modello `CarPermissionState`, resolver del rifiuto permanente, contatore persistito dei rifiuti e stringhe italiane dedicate all'auto (wave 1)
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [x] 09-02-PLAN.md — `SpeedScreen`: richiesta automatica via `CarContext.requestPermissions()`, transizione reattiva alla concessione, Action Riprova/Apri impostazioni nel `PaneTemplate` (wave 2)
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [x] 09-03-PLAN.md — Verifica: test strumentato della forma del template per ogni stato del permesso e checkpoint umano della sessione DHU sul flusso completo (wave 3)
-
-### Phase 10: Comportamento del Telefono alla Connessione Android Auto
-
-**Goal**: Quando Android Auto si connette, il telefono passa a uno stato neutro coerente e rilascia il controllo dello schermo sempre acceso; alla disconnessione, ripristina esattamente il comportamento precedente, senza reset indesiderati.
-**Depends on**: Phase 5 (v1.0 — estende `ScreenOnPreferenceStore` esistente; indipendente dal lavoro sullo schermo auto delle Fasi 8-9, sequenziata qui per coerenza della milestone)
-**Requirements**: CONN-01, CONN-02
-**Success Criteria** (what must be TRUE):
-
-  1. Quando Android Auto si connette, il telefono rilascia "schermo sempre acceso" (se era attivo) e mostra uno stato neutro "Connesso ad Android Auto" al posto della velocità
-  2. Alla disconnessione di Android Auto, il telefono ripristina esattamente la preferenza "sempre acceso" salvata in precedenza (attiva se era attiva, automatica se era automatica), senza alterare la preferenza memorizzata
-  3. Il toggle "Schermo sempre acceso" esistente continua a funzionare normalmente quando Android Auto non è connesso, senza regressioni rispetto al comportamento v1.0/v1.1
-
-**Plans**: 3 plans
-
-Plans:
-**Wave 1**
-
-- [x] 10-01-PLAN.md — Fondamenta pure: modello `CarLinkState`, mappatura fail-safe del tipo di connessione, derivazione pura del flag schermo-sempre-acceso e stringa "Connesso ad Android Auto" (wave 1)
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [x] 10-02-PLAN.md — `MainActivity`: osservazione di `CarConnection`, stato neutro al posto della velocità, rilascio e ripristino di `FLAG_KEEP_SCREEN_ON` senza toccare la preferenza salvata (wave 2)
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [x] 10-03-PLAN.md — Verifica: test JVM di sequenza (nessuna deriva su cicli connessione/disconnessione) e checkpoint umano della sessione DHU sui tre Success Criteria (wave 3)
-
-### Phase 11: Hardening di Produzione e Verifica su Dispositivo Reale
-
-**Goal**: L'integrazione Android Auto è pronta per l'uso reale: l'host della connessione viene validato correttamente (non più permissivo per default) e il comportamento a schermo bloccato/in background durante una connessione attiva è verificato su un dispositivo reale, non solo in emulazione.
-**Depends on**: Phase 9, Phase 10
-**Requirements**: Nessun nuovo requisito — verifica e messa in sicurezza di AA-01, AA-02, AA-03, AA-04, CONN-01, CONN-02
-**Success Criteria** (what must be TRUE):
-
-  1. L'app usa un `HostValidator` reale (non più `ALLOW_ALL_HOSTS_VALIDATOR`) che accetta solo host Android Auto legittimi, verificato che il collegamento a un head unit reale/DHU continui a funzionare
-  2. Su un dispositivo reale, con il telefono bloccato/in background e Android Auto connesso, la velocità sullo schermo auto continua ad aggiornarsi per diversi minuti consecutivi durante un tragitto reale (o il limite di piattaforma viene documentato esplicitamente se non risolvibile)
-  3. Connettendo e disconnettendo Android Auto ripetutamente in rapida successione, l'app non va in crash e lo schermo auto non resta bloccato in uno stato incoerente
-
-**Plans**: 4 plans
-
-Plans:
-**Wave 1**
-
-- [x] 11-01-PLAN.md — `HostValidator` reale: seam `createCarHostValidator(context, allowAllHosts)`, allow-list ufficiale della Car App Library nei build di release, `ALLOW_ALL` solo in debug (D-01/D-02), test strumentato su entrambi i rami (wave 1)
-- [x] 11-02-PLAN.md — Strumenti di verifica: runbook `docs/android-auto-hardening-verification.md` per SC1/SC2/SC3 con criteri di esito misurabili e contingenze gia' decise, piu' `scripts/aa-connect-cycle-check.ps1` per la misura di crash/ANR nei cicli rapidi (wave 1)
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [x] 11-03-PLAN.md — Sessione da scrivania su build di release firmato: checkpoint umano SC1 (host reale accettato dall'allow-list) e SC3 (10 cicli rapidi di connessione/disconnessione), registrazione esiti e ritiro della nota di rischio in `playstore/README.md` (wave 2)
-
-**Wave 3** *(blocked on Wave 2 completion)*
-
-- [x] 11-04-PLAN.md — Checkpoint umano SC2: test su strada di 5-10 minuti a telefono bloccato (D-06/D-07) e registrazione dell'esito, con documentazione del limite di piattaforma se il GPS in background si ferma (D-03/D-04, nessun `ACCESS_BACKGROUND_LOCATION`) (wave 3)
+</details>
 
 ## Progress
 

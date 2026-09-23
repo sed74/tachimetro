@@ -1,5 +1,18 @@
 # Milestones
 
+## v2.0 Android Auto Support (Shipped: 2026-09-23)
+
+**Phases completed:** 4 phases, 13 plans, 25 tasks
+
+**Key accomplishments:**
+
+- CarPermissionState sealed model + resolveCarPermissionState() pure resolver (denialCount >= 2 = permanent) + CarPermissionDenialStore persisting the car-screen denial counter in the shared tachimetro_prefs file, plus three Italian car-screen strings for D-01/D-02/D-04.
+- SpeedScreen ora richiede automaticamente ACCESS_FINE_LOCATION al primo collegamento Android Auto (CarContext.requestPermissions()), transita reattivamente a Granted senza riavvii (SC2), e rende tutti e quattro gli stati di CarPermissionState nel PaneTemplate con un'Action di retry/impostazioni eseguibile solo a veicolo fermo.
+- SpeedScreenTemplateTest esteso a tutti e quattro gli stati di CarPermissionState (6 nuovi/aggiornati test) più chiusura del gate umano di fase: sessione DHU dal vivo conferma i tre Success Criteria di roadmap della Fase 9, chiude empiricamente Pitfall 4 (transizione Row-sola↔Row+Action), e l'utente accetta esplicitamente il limite noto di Pitfall 1 (Scenario G) per v2.0.
+- Test di sequenza JVM che locka l'assenza di deriva su connessioni/disconnessioni ripetute, seguito da sessione DHU dal vivo con conferma punto per punto di A1-G1 (SC1/SC2/SC3 di roadmap).
+
+---
+
 ## v1.1 Ricarica e distanza (Shipped: 2026-08-30)
 
 **Phases completed:** 2 phases, 8 plans, 18 tasks

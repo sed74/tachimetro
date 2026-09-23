@@ -2,22 +2,31 @@
 
 ## Status
 
-**v2.0 Android Auto Support — Fase 10/4 completa, in corso.** v1.1 Ricarica e distanza shipped (2026-08-30).
+**v2.0 Android Auto Support SHIPPED (2026-09-23).** Prossima milestone (v2.1, velocità a tutto schermo sul display auto) da definire via `/gsd:new-milestone`.
 
-## Current Milestone: v2.0 Android Auto Support
+## Current State
+
+- **Shipped:** v1.0 MVP (2026-07-10), v1.1 Ricarica e distanza (2026-08-30), v2.0 Android Auto Support (2026-09-23)
+- **In distribuzione:** 2.0 (versionCode 4) sul canale test aperto del Play Store, verificata dall'utente su una head unit Android Auto reale
+- **Codebase:** ~2.020 LOC Kotlin in 21 file `.kt` (era 1.631 a fine v1.1)
+
+## Next Milestone Goals
+
+- **v2.1 — Velocità a tutto schermo su Android Auto:** sostituire il `PaneTemplate` (numero piccolo, host-controlled) con `NavigationTemplate`+`SurfaceCallback` per disegnare direttamente un numero grande e centrato, unità in basso a destra, nessuna icona (visual spec già raccolta in `08-CONTEXT.md`, sezione `<deferred>`). Nodo da sciogliere: accettabilità Play Store per una categoria diversa da POI (NAVIGATION ha una revisione più severa).
+- Verifica rimandata: Fase 11 SC3 (cicli rapidi di connessione/disconnessione su hardware reale) — vedi `.planning/STATE.md` Deferred Items.
+
+<details>
+<summary>Milestone v2.0 Android Auto Support (archiviata)</summary>
 
 **Goal:** Proiettare la velocità GPS sullo schermo dell'auto/moto via Android Auto (Car App Library), mantenendo il Core Value di leggibilità istantanea anche sul display del veicolo.
 
-**Target features:**
-- Velocità attuale visualizzata sul display Android Auto come numero grande, ad alto contrasto
-- Stato "nessun segnale GPS" replicato sul display auto
-- Comportamento del telefono quando Android Auto è connesso (rilascio schermo sempre acceso / stato neutro — i limiti di piattaforma su uno spegnimento forzato saranno chiariti in fase di ricerca/requisiti)
+**Out of scope per quella milestone:** velocità massima e distanza percorsa sul display auto (restano solo sul telefono).
 
-**Out of scope per questa milestone:** velocità massima e distanza percorsa sul display auto (restano solo sul telefono).
+</details>
 
 ## What This Is
 
-App Android nativa che mostra la velocità GPS in tempo reale a schermo intero, con un'interfaccia minimale ad altissimo contrasto pensata per essere letta a colpo d'occhio mentre l'app è montata su un supporto in auto o in moto. Nessun menu, nessun grafico: solo il numero della velocità, con due indicatori secondari opzionali (stato di ricarica, distanza percorsa) che compaiono ai margini dello schermo senza mai competere con il numero principale.
+App Android nativa che mostra la velocità GPS in tempo reale a schermo intero, con un'interfaccia minimale ad altissimo contrasto pensata per essere letta a colpo d'occhio mentre l'app è montata su un supporto in auto o in moto. Nessun menu, nessun grafico: solo il numero della velocità, con due indicatori secondari opzionali (stato di ricarica, distanza percorsa) che compaiono ai margini dello schermo senza mai competere con il numero principale. Dalla v2.0 la velocità (e lo stato "nessun segnale") è proiettata anche sul display Android Auto dell'auto/moto, con il telefono che rilascia lo schermo sempre acceso finché Android Auto è connesso.
 
 ## Core Value
 
@@ -53,7 +62,7 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 ### Active
 
-(nessun requisito attivo — Fase 11 valida AA-01..AA-04 e CONN-01/CONN-02 sotto condizioni di produzione, non introduce nuovi requirement ID)
+(nessun requisito attivo — i requisiti della v2.1 verranno definiti con `/gsd:new-milestone`)
 
 ### Out of Scope
 
@@ -64,6 +73,8 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 
 ## Context
 
+- **v2.0 Android Auto Support SHIPPED (2026-09-23)** — 4 fasi (8-11), 13 piani, 25 task, 6/6 requisiti (AA-01..04, CONN-01/02) validati. ~2.020 LOC Kotlin in 21 file. Timeline 2026-08-31 → 2026-09-23. Archivio: `.planning/milestones/v2.0-*`.
+- Fase 11 completa (2026-09-23): `HostValidator` reale nei build di release (`CarHostValidation.kt`, allow-list ufficiale `androidx.car.app` limitata a `gearhead` e `templates.host`, `ALLOW_ALL` solo in debug), runbook `docs/android-auto-hardening-verification.md` + `scripts/aa-connect-cycle-check.ps1`. Verifica su head unit Android Auto reale con build release vC4 dal Play Store: SC1 (host reale accettato) e SC2 (velocità aggiornata a telefono bloccato, nessun `ACCESS_BACKGROUND_LOCATION` necessario) PASS visivi — log `CarApp.Val` non catturabile con la USB occupata dall'head unit. SC3 (cicli rapidi) rimandato su richiesta dell'utente, copertura indiretta da `CarLinkSequenceTest`.
 - Fase 10 completa (2026-09-02): comportamento del telefono alla connessione Android Auto implementato — `CarLinkState`/`resolveCarLinkState()` (mappatura fail-safe del tipo di connessione, solo `CONNECTION_TYPE_PROJECTION` conta come connesso) e `resolveEffectiveKeepScreenOn()` (funzione pura senza accesso a `ScreenOnPreferenceStore`, unico punto che deriva CONN-01+CONN-02). `MainActivity` osserva `CarConnection` con il lifecycle dell'Activity, `renderSpeedArea()` mostra "Connesso ad Android Auto" al posto della velocità, lo switch "sempre acceso" continua a riflettere la sola preferenza salvata. `CarLinkSequenceTest` locka a costo zero l'assenza di deriva su sequenze ripetute (fino a 40 alternanze) — copertura logica anticipata del Success Criterion 3 di Fase 11. Sessione DHU dal vivo su device fisico: tutti i punti A1-G1 confermati (nessuna regressione su toggle, MAX, distanza, indicatore di ricarica, schermo auto). Code review: 0 critical, 1 warning non bloccante (finestra transitoria di `carLink` non aggiornato su cold-launch/resume con Android Auto già connesso, auto-correttiva, non coperta da test — candidato per verifica in Fase 11). Dettagli in `.planning/phases/10-comportamento-del-telefono-alla-connessione-android-auto/10-0{1,2,3}-SUMMARY.md` e `10-VERIFICATION.md`.
 - Fase 8 completa (2026-09-02): fondamenta condivise Android Auto implementate — `GpsSpeedProvider` promosso ad Application-scoped (`TachimetroApplication`), `TachimetroCarAppService`/`TachimetroCarSession`/`SpeedScreen` (categoria POI, `PaneTemplate` a 1Hz). Sessione DHU dal vivo su telefono fisico (non AVD, instabile in questa sessione): SC4 (quota refresh) e SC5 (nessuna regressione telefono) confermati (586 refresh/608s, cadenza 0,964/s, nessun crash host). SC1 (numero grande/centrato) fallito come letteralmente formulato — `PaneTemplate` non offre controllo su font/posizione, rendering host-controlled; accettato consapevolmente per v2.0, passaggio a `NavigationTemplate`+`SurfaceCallback` rimandato a una milestone v2.1 dedicata (visual spec già raccolta: numero grande e centrato, unità in basso a destra, nessuna icona). SC2 (perdita segnale) accettato senza verifica dal vivo su richiesta esplicita dell'utente — copertura solo indiretta via test unitari esistenti. Dettagli completi in `.planning/phases/08-fondamenta-condivise-e-velocit-sullo-schermo-auto/08-CONTEXT.md` (D-11..D-14) e `08-03-SUMMARY.md`.
 - **v1.1 Ricarica e distanza SHIPPED (2026-08-30)** — 2 fasi, 8 piani, 6/6 requisiti validati con checkpoint umani su dispositivo reale. 1.631 LOC Kotlin (era ~695 a fine v1.0). Timeline 2026-08-29 → 2026-08-30 (2 giorni). Fase 7 con audit di sicurezza retroattivo completo (22/22 minacce chiuse). Archivio: `.planning/milestones/v1.1-*`. Prossima milestone da definire via `/gsd-new-milestone`.
@@ -104,6 +115,9 @@ La velocità attuale deve essere sempre visibile, corretta e leggibile istantane
 | Reset unico per massimo e distanza (v1.1) | La distanza è definita come "percorsa dall'ultimo reset del massimo", quindi i due valori condividono lo stesso ciclo di vita — evita un secondo pulsante su uno schermo minimale | ✓ Good (verificato su strada, Fase 7) |
 | Layout `PaneTemplate` host-controlled accettato com'è per v2.0 (Fase 8) | Il numero appare piccolo/in alto a sinistra con icona app forzata invece che grande/centrato — limite strutturale dell'API (nessuna leva su font/allineamento/posizione), non un bug risolvibile con codice; l'alternativa (`NavigationTemplate`+`SurfaceCallback`) riaprirebbe la categoria NAVIGATION (revisione Play Store più severa) | ✓ Accettato consapevolmente (verificato su DHU dal vivo, Fase 8) — rivalutare in v2.1 |
 | Passaggio a `NavigationTemplate`+`SurfaceCallback` rimandato a milestone v2.1 dedicata | Ottenere un layout auto grande/centrato come sul telefono richiede di riaprire la categoria di distribuzione (POI → NAVIGATION); decisione con impatto su tutta la milestone, non da prendere ad-hoc dentro una singola fase — visual spec già raccolta (numero grande e centrato, unità in basso a destra, nessuna icona) | Pending (v2.1, non ancora avviata) |
+| `HostValidator` con allow-list reale in release, `ALLOW_ALL` solo in debug (Fase 11, D-01/D-02) | Chiude il rischio di binding da host arbitrari senza rompere il flusso DHU in sviluppo; allow-list presa dalla risorsa della libreria per seguire le rotazioni delle chiavi Google | ✓ Good (verificato su head unit reale, 2026-09-23) |
+| Verifiche su hardware reale accettate come PASS visivi senza log (Fase 11) | Con la head unit in auto la USB è occupata e `adb logcat` non è disponibile; la velocità visibile sullo schermo auto implica host accettato | ✓ Accettato dall'utente |
+| Nessun `ACCESS_BACKGROUND_LOCATION` (Fase 11, D-03/D-04) | Minimizzazione permessi e nessun onere data-safety aggiuntivo; SC2 ha confermato che non serve | ✓ Good |
 
 ## Evolution
 
@@ -123,4 +137,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-02 — Fase 10 completata (v2.0)*
+*Last updated: 2026-09-23 after v2.0 milestone*

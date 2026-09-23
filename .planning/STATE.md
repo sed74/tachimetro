@@ -2,33 +2,33 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Android Auto Support
-status: milestone_complete
-stopped_at: Milestone complete (Phase 11 was final phase)
-last_updated: 2026-09-23T10:31:47.083Z
-last_activity: 2026-09-23 -- 11-03: SC1 PASS visivo registrato, nota di rischio ALLOW_ALL ritirata
+status: Awaiting next milestone
+stopped_at: Milestone v2.0 shipped — prossimo passo /gsd:new-milestone (v2.1 velocità a tutto schermo su Android Auto)
+last_updated: "2026-09-23T10:32:34.714Z"
+last_activity: 2026-09-23 — Milestone v2.0 completed and archived
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 13
   completed_plans: 13
-  percent: 75
+  percent: 100
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-02)
+See: .planning/PROJECT.md (updated 2026-09-23)
 
 **Core value:** La velocità attuale deve essere sempre visibile, corretta e leggibile istantaneamente in ogni condizione di luce
-**Current focus:** Milestone complete
+**Current focus:** Pianificazione milestone v2.1 — velocità a tutto schermo sul display Android Auto (`NavigationTemplate`+`SurfaceCallback`)
 
 ## Current Position
 
-Phase: 11
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-09-23
+Phase: Milestone v2.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-09-23 — Milestone v2.0 completed and archived
 
 ## Performance Metrics
 
@@ -113,12 +113,12 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-23 (resume)
-Stopped at: Fase 11 Wave 2 (11-03) — SC1 PASS visivo (2026-09-23), in attesa dell'esito SC3 verificato a mano in auto
-Resume file: .planning/phases/11-hardening-di-produzione-e-verifica-su-dispositivo-reale/.continue-here.md (+ .planning/HANDOFF.json)
+Last session: 2026-09-23
+Stopped at: Milestone v2.0 chiusa e archiviata (tag v2.0). Fase 11: SC1/SC2 PASS visivi su head unit reale, SC3 rimandato (Deferred Items)
+Resume file: None
 
 ## Operator Next Steps
 
-- Fase 11 ("Hardening di Produzione e Verifica su Dispositivo Reale") non ancora discussa — avviare `/gsd:discuss-phase 11` o `/gsd:plan-phase 11`. Nessun nuovo requisito, valida AA-01..04/CONN-01/CONN-02: `HostValidator` reale al posto di `ALLOW_ALL_HOSTS_VALIDATOR`, verifica su strada del comportamento background-location a telefono bloccato
-- Gap Nyquist Fasi 8/9: **chiusi** (2026-09-03) — vedi `08-VALIDATION.md`/`09-VALIDATION.md`, zero gap trovati
-- Passi manuali di pubblicazione Play Store ancora aperti (build/firma APK-AAB 2.0, screenshot con schermo Android Auto, hosting privacy policy, form Play Console) — documentati in `playstore/README.md`
+- Avviare la milestone v2.1 con `/gsd:new-milestone`: velocità grande e centrata sul display Android Auto via `NavigationTemplate`+`SurfaceCallback` (visual spec in `08-CONTEXT.md` `<deferred>`, decisione D-14); valutare l'impatto sulla categoria Play Store (POI → NAVIGATION)
+- Verifica rimandata: Fase 11 SC3 — 10 cicli rapidi di connessione/disconnessione Android Auto osservati a mano in auto; esito da registrare in `docs/android-auto-hardening-verification.md`
+- Passi manuali Play Store ancora aperti documentati in `playstore/README.md` (screenshot con schermo Android Auto, hosting privacy policy, promozione da test aperto a produzione)
