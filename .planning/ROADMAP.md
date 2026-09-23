@@ -65,55 +65,81 @@ Dettagli completi delle fasi: [milestones/v2.0-ROADMAP.md](milestones/v2.0-ROADM
 ## Phase Details
 
 ### Phase 12: Spike Surface e Decisione Categoria/Template
+
 **Goal**: L'utente sceglie, sulla base di misure reali osservate su DHU, quale percorso (POI + `MapWithContentTemplate` oppure NAVIGATION + `NavigationTemplate`) usare per disegnare la velocità sulla Surface, e l'app richiede Car API 7
 **Depends on**: Phase 11 (v2.0 shippata)
 **Requirements**: REL-01, REL-02
 **Success Criteria** (what must be TRUE):
+
   1. Su DHU con il telefono fisico (OnePlus 8T) l'utente vede, per ciascuno dei due percorsi, un disegno minimale di prova sulla Surface (sfondo + testo fisso centrato) e cosa l'host sovrappone (action strip, card di contenuto, icona/titolo)
   2. Per entrambi i percorsi sono registrate le misure concrete di stable area e visible area su almeno una risoluzione DHU, insieme al Car API level riportato da DHU (e, se osservabile, dalla head unit reale)
   3. La scelta di categoria e template è una decisione esplicita dell'utente, registrata con motivazione in PROJECT.md Key Decisions, e il manifest contiene solo i permessi Car App del percorso scelto (mai `MAP_TEMPLATES` e `NAVIGATION_TEMPLATES` insieme)
   4. Il manifest dichiara `minCarApiLevel` 7 e non esiste alcun ramo di fallback a `PaneTemplate`; l'app si apre ancora regolarmente su DHU
+
 **Plans:** 6 plans
 Plans:
+**Wave 1**
+
 - [ ] 12-01-PLAN.md — Flavor temporanei spikePoi/spikeNav, manifest disgiunti, minCarApiLevel 7, funzione pura di fit "888"
-- [ ] 12-02-PLAN.md — SpeedSurfaceRenderer (disegno di prova, log misure, api=), factory template per flavor, ramo Granted su Surface
 - [ ] 12-03-PLAN.md — Script di misura DHU, ini 800x480/1280x720/1920x1080, runbook
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 12-02-PLAN.md — SpeedSurfaceRenderer (disegno di prova, log misure, api=), factory template per flavor, ramo Granted su Surface
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 12-04-PLAN.md — Sessione DHU sul telefono fisico (checkpoint) e 12-SPIKE-RESULTS.md con criterio D-12
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 12-05-PLAN.md — Gate decisione utente POI/NAVIGATION, registrazione in PROJECT.md Key Decisions
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 12-06-PLAN.md — Rimozione flavor, consolidamento sul percorso scelto, manifest finale, verifica DHU (SC4)
 
 ### Phase 13: Velocità a Tutto Schermo sulla Surface
+
 **Goal**: Sul display Android Auto l'utente legge la velocità come un numero grande e centrato, disegnato direttamente sulla Surface con il template scelto in Fase 12, senza perdere nessuno degli stati e dei comportamenti della v2.0
 **Depends on**: Phase 12
 **Requirements**: AA-05, AA-06, AA-07, AA-08, AA-09, AA-10, AA-11, AA-12
 **Success Criteria** (what must be TRUE):
+
   1. Su DHU (almeno 800×480, 1280×720 e 1920×1080) l'utente vede la velocità come numero grande centrato nell'area garantita libera dall'host, con "km/h" piccolo in basso a destra e nessuna icona app né titolo sopra il numero (nei limiti del template scelto in Fase 12)
   2. Guidando/simulando da 9 a 10 e da 99 a 100 km/h il numero non cambia dimensione né "salta" di posizione
   3. La velocità si aggiorna una volta al secondo per una sessione prolungata senza che l'host chiuda l'app per quota template esaurita, e dopo una ricreazione della Surface (es. cambio risoluzione/rotazione DHU, ritorno all'app) l'ultimo valore ricompare subito, mai uno schermo nero
   4. Passando l'auto/DHU da giorno a notte e viceversa lo schermo si ridisegna subito nel tema corrispondente, con alto contrasto in entrambe le modalità
   5. Senza fix GPS l'utente vede "Ricerca segnale..." sullo schermo auto, e l'intero flusso permesso della Fase 9 (richiesta automatica, negato, negato permanente, riprova/impostazioni solo a veicolo fermo) funziona su DHU come in v2.0
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 14: Pulizie Lato Telefono
+
 **Goal**: Il telefono si comporta esattamente come in v2.0 ma con un'unica fonte di verità per lo stato di ricarica e senza il lampo del tachimetro quando Android Auto è già connesso all'apertura
 **Depends on**: Nessuna dipendenza tecnica (indipendente dal renderer); sequenziata dopo Phase 13 per non mescolare regressioni del telefono con regressioni del rendering auto
 **Requirements**: CLEAN-01, CLEAN-02
 **Success Criteria** (what must be TRUE):
+
   1. Al primo avvio con telefono in carica lo switch "Sempre acceso" risulta attivo, e a telefono non in carica risulta disattivo, esattamente come prima del consolidamento
   2. L'icona di ricarica compare, anima e si ferma su "piena" come in v1.1, e il codice non contiene più una seconda logica di rilevamento della ricarica separata da `deriveChargingState()`
   3. Aprendo a freddo o riprendendo l'app con Android Auto già connesso (DHU), il telefono mostra direttamente "Connesso ad Android Auto" senza far apparire, nemmeno per un istante, il numero del tachimetro
   4. Alla disconnessione di Android Auto il telefono torna al tachimetro e alla preferenza "Sempre acceso" salvata, senza regressioni su MAX, distanza e toggle
+
 **Plans**: TBD
 
 ### Phase 15: Verifica su Head Unit Reale e Rilascio
+
 **Goal**: La v2.1 arriva ai tester sul canale di test aperto solo dopo aver funzionato su una head unit reale e aver superato la revisione Android Auto sul canale di test chiuso
 **Depends on**: Phase 13, Phase 14
 **Requirements**: REL-03
 **Success Criteria** (what must be TRUE):
+
   1. Su una head unit Android Auto reale, con la build di release, l'utente vede la velocità grande e centrata aggiornarsi durante la guida e "Ricerca segnale..." quando il fix manca (PASS visivo accettato, senza `adb logcat` con la USB occupata)
   2. La build v2.1 (nuovo versionCode) è caricata prima sul canale di test chiuso ed è promossa al test aperto solo dopo esito positivo della revisione Android Auto
   3. `playstore/` è allineato alla v2.1 (versione, note di rilascio in un unico file con tag `<it-IT>`/`<en-US>`, listing, dichiarazioni dei permessi Car App del percorso scelto) e resta deploy-ready
+
 **Plans**: TBD
 
 ## Progress
