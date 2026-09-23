@@ -5,7 +5,7 @@ milestone_name: Android Auto Support
 status: executing
 stopped_at: Phase 11 context gathered
 last_updated: "2026-09-22T00:00:00.000Z"
-last_activity: 2026-09-22 -- Completed quick task 260922-du0: riallineamento playstore/ a versionCode 4
+last_activity: 2026-09-23 -- 11-03: SC1 PASS visivo registrato, nota di rischio ALLOW_ALL ritirata
 progress:
   total_phases: 4
   completed_phases: 3
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-02)
 Phase: 11 (hardening-di-produzione-e-verifica-su-dispositivo-reale) — EXECUTING
 Plan: 1 of 4
 Status: Executing Phase 11
-Last activity: 2026-09-22 -- Completed quick task 260922-du0: riallineamento playstore/ a versionCode 4
+Last activity: 2026-09-23 -- 11-03: SC1 PASS visivo registrato (head unit reale, release vC4 da Play Store), nota di rischio ALLOW_ALL ritirata; SC3 in attesa di verifica manuale in auto
 
 ## Performance Metrics
 
@@ -113,8 +113,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-22 (resume)
-Stopped at: Fase 11 Wave 2 (11-03) in attesa di checkpoint umani SC1/SC3 su hardware Android Auto reale (quick task 260922-du0 chiusa nel frattempo)
+Last session: 2026-09-23 (resume)
+Stopped at: Fase 11 Wave 2 (11-03) — SC1 PASS visivo (2026-09-23), in attesa dell'esito SC3 verificato a mano in auto
 Resume file: .planning/phases/11-hardening-di-produzione-e-verifica-su-dispositivo-reale/.continue-here.md (+ .planning/HANDOFF.json)
 
 ## Operator Next Steps

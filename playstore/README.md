@@ -32,16 +32,20 @@ Conseguenze pratiche per chi costruisce l'artefatto:
   Signing. La pubblicazione sul canale di **produzione** è un passo successivo, non ancora
   eseguito.
 
-## Rischio noto accettato per questo rilascio (nota interna)
+## Rischio host validation: chiuso in Fase 11 (nota interna)
 
-`TachimetroCarAppService.createHostValidator()` restituisce ancora
-`HostValidator.ALLOW_ALL_HOSTS_VALIDATOR`: il car service accetta quindi il binding da
-**qualunque** host Android Auto, invece di limitarsi a quelli legittimi. Sostituirlo con un
-validator reale è il lavoro della **Fase 11** ("Hardening di Produzione e Verifica su
-Dispositivo Reale"), non ancora iniziata.
+Fino alla Fase 10 `TachimetroCarAppService.createHostValidator()` restituiva
+`HostValidator.ALLOW_ALL_HOSTS_VALIDATOR`, accettando il binding da **qualunque** host Android
+Auto. Dalla Fase 11 (piano 11-01) nei build di release restituisce invece un validator con
+allow-list reale (`app/src/main/java/com/sed/tachimetro/car/CarHostValidation.kt`), basata
+sull'allow-list ufficiale `androidx.car.app` e limitata a `com.google.android.projection.gearhead`
+(Android Auto) e `com.google.android.apps.automotive.templates.host` (Automotive OS Templates).
+I build di DEBUG restano permissivi di proposito (D-01, per il Desktop Head Unit) e non vengono
+distribuiti.
 
-L'utente è stato informato di questo gap e ha scelto consapevolmente di pubblicare comunque la
-2.0.
+La chiusura è stata verificata con un host Android Auto reale il 2026-09-23 sul build release
+versionCode 4 installato dal Play Store (PASS visivo, senza cattura del log `CarApp.Val`) —
+dettagli in `docs/android-auto-hardening-verification.md`, tabella "Esiti registrati".
 
 Questa nota resta **confinata a questo README**, che è un documento di lavoro interno per chi
 gestisce il rilascio. Non è una voce di sicurezza dei dati — riguarda quali host Android Auto

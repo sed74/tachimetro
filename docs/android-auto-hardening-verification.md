@@ -315,6 +315,6 @@ Compilata dai Piani 03 (SC1, SC3) e 04 (SC2) al termine di ogni sessione di veri
 
 | Criterio | Data | Esito | Note |
 |----------|------|-------|------|
-| SC1 -- HostValidator reale accetta un host legittimo | -- | da eseguire | -- |
+| SC1 -- HostValidator reale accetta un host legittimo | 2026-09-23 | PASS (visivo) | Head unit Android Auto reale in auto; build release versionCode 4 installato dal Play Store (`installerPackageName=com.android.vending`, nessun flag `DEBUGGABLE`, verificato via `adb shell dumpsys package`), prodotto dopo il merge dell'allow-list (`a2582f7`). La velocita' compare sullo schermo auto: con l'allow-list attiva un host rifiutato non puo' bindare il car service, quindi l'host e' stato accettato. Riga `CarApp.Val` NON catturata (USB occupata dall'head unit, buffer logcat gia' ruotato): PASS su base visiva/deduttiva accettato esplicitamente dall'utente. |
 | SC2 -- Velocita' aggiornata a telefono bloccato | -- | da eseguire | -- |
 | SC3 -- Cicli rapidi di connessione/disconnessione | -- | da eseguire | -- |

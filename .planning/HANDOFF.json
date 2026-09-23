@@ -1,40 +1,98 @@
 {
   "version": "1.0",
-  "timestamp": "2026-09-22T08:31:34.278Z",
+  "timestamp": "2026-09-23T00:00:00.000Z",
   "phase": "11",
   "phase_name": "hardening-di-produzione-e-verifica-su-dispositivo-reale",
   "phase_dir": ".planning/phases/11-hardening-di-produzione-e-verifica-su-dispositivo-reale",
   "plan": "11-03",
-  "task": 1,
+  "task": 2,
   "total_tasks": 3,
   "status": "paused",
   "completed_tasks": [
-    {"id": "11-01", "name": "HostValidator reale con seam testabile", "status": "done", "commit": "a2582f7"},
-    {"id": "11-02", "name": "Strumenti di verifica empirica (runbook + script cicli rapidi)", "status": "done", "commit": "fb2e66d"}
+    {
+      "id": "11-01",
+      "name": "HostValidator reale con seam testabile",
+      "status": "done",
+      "commit": "a2582f7"
+    },
+    {
+      "id": "11-02",
+      "name": "Strumenti di verifica empirica (runbook + script cicli rapidi)",
+      "status": "done",
+      "commit": "fb2e66d"
+    }
   ],
   "remaining_tasks": [
-    {"id": "11-03/Task 1", "name": "Checkpoint SC1 - host reale su build di release firmato", "status": "not_started"},
-    {"id": "11-03/Task 2", "name": "Checkpoint SC3 - cicli rapidi connessione/disconnessione", "status": "not_started"},
-    {"id": "11-03/Task 3", "name": "Registrare esiti SC1/SC3 e ritirare nota di rischio in playstore/README.md", "status": "not_started"},
-    {"id": "11-04", "name": "Checkpoint SC2 - test su strada, telefono bloccato", "status": "not_started"}
+    {
+      "id": "11-03/Task 1",
+      "name": "Checkpoint SC1 - host reale su build di release firmato",
+      "status": "done"
+    },
+    {
+      "id": "11-03/Task 2",
+      "name": "Checkpoint SC3 - cicli rapidi connessione/disconnessione",
+      "status": "not_started"
+    },
+    {
+      "id": "11-03/Task 3",
+      "name": "Registrare esiti SC1/SC3 e ritirare nota di rischio in playstore/README.md",
+      "status": "in_progress"
+    },
+    {
+      "id": "11-04",
+      "name": "Checkpoint SC2 - test su strada, telefono bloccato",
+      "status": "not_started"
+    }
   ],
   "blockers": [
-    {"description": "Android Auto reale (DHU o head unit) non accessibile adesso", "type": "external", "workaround": "L'utente eseguira' la verifica fisica (SC1 log CarApp.Val + SC3 script cicli rapidi) appena l'hardware sara' disponibile"},
-    {"description": "keystore.properties creato da template ma con credenziali placeholder (storePassword/keyAlias/keyPassword = CHANGE_ME)", "type": "human_action", "workaround": "L'utente compila le credenziali reali e genera/installa l'APK di release firmato per proprio conto"}
+    {
+      "description": "SC3 da verificare a mano in auto (10 cicli connect/disconnect osservati a occhio, nessuno script: USB occupata dall'head unit)",
+      "type": "human_action",
+      "workaround": "L'utente riporta PASS/FAIL e comportamento osservato"
+    }
   ],
   "human_actions_pending": [
-    {"action": "Compilare storePassword/keyAlias/keyPassword in keystore.properties (storeFile gia' corretto, punta a C:/Users/fedes/AndroidStudioProjects/keystore/keystore)", "context": "Necessario per generare un build di release firmato - SC1 non ha una verifica valida su build di debug", "blocking": true},
-    {"action": "Build, firma e pubblicazione dell'APK/AAB di release (versionCode 4) sul canale test aperto di Play Store", "context": "L'utente ha detto se ne occupa personalmente, non l'executor. versionCode 4 e' gia' dichiarato in app/build.gradle.kts (commit b62b879) e playstore/ e' ora riallineato a quel numero (quick task 260922-du0)", "blocking": true},
-    {"action": "Eseguire fisicamente SC1 (collegare host Android Auto reale/DHU, osservare schermo auto, confermare riga 'Accepted - Host in allow-list' nel logcat CarApp.Val) e SC3 (10 cicli di connect/disconnect rapidi via scripts/aa-connect-cycle-check.ps1, osservare schermo auto a ogni ciclo)", "context": "Nessun test automatico puo' sostituire questa osservazione (D-07, pattern gia' stabilito Fasi 8/9/10)", "blocking": true},
-    {"action": "Riportare l'esito PASS/FAIL/INCONCLUSIVO di SC1 (con la riga di log CarApp.Val osservata) e di SC3 (con il verdetto e i conteggi dello script)", "context": "Serve per completare 11-03 Task 3 (registrazione esiti + eventuale ritiro della nota di rischio in playstore/README.md)", "blocking": true}
+    {
+      "action": "Eseguire SC3 a mano in auto: 10 cicli rapidi di collegamento/scollegamento, osservando a ogni ciclo lo schermo auto (velocita' o 'Ricerca segnale...', mai vuoto/congelato/errore host, nessun crash sul telefono)",
+      "context": "PASS visivo, senza script: accettato dall'utente il 2026-09-23",
+      "blocking": true
+    }
   ],
   "decisions": [
-    {"decision": "Non spawnare l'executor per 11-03 finche' l'ambiente reale non e' pronto", "rationale": "Task 1/2 di 11-03 sono checkpoint umani bloccanti che richiedono hardware Android Auto reale; l'utente ha detto di occuparsi personalmente sia delle credenziali keystore sia della generazione/installazione dell'artefatto firmato", "phase": "11"},
-    {"decision": "L'utente generera' il build di release firmato e lo pubblichera' sul canale Play Store 'test aperto' invece di un installRelease/adb install locale", "rationale": "Divisione del lavoro gia' concordata; un build di test aperto soddisfa comunque SC1/SC3 perche' resta un binario release (DEBUGGABLE=false, allow-list reale attiva) anche se ri-firmato da Play App Signing", "phase": "11"},
-    {"decision": "(2026-09-22) Il riallineamento di playstore/ a versionCode 4 e' stato eseguito come quick task 260922-du0, separata dalla Fase 11", "rationale": "Il bump di versionCode fatto dall'utente (b62b879) aveva lasciato playstore/README.md fermo a versionCode 3; la regola dell'utente e' tenere playstore/ sempre deploy-ready. Task documentale puro, nessuna dipendenza dai checkpoint hardware, quindi eseguibile in autonomia senza sbloccare la Fase 11", "phase": "quick-260922-du0"},
-    {"decision": "(2026-09-22) La sezione 'Rischio noto accettato per questo rilascio' (ALLOW_ALL_HOSTS_VALIDATOR) in playstore/README.md e' stata deliberatamente NON toccata dalla quick task", "rationale": "Il suo aggiornamento appartiene al Task 3 del piano 11-03 ed e' condizionato all'esito di SC1; modificarla in anticipo avrebbe anticipato una conclusione non ancora verificata. Un gate dell'executor ha confermato che la sezione e' rimasta byte-identica", "phase": "11"}
+    {
+      "decision": "Non spawnare l'executor per 11-03 finche' l'ambiente reale non e' pronto",
+      "rationale": "Task 1/2 di 11-03 sono checkpoint umani bloccanti che richiedono hardware Android Auto reale; l'utente ha detto di occuparsi personalmente sia delle credenziali keystore sia della generazione/installazione dell'artefatto firmato",
+      "phase": "11"
+    },
+    {
+      "decision": "L'utente generera' il build di release firmato e lo pubblichera' sul canale Play Store 'test aperto' invece di un installRelease/adb install locale",
+      "rationale": "Divisione del lavoro gia' concordata; un build di test aperto soddisfa comunque SC1/SC3 perche' resta un binario release (DEBUGGABLE=false, allow-list reale attiva) anche se ri-firmato da Play App Signing",
+      "phase": "11"
+    },
+    {
+      "decision": "(2026-09-22) Il riallineamento di playstore/ a versionCode 4 e' stato eseguito come quick task 260922-du0, separata dalla Fase 11",
+      "rationale": "Il bump di versionCode fatto dall'utente (b62b879) aveva lasciato playstore/README.md fermo a versionCode 3; la regola dell'utente e' tenere playstore/ sempre deploy-ready. Task documentale puro, nessuna dipendenza dai checkpoint hardware, quindi eseguibile in autonomia senza sbloccare la Fase 11",
+      "phase": "quick-260922-du0"
+    },
+    {
+      "decision": "(2026-09-22) La sezione 'Rischio noto accettato per questo rilascio' (ALLOW_ALL_HOSTS_VALIDATOR) in playstore/README.md e' stata deliberatamente NON toccata dalla quick task",
+      "rationale": "Il suo aggiornamento appartiene al Task 3 del piano 11-03 ed e' condizionato all'esito di SC1; modificarla in anticipo avrebbe anticipato una conclusione non ancora verificata. Un gate dell'executor ha confermato che la sezione e' rimasta byte-identica",
+      "phase": "11"
+    },
+    {
+      "decision": "(2026-09-23) SC1 registrato come PASS visivo",
+      "rationale": "Head unit reale, build release vC4 dal Play Store (verificato via dumpsys), velocita' visibile => host accettato dall'allow-list. Log CarApp.Val non catturabile; l'utente ha scelto PASS visivo invece di INCONCLUSIVO. Nota di rischio ALLOW_ALL ritirata da playstore/README.md.",
+      "phase": "11"
+    },
+    {
+      "decision": "(2026-09-23) SC3 verificato a mano in auto, senza script",
+      "rationale": "Scelta dell'utente; esito sara' PASS/FAIL visivo",
+      "phase": "11"
+    }
   ],
-  "uncommitted_files": ["keystore.properties (gitignorato, valori placeholder, non committato)", ".idea/markdown.xml (untracked, file di IDE non correlato)"],
-  "next_action": "Quando l'utente riporta gli esiti PASS/FAIL/INCONCLUSIVO di SC1 e SC3 (con log CarApp.Val e verdetto script, se catturabili), eseguire direttamente 11-03 Task 3 (aggiornare docs/android-auto-hardening-verification.md e playstore/README.md secondo l'esito riportato) senza ri-eseguire l'automazione dei Task 1/2 gia' fatta manualmente dall'utente. Poi procedere a Wave 3 (11-04, test su strada SC2).",
+  "uncommitted_files": [
+    ".idea/markdown.xml (untracked, non correlato)"
+  ],
+  "next_action": "Quando l'utente riporta l'esito di SC3 (visivo), compilare la riga SC3 in docs/android-auto-hardening-verification.md, scrivere 11-03-SUMMARY.md e passare a 11-04 (SC2 su strada). SC1 e nota di rischio gia' fatti (2026-09-23).",
   "context_notes": "Sessione 2026-09-22: ripresa di contesto (/gsd:resume-work) piu' una sola unita' di lavoro autonomo. La Fase 11 NON e' avanzata - resta esattamente dove era il 2026-09-03, ferma su Wave 2 (11-03 Task 1) in attesa di hardware Android Auto reale e di un build di release firmato che l'utente genera per conto proprio. L'unico lavoro svolto e' la quick task 260922-du0: riallineamento di playstore/README.md da versionCode 3 a 4 (versionName resta 2.0), piu' la documentazione del canale test aperto come destinazione del build. Merge su master pulito (393a8e7), worktree rimossa, SUMMARY recuperato prima della rimozione. Avviso tecnico ancora valido: se l'utente testa SC1/SC3 su head unit reale in auto, la USB e' occupata e adb logcat non cattura CarApp.Val in parallelo - l'evidenza sarebbe solo visiva, non la prova oggettiva richiesta dal runbook; in quel caso chiedere se considerarlo PASS visivo o INCONCLUSIVO, senza decidere unilateralmente. Col DHU su PC (adb forward tcp:5277) la cattura resta possibile."
 }
