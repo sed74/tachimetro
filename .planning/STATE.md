@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-23)
 Phase: 12 (spike-surface-e-decisione-categoria-template) — EXECUTING
 Plan: 2 of 6
 Status: Ready to execute
-Last activity: 2026-09-23
+Last activity: 2026-09-24 - Completed quick task 260924-n9g: build test chiuso Play Store spikePoi con velocità reale sulla Surface
 
 Progress v2.1: [░░░░░░░░░░] 0%
 
@@ -110,6 +110,7 @@ None yet.
 | 260830-o3h | Aggiorna playstore/ per la milestone v1.1 (bump versione, note di rilascio, descrizioni, README) | 2026-08-30 | a276712 | [260830-o3h-aggiorna-playstore-per-la-milestone-v1-1](./quick/260830-o3h-aggiorna-playstore-per-la-milestone-v1-1/) |
 | 260902-qr8 | Aggiorna playstore/ alla v2.0 (Android Auto): corregge dati persistiti mancanti (v1.1), poi riallinea tutto alla v2.0 dopo il bump di versione dell'utente — listing, note di rilascio, data safety, privacy policy, README con nota di rischio Fase 11/ALLOW_ALL_HOSTS_VALIDATOR | 2026-09-02 | 9f8159c | [260902-qr8-aggiorna-tutti-i-file-nella-cartella-pla](./quick/260902-qr8-aggiorna-tutti-i-file-nella-cartella-pla/) |
 | 260922-du0 | Riallinea playstore/ al versionCode 4 attuale (versionName resta 2.0), mantenendo il pacchetto deploy-ready | 2026-09-22 | 393a8e7 | [260922-du0-riallinea-playstore-al-versioncode-4-att](./quick/260922-du0-riallinea-playstore-al-versioncode-4-att/) |
+| 260924-n9g | Build test chiuso Play Store spikePoi (card message) con velocità GPS reale sulla Surface; versionCode 5 / 2.1-beta; deroga D-05 solo per spikePoi; playstore/ allineato | 2026-09-24 | c485df6 | [260924-n9g-build-test-chiuso-play-store-spikepoi-co](./quick/260924-n9g-build-test-chiuso-play-store-spikepoi-co/) |
 
 ## Deferred Items
 
@@ -121,8 +122,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-23T14:50:01.221Z
-Stopped at: Phase 12 context gathered
+Last session: 2026-09-24
+Stopped at: Quick task 260924-n9g completato; Fase 12 ancora ferma a 12-04 Task 2 (misure DHU / prova in auto)
 Resume file: None
 
 ## Operator Next Steps
