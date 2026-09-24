@@ -20,18 +20,20 @@ import androidx.lifecycle.LifecycleOwner
 import kotlin.math.max
 
 import com.sed.tachimetro.BuildConfig
+import com.sed.tachimetro.gps.SpeedState
 
 /**
- * Fase 12 spike (REL-01): renderer passivo della Surface di Android Auto.
+ * Fase 12 (REL-01): renderer della Surface di Android Auto.
  *
- * - D-03: disegna solo una prova statica -- sfondo pieno, "888" centrato e dimensionato nella
- *   stable area con [fitTextSizePx], contorni della stable area (verde) e della visible area
- *   (magenta). NON e' collegato al provider GPS: nessun dato di velocita' o posizione.
+ * - D-03 (aggiornato, quick 260924-n9g): disegna la velocita' ricevuta via [updateSpeed] --
+ *   cifre bianche su sfondo nero, centrate nella stable area. "--" finche' non arriva una
+ *   lettura valida. "888" resta solo come campione di misura per [fitTextSizePx] (D-12): la
+ *   dimensione delle cifre non cambia al variare del numero.
  * - D-10: ogni callback della Surface e ogni frame disegnato producono una riga logcat con tag
  *   `TachimetroSurface` (solo in `BuildConfig.DEBUG`), nel formato chiave=valore consumato dallo
- *   script `scripts/surface-spike-check.ps1` (Piano 03).
- * - D-11: scrive in piccolo `api=<carAppApiLevel>` e la variante di build, leggibili da uno
- *   screenshot o in auto senza USB.
+ *   script `scripts/surface-spike-check.ps1` (Piano 03). Mai la velocita' nei log (T-08-07).
+ * - D-11: SOLO in debug scrive in piccolo `api=<carAppApiLevel>` e la variante di build, e
+ *   disegna i contorni stable (verde) / visible (magenta). In release solo cifre su nero.
  *
  * Unico file del progetto che disegna con `Canvas`/`Paint`: la geometria viene convertita in
  * [AreaPx] qui e le funzioni pure di `SurfaceTextFit.kt` restano framework-free.
@@ -66,6 +68,9 @@ class SpeedSurfaceRenderer(private val carContext: CarContext) :
     private val handler = Handler(Looper.getMainLooper())
     private var renderPending = false
 
+    // Testo corrente della velocita'; stato iniziale = placeholder, prima di qualsiasi emissione.
+    private var speedText: String = SURFACE_SPEED_PLACEHOLDER
+
     private val digitPaint = Paint().apply {
         isAntiAlias = true
         typeface = Typeface.DEFAULT_BOLD
@@ -98,6 +103,18 @@ class SpeedSurfaceRenderer(private val carContext: CarContext) :
             renderPending = false
             drawFrame()
         }
+    }
+
+    /**
+     * Riceve lo [SpeedState] collezionato da [SpeedScreen] (main thread, lifecycleScope dello
+     * Screen) e ridisegna la Surface solo se il testo mostrato cambia. Nessun log qui: la
+     * velocita' non deve mai finire in logcat (T-08-07).
+     */
+    fun updateSpeed(state: SpeedState) {
+        val text = surfaceSpeedText(state)
+        if (text == speedText) return
+        speedText = text
+        requestRender()
     }
 
     override fun onCreate(owner: LifecycleOwner) {
@@ -204,7 +221,8 @@ class SpeedSurfaceRenderer(private val carContext: CarContext) :
         val area = effectiveArea(stableArea, surfaceWidth, surfaceHeight)
         val areaLabel = if (stableArea?.isEmpty == false) "stable" else "surface"
 
-        // 3. "888" misurato alla dimensione di riferimento, poi scalato con la formula D-12.
+        // 3. "888" misurato alla dimensione di riferimento, poi scalato con la formula D-12:
+        //    la dimensione resta stabile al variare delle cifre. Si disegna poi speedText.
         val bounds = Rect()
         digitPaint.textSize = REF_TEXT_SIZE_PX
         digitPaint.getTextBounds(SAMPLE_TEXT, 0, SAMPLE_TEXT.length, bounds)
@@ -214,33 +232,37 @@ class SpeedSurfaceRenderer(private val carContext: CarContext) :
 
         if (textSize > 0f) {
             digitPaint.textSize = textSize
-            digitPaint.getTextBounds(SAMPLE_TEXT, 0, SAMPLE_TEXT.length, bounds)
-            // Centratura sui bounds reali alla dimensione finale (non sulla baseline nuda):
-            // l'origine del testo va spostata di -bounds.left / -bounds.top.
+            digitPaint.getTextBounds(speedText, 0, speedText.length, bounds)
+            // Centratura sui bounds reali del testo mostrato alla dimensione finale (non sulla
+            // baseline nuda): l'origine del testo va spostata di -bounds.left / -bounds.top.
             val x = area.left + (area.width - bounds.width()) / 2f - bounds.left
             val y = area.top + (area.height - bounds.height()) / 2f - bounds.top
-            canvas.drawText(SAMPLE_TEXT, x, y, digitPaint)
+            canvas.drawText(speedText, x, y, digitPaint)
         }
 
-        // 4. Contorni: verde = stable area, magenta = visible area (omessi se sconosciute).
-        stableArea?.takeUnless { it.isEmpty }?.let { canvas.drawArea(it, stablePaint) }
-        visibleArea?.takeUnless { it.isEmpty }?.let { canvas.drawArea(it, visiblePaint) }
+        // 4-5. Overlay di debug. In release (test chiuso Play Store, deroga D-05 2026-09-24) solo
+        //      cifre su nero; in debug restano per lo spike DHU 12-04 ancora aperto.
+        if (BuildConfig.DEBUG) {
+            // 4. Contorni: verde = stable area, magenta = visible area (omessi se sconosciute).
+            stableArea?.takeUnless { it.isEmpty }?.let { canvas.drawArea(it, stablePaint) }
+            visibleArea?.takeUnless { it.isEmpty }?.let { canvas.drawArea(it, visiblePaint) }
 
-        // 5. D-11: livello API e variante in alto a sinistra, dentro la visible area se nota.
-        val infoArea = visibleArea?.takeUnless { it.isEmpty }
-            ?: AreaPx(0, 0, surfaceWidth, surfaceHeight)
-        val infoSize = max(INFO_TEXT_MIN_PX, INFO_TEXT_FRACTION * surfaceHeight)
-        infoPaint.textSize = infoSize
-        val infoX = infoArea.left + OUTLINE_STROKE_PX * 2
-        val line1Y = infoArea.top + OUTLINE_STROKE_PX * 2 + infoSize
-        canvas.drawText(
-            "api=${carContext.carAppApiLevel} ${BuildConfig.FLAVOR}/${BuildConfig.SPIKE_POI_CARD} " +
-                "${surfaceWidth}x$surfaceHeight",
-            infoX,
-            line1Y,
-            infoPaint,
-        )
-        canvas.drawText("verde=stable magenta=visible", infoX, line1Y + infoSize * 1.2f, infoPaint)
+            // 5. D-11: livello API e variante in alto a sinistra, dentro la visible area se nota.
+            val infoArea = visibleArea?.takeUnless { it.isEmpty }
+                ?: AreaPx(0, 0, surfaceWidth, surfaceHeight)
+            val infoSize = max(INFO_TEXT_MIN_PX, INFO_TEXT_FRACTION * surfaceHeight)
+            infoPaint.textSize = infoSize
+            val infoX = infoArea.left + OUTLINE_STROKE_PX * 2
+            val line1Y = infoArea.top + OUTLINE_STROKE_PX * 2 + infoSize
+            canvas.drawText(
+                "api=${carContext.carAppApiLevel} ${BuildConfig.FLAVOR}/${BuildConfig.SPIKE_POI_CARD} " +
+                    "${surfaceWidth}x$surfaceHeight",
+                infoX,
+                line1Y,
+                infoPaint,
+            )
+            canvas.drawText("verde=stable magenta=visible", infoX, line1Y + infoSize * 1.2f, infoPaint)
+        }
 
         // 6. D-10: misura del frame (solo geometria, mai velocita' o posizione -- T-08-07).
         if (BuildConfig.DEBUG) {

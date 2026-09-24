@@ -38,8 +38,14 @@ import com.sed.tachimetro.gps.SpeedState
  *
  * Fase 12 spike (D-04): a permesso concesso [onGetTemplate] restituisce il template con Surface
  * del flavor ([buildSurfaceTemplate]); gli stati non-Granted e [buildTemplate] sono invariati.
+ *
+ * @param onSpeedState riceve ogni [SpeedState] collezionato nel ramo Granted (la Session lo
+ *   collega a [SpeedSurfaceRenderer.updateSpeed]); default vuoto per i test strumentati.
  */
-class SpeedScreen(carContext: CarContext) : Screen(carContext) {
+class SpeedScreen(
+    carContext: CarContext,
+    private val onSpeedState: (SpeedState) -> Unit = {},
+) : Screen(carContext) {
 
     companion object {
         private const val LOG_TAG = "TachimetroCar"
@@ -116,8 +122,10 @@ class SpeedScreen(carContext: CarContext) : Screen(carContext) {
                                 // Fase 12 (ARCHITECTURE.md Anti-Pattern 1): il template con
                                 // Surface e' statico, un invalidate a 1 Hz consumerebbe quota
                                 // senza cambiare nulla; l'invalidate() in testa a collectLatest
-                                // sul cambio di permesso resta.
+                                // sul cambio di permesso resta. La velocita' va alla Surface via
+                                // onSpeedState, che ridisegna solo il Canvas (nessun invalidate).
                                 latestState = gpsState
+                                onSpeedState(gpsState)
                             }
                         }
                         // D-01: il dialogo e' aperto sul telefono, il template mostra gia'
