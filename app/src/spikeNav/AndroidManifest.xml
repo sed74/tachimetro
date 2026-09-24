@@ -4,7 +4,8 @@
 
     <!-- D-01 spike NAVIGATION: NavigationTemplate richiede NAVIGATION_TEMPLATES e categoria
          NAVIGATION; ACCESS_SURFACE serve a AppManager.setSurfaceCallback(). Temporaneo (D-02).
-         Rischio NF-1/NF-6 in revisione: mai distribuito (D-05). -->
+         Rischio NF-1/NF-6 in revisione: mai distribuito (D-05). La deroga D-05 del
+         2026-09-24 riguarda solo spikePoi: spikeNav resta solo APK debug locale su DHU. -->
     <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
     <uses-permission android:name="androidx.car.app.NAVIGATION_TEMPLATES" />
 

@@ -4,8 +4,40 @@ Materiale per pubblicare Tachimetro su Google Play, generato il 2026-08-22.
 Testi verificati contro il codice della **versione 2.0** il 2026-09-02; i riferimenti di
 versione sono stati riallineati a `versionCode = 4` il 2026-09-22 (il `versionName` resta
 invariato a "2.0").
+Aggiornato il 2026-09-24 per la build di test chiuso `versionCode = 5` / `versionName = "2.1-beta"`
+(vedi la sezione successiva).
 
 **Stato in una riga:** i testi e la grafica sono pronti; i binari e gli screenshot no.
+
+## Build di test chiuso 2.1-beta (Fase 12, flavor spikePoi)
+
+Su richiesta esplicita dell'utente (2026-09-24) la build del flavor **spikePoi** va caricata
+sul canale di **test chiuso** di Play Store. È una **deroga a D-05** della Fase 12 (che
+prevedeva flavor mai distribuiti) e vale **solo** per spikePoi con card `message`: il flavor
+**spikeNav** (categoria NAVIGATION) resta un APK debug locale per il DHU e non viene mai
+distribuito.
+
+- **Flavor:** `spikePoi`, card `message` — `MapWithContentTemplate` con `MessageTemplate`
+  "Tachimetro", nessuna action strip; la velocità GPS reale è disegnata sulla Surface.
+- **Categoria:** POI (`androidx.car.app.category.POI`), `minCarApiLevel` 7.
+- **Versione:** `versionCode = 5`, `versionName = "2.1-beta"`.
+- **Canale:** solo test chiuso.
+- **Comando:**
+  ```
+  ./gradlew.bat :app:bundleSpikePoiRelease -PpoiCard=message
+  ```
+- **Output:** `app/build/outputs/bundle/spikePoiRelease/app-spikePoi-release.aab`
+- **Firma:** automatica se `keystore.properties` è presente nella radice del repo (vedi passo
+  2); altrimenti l'AAB esce non firmato e Play Console lo rifiuta.
+- **Aspetto in release:** solo cifre bianche su nero. I contorni verde/magenta e le righe di
+  debug (`api=...`, variante, risoluzione) compaiono solo nelle build debug usate sul DHU.
+- **Note di rilascio:** `release_notes/release_notes_v2.1-beta.txt` (file unico bilingue).
+- **Dati persistiti:** invariati nella 2.1-beta — la Surface usa lo stesso `GpsSpeedProvider` e
+  non scrive nulla su disco, quindi `data_safety.md` e `privacy_policy.html` restano validi.
+
+La **Fase 12 resta aperta**: le misure DHU del piano 12-04 e il gate di decisione 12-05 sono
+ancora da completare. La build e il caricamento su Play Console sono **a carico dell'utente**;
+nessun task automatico ha caricato nulla.
 
 ## Questo pacchetto descrive la v2.0 con supporto Android Auto
 
@@ -67,8 +99,9 @@ copiata** in `listing/`, `release_notes/`, `data_safety.md`, `content_rating.md`
 | `privacy_policy.html` | Informativa privacy bilingue IT/EN | Testo allineato alla v2.0; **2 placeholder email da sostituire** e URL pubblico da creare (passi 2 e 4) |
 | `data_safety.md` | Bozza risposte per il form "Sicurezza dei dati" di Play Console | Verificata contro il codice v2.0 il 2026-09-02 (elenca le quattro voci persistite) |
 | `content_rating.md` | Bozza risposte per il questionario di classificazione contenuti (IARC) | Verificata contro il codice v2.0 il 2026-09-02 (risposte invariate) |
-| `release_notes/it.txt`, `release_notes/en.txt` | Note di rilascio per la versione **2.0**, da incollare nel campo per-locale di Play Console | Pronte |
-| `release_notes/release_notes_v2.0.txt` | File unico bilingue 2.0 con tag `<it-IT>`/`<en-US>`, per il copia-incolla in un'unica azione in Play Console | Pronto |
+| `release_notes/release_notes_v2.1-beta.txt` | File unico bilingue **2.1-beta** con tag `<it-IT>`/`<en-US>`, per la build di test chiuso spikePoi | Pronto (`versionCode` 5) |
+| `release_notes/it.txt`, `release_notes/en.txt` | Note di rilascio per la versione **2.0**, da incollare nel campo per-locale di Play Console | Riferite alla 2.0 (`versionCode` 4) |
+| `release_notes/release_notes_v2.0.txt` | File unico bilingue 2.0 con tag `<it-IT>`/`<en-US>`, per il copia-incolla in un'unica azione in Play Console | Riferito alla 2.0 (`versionCode` 4) |
 | `release_notes/release_notes_v1.1.txt` | File unico bilingue della 1.1 | **Archivio storico** — conservato per riferimento, non va caricato |
 
 ### Dati persistiti dichiarati nei testi (v2.0)
@@ -182,14 +215,13 @@ manualmente nei form di Play Console (non sono automatizzabili via file):
 
 ### 6. Versionamento
 
-La versione corrente dichiarata in `app/build.gradle.kts` è `versionName = "2.0"` con
-`versionCode = 4` (milestone v2.0: supporto Android Auto). È la versione che questo pacchetto
-descrive e che va pubblicata.
+La versione corrente dichiarata in `app/build.gradle.kts` è `versionName = "2.1-beta"` con
+`versionCode = 5` (2026-09-24): build di test chiuso del flavor spikePoi, vedi la sezione
+"Build di test chiuso 2.1-beta" in alto.
 
-Il `versionCode` è stato incrementato da 3 a 4 **senza** cambiare il `versionName`: Play
-Console rifiuta il caricamento di un `versionCode` già usato, mentre il contenuto funzionale
-del rilascio è rimasto quello della 2.0. Il bump è già committato (`b62b879`): su questo
-fronte non resta nulla da fare per il rilascio corrente.
+Storico: la 2.0 (supporto Android Auto) è stata pubblicata con `versionCode = 4`, ottenuto
+incrementando da 3 a 4 **senza** cambiare il `versionName` (commit `b62b879`), perché Play
+Console rifiuta il caricamento di un `versionCode` già usato.
 
-Il **prossimo** caricamento su Play Console dovrà usare `versionCode = 5`, e aggiornare anche
+Il **prossimo** caricamento su Play Console dovrà usare `versionCode = 6`, e aggiornare anche
 il `versionName` se il contenuto funzionale cambia.

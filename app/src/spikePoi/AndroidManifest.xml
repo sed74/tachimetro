@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- D-01 spike POI: MapWithContentTemplate richiede MAP_TEMPLATES; ACCESS_SURFACE serve a
-         AppManager.setSurfaceCallback(). Temporaneo (D-02), mai distribuito (D-05). La
+         AppManager.setSurfaceCallback(). Temporaneo (D-02). Deroga a D-05 su richiesta dell'utente (2026-09-24):
+         distribuito in test chiuso Play Store, solo con card message. La
          categoria POI del service arriva invariata dal manifest main. -->
     <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
     <uses-permission android:name="androidx.car.app.MAP_TEMPLATES" />

@@ -16,6 +16,8 @@ import androidx.car.app.navigation.model.NavigationTemplate
  *
  * Rischio NF-1/NF-6: un'app di categoria NAVIGATION che non naviga non passerebbe la revisione
  * Play. Questa variante esiste solo per misurare la Surface e non viene mai distribuita (D-05).
+ * La deroga D-05 del 2026-09-24 (test chiuso Play Store) riguarda solo spikePoi: spikeNav
+ * resta mai distribuito.
  *
  * @param carContext contesto della Session (non usato dalla variante con `CarIcon.APP_ICON`,
  *   presente per avere la stessa firma del flavor spikePoi)

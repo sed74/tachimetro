@@ -27,8 +27,8 @@ android {
         applicationId = "com.sed.tachimetro"
         minSdk = 30
         targetSdk = 36
-        versionCode = 4
-        versionName = "2.0"
+        versionCode = 5
+        versionName = "2.1-beta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -58,11 +58,16 @@ android {
     }
 
     // D-01 (Fase 12): flavor TEMPORANEI dello spike Surface, rimossi a fine fase (D-02).
-    // D-05: mai distribuiti, nessun caricamento Play Store nemmeno su test interno: solo APK
-    // debug locali su DHU. Ciascun flavor ha il proprio manifest (src/spikePoi, src/spikeNav)
-    // cosi' nessun APK dichiara insieme MAP_TEMPLATES e NAVIGATION_TEMPLATES (T-12-01).
+    // Ciascun flavor ha il proprio manifest (src/spikePoi, src/spikeNav) cosi' nessun APK
+    // dichiara insieme MAP_TEMPLATES e NAVIGATION_TEMPLATES (T-12-01).
+    // D-05 con DEROGA: su richiesta esplicita dell'utente (2026-09-24) SOLO spikePoi con card
+    // message va sul Play Store in test chiuso (versionCode 5, 2.1-beta); spikeNav resta solo
+    // APK debug locale su DHU, mai distribuito.
     // Comandi: ./gradlew.bat :app:installSpikePoiDebug [-PpoiCard=message|list|pane|grid]
     //          ./gradlew.bat :app:installSpikeNavDebug
+    // Release (test chiuso): ./gradlew.bat :app:bundleSpikePoiRelease -PpoiCard=message
+    //   AAB firmato se keystore.properties esiste, altrimenti non firmato; output in
+    //   app/build/outputs/bundle/spikePoiRelease/
     flavorDimensions += "surfaceSpike"
     productFlavors {
         create("spikePoi") {
