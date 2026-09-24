@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-09-23T14:54:51.095Z",
+  "timestamp": "2026-09-24T15:11:29.245Z",
   "phase": "12",
   "phase_name": "spike-surface-e-decisione-categoria-template",
   "phase_dir": ".planning/phases/12-spike-surface-e-decisione-categoria-template",
@@ -13,25 +13,31 @@
     {"id": "12-03", "name": "Tooling misure DHU (surface-spike-check.ps1, .ini DHU, runbook)", "status": "done", "commit": "7d2353c"},
     {"id": "12-02", "name": "SpeedSurfaceRenderer + SurfaceTemplateFactory per flavor", "status": "done", "commit": "db168d8"},
     {"id": "12-04/T1", "name": "Pre-flight build 5 varianti + scheletro 12-SPIKE-RESULTS.md", "status": "done", "commit": "d50c3f4"},
-    {"id": "12-04/T2", "name": "Sessione di misura su DHU (15 sessioni, checkpoint human-verify)", "status": "in_progress", "progress": "Istruzioni consegnate all'utente; misure non ancora eseguite"}
+    {"id": "quick-260924-n9g", "name": "Build test chiuso Play Store spikePoi/message con velocita' GPS reale sulla Surface, versionCode 5 / 2.1-beta, playstore/ allineato", "status": "done", "commit": "87b14c5"},
+    {"id": "12-04/T2", "name": "Sessione di misura su DHU (15 sessioni, checkpoint human-verify)", "status": "in_progress", "progress": "Non eseguita: l'utente non puo' fare test ora. In alternativa provera' la build di test chiuso su Android Auto fisico"}
   ],
   "remaining_tasks": [
-    {"id": "12-04/T3", "name": "Compilare 12-SPIKE-RESULTS.md dai summary in build/surface-spike + calcolo criterio D-12, poi 12-04-SUMMARY.md", "status": "not_started"},
+    {"id": "12-04/T3", "name": "Compilare 12-SPIKE-RESULTS.md dalle misure (DHU e/o osservazioni in auto) + criterio D-12, poi 12-04-SUMMARY.md", "status": "not_started"},
     {"id": "12-05", "name": "Gate umano: scelta categoria/template (POI vs NAVIGATION) e registrazione decisione", "status": "not_started"},
     {"id": "12-06", "name": "Consolidamento sul percorso scelto (rimozione flavor, manifest finale, verifica DHU)", "status": "not_started"},
     {"id": "phase-close", "name": "code review gate, regression gate, verifier, phase.complete", "status": "not_started"}
   ],
   "blockers": [
-    {"description": "OnePlus 8T non collegato: adb devices vuoto durante il pre-flight", "type": "human_action", "workaround": "Collegare via USB e autorizzare il debug prima delle sessioni"}
+    {"description": "keystore.properties contiene ancora i segnaposto CHANGE_ME: bundleSpikePoiRelease fallisce in firma", "type": "human_action", "workaround": "Inserire le credenziali reali oppure usare Build > Generate Signed App Bundle di Android Studio sulla variante spikePoiRelease"},
+    {"description": "OnePlus 8T non collegato (adb devices vuoto)", "type": "human_action", "workaround": "Collegare via USB e autorizzare il debug prima delle sessioni DHU"}
   ],
   "human_actions_pending": [
-    {"action": "Eseguire le 15 sessioni DHU (5 varianti x 3 risoluzioni) seguendo docs/surface-spike-verification.md, salvare gli screenshot in spike-screenshots/<variante>-<risoluzione>.png, annotare S1-S6", "context": "Checkpoint human-verify del piano 12-04 Task 2; senza misure reali non si puo' applicare il criterio D-12", "blocking": true}
+    {"action": "Build firmata ./gradlew.bat :app:bundleSpikePoiRelease -PpoiCard=message (o wizard Android Studio), upload AAB (versionCode 5) sul test chiuso Play Store con le note playstore/release_notes/release_notes_v2.1-beta.txt", "context": "Quick task 260924-n9g; deroga D-05 autorizzata dall'utente solo per spikePoi/message", "blocking": false},
+    {"action": "Prova su Android Auto fisico: foto dello schermo auto (spazio lasciato dalla card POI, leggibilita' del numero, '--' senza fix), riportare esito", "context": "Osservazione utile per 12-04/12-05; non sostituisce da sola il gate 12-05", "blocking": true},
+    {"action": "Eventuali 15 sessioni DHU (docs/surface-spike-verification.md) per il confronto quantitativo POI vs NAV secondo D-12", "context": "L'auto fisica mostra solo POI/message; il confronto con NAV richiede DHU", "blocking": true}
   ],
   "decisions": [
-    {"decision": "Wave 2+ eseguite senza worktree (sequenziali sul main tree)", "rationale": "Un solo piano per wave; la rimozione del worktree con build Gradle fallisce su Windows per 'Filename too long'", "phase": "12"},
-    {"decision": "REL-01 lasciato aperto in REQUIREMENTS.md", "rationale": "Richiede misure DHU e decisione esplicita dell'utente (12-05)", "phase": "12"}
+    {"decision": "Deroga a D-05: il flavor spikePoi con card message va sul test chiuso Play Store; spikeNav resta solo locale", "rationale": "L'utente vuole provare su Android Auto fisico senza poter fare ora le sessioni DHU", "phase": "12"},
+    {"decision": "La Surface mostra la velocita' GPS reale (non '888'), '--' per Searching/NoSignal; contorni e info di debug solo in BuildConfig.DEBUG", "rationale": "Build usabile in auto; il debug resta disponibile per lo spike DHU", "phase": "12"},
+    {"decision": "Card POI 'message'", "rationale": "Presumibilmente la piu' compatta; da confermare con la foto in auto", "phase": "12"},
+    {"decision": "Wave 2+ e quick task eseguiti senza worktree", "rationale": "Rimozione worktree con build Gradle fallisce su Windows per 'Filename too long'", "phase": "12"}
   ],
   "uncommitted_files": [".idea/markdown.xml (non correlato)"],
-  "next_action": "Chiedere all'utente le note 'misure completate' (S1-S6 + versioni DHU/Android Auto); poi spawnare un executor di continuazione per 12-04 dal Task 3 via /gsd:execute-phase 12",
-  "context_notes": "Esecuzione in corso di /gsd:execute-phase 12. Wave 1-2 completate e tracciate in ROADMAP/STATE. Wave 3 (12-04) ferma al checkpoint umano. Wave 4 (12-05) e 5 (12-06) sono anch'esse non autonome."
+  "next_action": "Chiedere all'utente l'esito della prova in auto (foto/osservazioni) e/o le misure DHU; poi riprendere 12-04 dal Task 3 via /gsd:execute-phase 12, integrando le osservazioni in auto in 12-SPIKE-RESULTS.md",
+  "context_notes": "Fase 12 ferma al checkpoint umano 12-04 T2. Nel frattempo il quick task 260924-n9g ha reso la variante spikePoi distribuibile (velocita' reale sulla Surface). Attenzione: il renderer non disegna piu' '888' in release; nelle build debug disegna comunque la velocita' reale (o '--') con i contorni, mentre la misura D-12 digitH nei log resta calcolata sul campione '888' (dimensione del testo invariata), quindi lo script surface-spike-check.ps1 dovrebbe restare valido: verificarlo prima delle sessioni DHU. Note di rilascio dicono 'a tutto schermo' pur con la card POI: l'utente puo' chiedere di precisarlo."
 }
