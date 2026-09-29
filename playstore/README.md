@@ -4,8 +4,8 @@ Materiale per pubblicare Tachimetro su Google Play, generato il 2026-08-22.
 Testi verificati contro il codice della **versione 2.0** il 2026-09-02; i riferimenti di
 versione sono stati riallineati a `versionCode = 4` il 2026-09-22 (il `versionName` resta
 invariato a "2.0").
-Aggiornato il 2026-09-24 per la build di test chiuso `versionCode = 5` / `versionName = "2.1-beta"`
-(vedi la sezione successiva).
+Aggiornato il 2026-09-29 per la build di test chiuso `versionCode = 6` / `versionName = "2.1-beta"`
+(vedi la sezione successiva); il `versionCode` 5 è già stato caricato sul test chiuso il 2026-09-24.
 
 **Stato in una riga:** i testi e la grafica sono pronti; i binari e gli screenshot no.
 
@@ -20,7 +20,7 @@ distribuito.
 - **Flavor:** `spikePoi`, card `message` — `MapWithContentTemplate` con `MessageTemplate`
   "Tachimetro", nessuna action strip; la velocità GPS reale è disegnata sulla Surface.
 - **Categoria:** POI (`androidx.car.app.category.POI`), `minCarApiLevel` 7.
-- **Versione:** `versionCode = 5`, `versionName = "2.1-beta"`.
+- **Versione:** `versionCode = 6`, `versionName = "2.1-beta"` (il 5 è già stato caricato sul test chiuso).
 - **Canale:** solo test chiuso.
 - **Comando:**
   ```
@@ -29,7 +29,8 @@ distribuito.
 - **Output:** `app/build/outputs/bundle/spikePoiRelease/app-spikePoi-release.aab`
 - **Firma:** automatica se `keystore.properties` è presente nella radice del repo (vedi passo
   2); altrimenti l'AAB esce non firmato e Play Console lo rifiuta.
-- **Aspetto in release:** solo cifre bianche su nero. I contorni verde/magenta e le righe di
+- **Aspetto in release:** cifre bianche su nero più l'etichetta versione grigia (es.
+  "v2.1-beta (6)") in basso a destra della Surface e in alto al centro sul telefono. I contorni verde/magenta e le righe di
   debug (`api=...`, variante, risoluzione) compaiono solo nelle build debug usate sul DHU.
 - **Note di rilascio:** `release_notes/release_notes_v2.1-beta.txt` (file unico bilingue).
 - **Dati persistiti:** invariati nella 2.1-beta — la Surface usa lo stesso `GpsSpeedProvider` e
@@ -99,7 +100,7 @@ copiata** in `listing/`, `release_notes/`, `data_safety.md`, `content_rating.md`
 | `privacy_policy.html` | Informativa privacy bilingue IT/EN | Testo allineato alla v2.0; **2 placeholder email da sostituire** e URL pubblico da creare (passi 2 e 4) |
 | `data_safety.md` | Bozza risposte per il form "Sicurezza dei dati" di Play Console | Verificata contro il codice v2.0 il 2026-09-02 (elenca le quattro voci persistite) |
 | `content_rating.md` | Bozza risposte per il questionario di classificazione contenuti (IARC) | Verificata contro il codice v2.0 il 2026-09-02 (risposte invariate) |
-| `release_notes/release_notes_v2.1-beta.txt` | File unico bilingue **2.1-beta** con tag `<it-IT>`/`<en-US>`, per la build di test chiuso spikePoi | Pronto (`versionCode` 5) |
+| `release_notes/release_notes_v2.1-beta.txt` | File unico bilingue **2.1-beta** con tag `<it-IT>`/`<en-US>`, per la build di test chiuso spikePoi | Pronto (`versionCode` 6) |
 | `release_notes/it.txt`, `release_notes/en.txt` | Note di rilascio per la versione **2.0**, da incollare nel campo per-locale di Play Console | Riferite alla 2.0 (`versionCode` 4) |
 | `release_notes/release_notes_v2.0.txt` | File unico bilingue 2.0 con tag `<it-IT>`/`<en-US>`, per il copia-incolla in un'unica azione in Play Console | Riferito alla 2.0 (`versionCode` 4) |
 | `release_notes/release_notes_v1.1.txt` | File unico bilingue della 1.1 | **Archivio storico** — conservato per riferimento, non va caricato |
@@ -216,12 +217,13 @@ manualmente nei form di Play Console (non sono automatizzabili via file):
 ### 6. Versionamento
 
 La versione corrente dichiarata in `app/build.gradle.kts` è `versionName = "2.1-beta"` con
-`versionCode = 5` (2026-09-24): build di test chiuso del flavor spikePoi, vedi la sezione
+`versionCode = 6` (2026-09-29; il 5 è già stato caricato il 2026-09-24): build di test chiuso
+del flavor spikePoi con etichetta versione visibile, vedi la sezione
 "Build di test chiuso 2.1-beta" in alto.
 
 Storico: la 2.0 (supporto Android Auto) è stata pubblicata con `versionCode = 4`, ottenuto
 incrementando da 3 a 4 **senza** cambiare il `versionName` (commit `b62b879`), perché Play
 Console rifiuta il caricamento di un `versionCode` già usato.
 
-Il **prossimo** caricamento su Play Console dovrà usare `versionCode = 6`, e aggiornare anche
+Il **prossimo** caricamento su Play Console dovrà usare `versionCode = 7`, e aggiornare anche
 il `versionName` se il contenuto funzionale cambia.

@@ -3,6 +3,7 @@ Novità della versione 2.1-beta (test chiuso):
 
 • Velocità a tutto schermo sullo schermo di Android Auto, cifre bianche su nero ben leggibili
 • Richiede Android Auto con Car API 7 o superiore
+• Numero di versione visibile in piccolo sul telefono e sullo schermo dell'auto, per sapere sempre quale build sta girando
 • Nessuna pubblicità, nessuna connessione a Internet
 </it-IT>
 <en-US>
@@ -10,5 +11,6 @@ What's new in version 2.1-beta (closed test):
 
 • Full-screen speed on the Android Auto screen, with easy-to-read white digits on black
 • Requires Android Auto with Car API 7 or higher
+• Version number shown in small print on the phone and on the car screen, so you always know which build is running
 • No ads, no Internet connection
 </en-US>

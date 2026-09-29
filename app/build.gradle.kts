@@ -27,7 +27,7 @@ android {
         applicationId = "com.sed.tachimetro"
         minSdk = 30
         targetSdk = 36
-        versionCode = 5
+        versionCode = 6
         versionName = "2.1-beta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -61,7 +61,7 @@ android {
     // Ciascun flavor ha il proprio manifest (src/spikePoi, src/spikeNav) cosi' nessun APK
     // dichiara insieme MAP_TEMPLATES e NAVIGATION_TEMPLATES (T-12-01).
     // D-05 con DEROGA: su richiesta esplicita dell'utente (2026-09-24) SOLO spikePoi con card
-    // message va sul Play Store in test chiuso (versionCode 5, 2.1-beta); spikeNav resta solo
+    // message va sul Play Store in test chiuso (versionCode 6, 2.1-beta; il 5 e' gia' stato caricato); spikeNav resta solo
     // APK debug locale su DHU, mai distribuito.
     // Comandi: ./gradlew.bat :app:installSpikePoiDebug [-PpoiCard=message|list|pane|grid]
     //          ./gradlew.bat :app:installSpikeNavDebug
