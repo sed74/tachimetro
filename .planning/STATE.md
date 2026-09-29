@@ -123,8 +123,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-24
-Stopped at: Quick task 260924-n9g completato; Fase 12 ancora ferma a 12-04 Task 2 (misure DHU / prova in auto)
+Last session: 2026-09-29
+Stopped at: Quick task 260929-cyv completato, build versionCode 6 in pubblicazione sul test chiuso; Fase 12 ferma a 12-04 Task 2 (in attesa prova in auto con la v6)
 Resume file: None
 
 ## Operator Next Steps
