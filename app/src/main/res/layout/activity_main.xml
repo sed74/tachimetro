@@ -30,6 +30,26 @@
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Pronto" />
 
+    <!-- Quick 260929-cyv: etichetta versione in alto al centro (unico punto libero), sempre
+         visibile; margine top aggiornato con gli inset in MainActivity. -->
+    <TextView
+        android:id="@+id/versionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="11sp"
+        android:textColor="@color/version_label"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:clickable="false"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="v2.1-beta (6)" />
+
     <TextView
         android:id="@+id/unitText"
         android:layout_width="wrap_content"

@@ -89,6 +89,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var messageText: TextView
     private lateinit var unitText: TextView
+    private lateinit var versionText: TextView
     private lateinit var retryButton: Button
     private lateinit var maxSpeedText: TextView
     private lateinit var resetMaxButton: Button
@@ -143,6 +144,7 @@ class MainActivity : AppCompatActivity() {
         enableImmersiveFullscreen()
 
         setupPermissionViews()
+        setupVersionLabel()
         setupDistanceArea()
         setupMaxSpeedArea()
         setupScreenOnSwitch()
@@ -164,6 +166,14 @@ class MainActivity : AppCompatActivity() {
         retryButton = findViewById(R.id.retryButton)
         retryButton.setOnClickListener { onRetryClicked() }
         applyUnitTextWindowInsets()
+    }
+
+    // Quick 260929-cyv: etichetta versione "v<name> (<code>)" in alto al centro, sempre
+    // visibile, per capire a colpo d'occhio quale build sta girando.
+    private fun setupVersionLabel() {
+        versionText = findViewById(R.id.versionText)
+        versionText.text = formatVersionLabel(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
+        applyVersionTextWindowInsets()
     }
 
     // WR-02: extracted from onCreate() -- DIST-01/DIST-03: leggere la distanza persistita PRIMA
@@ -747,6 +757,22 @@ class MainActivity : AppCompatActivity() {
             val params = view.layoutParams as ConstraintLayout.LayoutParams
             params.topMargin = baseTopMargin + extraTop
             params.marginEnd = baseEndMargin + extraEnd
+            view.layoutParams = params
+            insets
+        }
+    }
+
+    // Quick 260929-cyv: specchio di applyUnitTextWindowInsets() solo sul lato top. Con
+    // immersive + edge-to-edge (targetSdk 36) l'etichetta versione, ancorata in alto al centro,
+    // finirebbe sotto la status bar o sotto un cutout centrale (punch-hole): si somma l'inset
+    // live al margine base dichiarato nell'XML.
+    private fun applyVersionTextWindowInsets() {
+        val baseTopMargin = (versionText.layoutParams as ConstraintLayout.LayoutParams).topMargin
+        ViewCompat.setOnApplyWindowInsetsListener(versionText) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val params = view.layoutParams as ConstraintLayout.LayoutParams
+            params.topMargin = baseTopMargin + maxOf(systemBars.top, cutout.top)
             view.layoutParams = params
             insets
         }

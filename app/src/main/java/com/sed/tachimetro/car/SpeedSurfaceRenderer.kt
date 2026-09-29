@@ -20,6 +20,7 @@ import androidx.lifecycle.LifecycleOwner
 import kotlin.math.max
 
 import com.sed.tachimetro.BuildConfig
+import com.sed.tachimetro.formatVersionLabel
 import com.sed.tachimetro.gps.SpeedState
 
 /**
@@ -33,7 +34,8 @@ import com.sed.tachimetro.gps.SpeedState
  *   `TachimetroSurface` (solo in `BuildConfig.DEBUG`), nel formato chiave=valore consumato dallo
  *   script `scripts/surface-spike-check.ps1` (Piano 03). Mai la velocita' nei log (T-08-07).
  * - D-11: SOLO in debug scrive in piccolo `api=<carAppApiLevel>` e la variante di build, e
- *   disegna i contorni stable (verde) / visible (magenta). In release solo cifre su nero.
+ *   disegna i contorni stable (verde) / visible (magenta). In release cifre su nero + etichetta
+ *   versione grigia in basso a destra, sempre disegnata (quick 260929-cyv).
  *
  * Unico file del progetto che disegna con `Canvas`/`Paint`: la geometria viene convertita in
  * [AreaPx] qui e le funzioni pure di `SurfaceTextFit.kt` restano framework-free.
@@ -56,6 +58,9 @@ class SpeedSurfaceRenderer(private val carContext: CarContext) :
         private const val COLOR_STABLE = "#00FF00"
         private const val COLOR_VISIBLE = "#FF00FF"
         private const val COLOR_INFO = "#FFFF00"
+        private const val COLOR_VERSION = "#808080"
+        private const val VERSION_TEXT_MIN_PX = 14f
+        private const val VERSION_TEXT_FRACTION = 0.03f
     }
 
     private var surface: Surface? = null
@@ -85,6 +90,16 @@ class SpeedSurfaceRenderer(private val carContext: CarContext) :
         typeface = Typeface.MONOSPACE
         color = Color.parseColor(COLOR_INFO)
     }
+
+    // Quick 260929-cyv: etichetta versione, allineata a destra per ancorarla all'angolo.
+    private val versionPaint = Paint().apply {
+        isAntiAlias = true
+        typeface = Typeface.DEFAULT
+        color = Color.parseColor(COLOR_VERSION)
+        textAlign = Paint.Align.RIGHT
+    }
+
+    private val versionLabel = formatVersionLabel(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
 
     private fun outlinePaint(hex: String) = Paint().apply {
         style = Paint.Style.STROKE
@@ -240,8 +255,23 @@ class SpeedSurfaceRenderer(private val carContext: CarContext) :
             canvas.drawText(speedText, x, y, digitPaint)
         }
 
+        // 3b. Quick 260929-cyv: etichetta versione SEMPRE (anche in release), in basso a destra
+        //     dell'area di fit. Le cifre occupano al massimo il 90% dell'area, centrate (bordo
+        //     libero del 5% per lato), e sugli schermi auto larghi sono limitate in altezza: l'angolo
+        //     basso-destro resta libero. L'overlay di debug sta in alto a sinistra: nessuna
+        //     sovrapposizione. Nessun log (T-q-02).
+        val versionPadding = OUTLINE_STROKE_PX * 2
+        versionPaint.textSize = max(VERSION_TEXT_MIN_PX, VERSION_TEXT_FRACTION * surfaceHeight)
+        canvas.drawText(
+            versionLabel,
+            area.right - versionPadding,
+            area.bottom - versionPadding - versionPaint.descent(),
+            versionPaint,
+        )
+
         // 4-5. Overlay di debug. In release (test chiuso Play Store, deroga D-05 2026-09-24) solo
-        //      cifre su nero; in debug restano per lo spike DHU 12-04 ancora aperto.
+        //      cifre su nero + etichetta versione (passo 3b); in debug restano per lo spike DHU
+        //      12-04 ancora aperto.
         if (BuildConfig.DEBUG) {
             // 4. Contorni: verde = stable area, magenta = visible area (omessi se sconosciute).
             stableArea?.takeUnless { it.isEmpty }?.let { canvas.drawArea(it, stablePaint) }
