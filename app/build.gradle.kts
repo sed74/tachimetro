@@ -13,7 +13,9 @@ val keystoreProperties = Properties().apply {
         keystorePropertiesFile.inputStream().use { load(it) }
     }
 }
-val hasReleaseSigning = keystorePropertiesFile.exists()
+// I valori segnaposto di keystore.properties.example ("CHANGE_ME") contano come assenti.
+val hasReleaseSigning = keystorePropertiesFile.exists() &&
+    keystoreProperties.values.none { it.toString() == "CHANGE_ME" }
 
 android {
     namespace = "com.sed.tachimetro"
@@ -27,8 +29,8 @@ android {
         applicationId = "com.sed.tachimetro"
         minSdk = 30
         targetSdk = 36
-        versionCode = 6
-        versionName = "2.1-beta"
+        versionCode = 7
+        versionName = "2.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,8 +53,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            if (hasReleaseSigning) {
-                signingConfig = signingConfigs.getByName("release")
+            // Build personale (2026-10-22, nessuna distribuzione Play Store): senza credenziali
+            // reali la release si firma con la chiave di debug locale, cosi' resta installabile.
+            signingConfig = if (hasReleaseSigning) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
             }
         }
     }
