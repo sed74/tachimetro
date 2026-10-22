@@ -106,4 +106,22 @@ class SurfaceTextFitTest {
     fun digitHeight_zeroRefSize_returnsZero() {
         assertEquals(0f, digitHeightPx(200f, 70f, 0f), 0f)
     }
+
+    @Test
+    fun centeredFitArea_wholeSurface_isUnchanged() {
+        assertEquals(AreaPx(0, 0, 1280, 720), centeredFitArea(AreaPx(0, 0, 1280, 720), 1280, 720))
+    }
+
+    @Test
+    fun centeredFitArea_asymmetricStable_isSymmetricAroundSurfaceCenter() {
+        // Action strip on the right: stable area stops at x=1100 -> half width 1100-640=460.
+        assertEquals(AreaPx(180, 0, 1100, 720), centeredFitArea(AreaPx(0, 0, 1100, 720), 1280, 720))
+    }
+
+    @Test
+    fun centeredFitArea_centerOutsideArea_fallsBackToArea() {
+        // Card covering the left half: the surface center is not inside the stable area.
+        val area = AreaPx(700, 0, 1280, 720)
+        assertEquals(area, centeredFitArea(area, 1280, 720))
+    }
 }

@@ -243,15 +243,19 @@ class SpeedSurfaceRenderer(private val carContext: CarContext) :
         digitPaint.getTextBounds(SAMPLE_TEXT, 0, SAMPLE_TEXT.length, bounds)
         val measuredW = bounds.width().toFloat()
         val measuredH = bounds.height().toFloat()
-        val textSize = fitTextSizePx(area.width, area.height, measuredW, measuredH, REF_TEXT_SIZE_PX)
+        //    Le cifre si centrano sull'intera Surface, dentro il rettangolo simmetrico contenuto
+        //    nell'area di fit (la stable area puo' essere asimmetrica per l'action strip).
+        val digitArea = centeredFitArea(area, surfaceWidth, surfaceHeight)
+        val textSize =
+            fitTextSizePx(digitArea.width, digitArea.height, measuredW, measuredH, REF_TEXT_SIZE_PX)
 
         if (textSize > 0f) {
             digitPaint.textSize = textSize
             digitPaint.getTextBounds(speedText, 0, speedText.length, bounds)
             // Centratura sui bounds reali del testo mostrato alla dimensione finale (non sulla
             // baseline nuda): l'origine del testo va spostata di -bounds.left / -bounds.top.
-            val x = area.left + (area.width - bounds.width()) / 2f - bounds.left
-            val y = area.top + (area.height - bounds.height()) / 2f - bounds.top
+            val x = digitArea.left + (digitArea.width - bounds.width()) / 2f - bounds.left
+            val y = digitArea.top + (digitArea.height - bounds.height()) / 2f - bounds.top
             canvas.drawText(speedText, x, y, digitPaint)
         }
 

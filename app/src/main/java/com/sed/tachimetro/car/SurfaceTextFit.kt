@@ -76,3 +76,25 @@ fun fitTextSizePx(
  */
 fun digitHeightPx(textSizePx: Float, measuredHeightAtRef: Float, refSizePx: Float): Float =
     if (refSizePx <= 0f) 0f else measuredHeightAtRef * textSizePx / refSizePx
+
+/**
+ * Rettangolo piu' grande centrato sul centro della Surface e contenuto in [area]: le cifre vanno
+ * centrate sull'intero schermo auto, non sulla stable area, che puo' essere asimmetrica (action
+ * strip o card dell'host su un lato), ma senza finire sotto l'interfaccia dell'host.
+ *
+ * Se [area] non contiene il centro della Surface il rettangolo simmetrico sarebbe vuoto: in quel
+ * caso si ripiega su [area] stessa (numero centrato nell'area libera, come prima).
+ *
+ * @param area area utilizzabile (tipicamente il risultato di [effectiveArea])
+ * @param surfaceWidth larghezza della Surface in pixel
+ * @param surfaceHeight altezza della Surface in pixel
+ * @return l'area, centrata sulla Surface, in cui adattare e centrare le cifre
+ */
+fun centeredFitArea(area: AreaPx, surfaceWidth: Int, surfaceHeight: Int): AreaPx {
+    val cx = surfaceWidth / 2
+    val cy = surfaceHeight / 2
+    val halfW = min(cx - area.left, area.right - cx)
+    val halfH = min(cy - area.top, area.bottom - cy)
+    if (halfW <= 0 || halfH <= 0) return area
+    return AreaPx(cx - halfW, cy - halfH, cx + halfW, cy + halfH)
+}

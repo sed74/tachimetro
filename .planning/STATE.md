@@ -132,3 +132,4 @@ Resume file: None
 - Pianificare la Fase 12 con `/gsd:plan-phase 12` (spike DHU su entrambi i percorsi, gate di decisione categoria/template, `minCarApiLevel` 7)
 - Verifica rimandata: Fase 11 SC3 — 10 cicli rapidi di connessione/disconnessione Android Auto osservati a mano in auto; esito da registrare in `docs/android-auto-hardening-verification.md`
 - Passi manuali Play Store ancora aperti documentati in `playstore/README.md` (screenshot con schermo Android Auto, hosting privacy policy, promozione da test aperto a produzione)
+| 2026-10-22 | fast | Numero velocita' centrato sull'intera Surface Android Auto (rettangolo simmetrico nella stable area) | ✅ |
