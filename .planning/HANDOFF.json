@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-10-22T19:05:37.911Z",
+  "timestamp": "2026-11-19T13:41:07.116Z",
   "phase": "12",
   "phase_name": "spike-surface-e-decisione-categoria-template",
   "phase_dir": ".planning/phases/12-spike-surface-e-decisione-categoria-template",
@@ -13,34 +13,36 @@
     {"id": "12-03", "name": "Tooling misure DHU", "status": "done", "commit": "7d2353c"},
     {"id": "12-02", "name": "SpeedSurfaceRenderer + SurfaceTemplateFactory per flavor", "status": "done", "commit": "db168d8"},
     {"id": "12-04/T1", "name": "Pre-flight build 5 varianti + scheletro 12-SPIKE-RESULTS.md", "status": "done", "commit": "d50c3f4"},
-    {"id": "quick-260929-cyv", "name": "Etichetta versione su telefono e Surface, versionCode 6", "status": "done", "commit": "22164c0"},
-    {"id": "fast-261022-center", "name": "Numero velocita' centrato sull'intera Surface (centeredFitArea: rettangolo simmetrico nella stable area) + 3 test", "status": "done", "commit": "ed42d1d"},
-    {"id": "fast-261022-personal", "name": "Versione 2.2 (7); release firmata con chiave debug se keystore.properties ha segnaposto; spikeNavRelease installata via adb (device 359592a5) dopo disinstallazione della v6 Play Store", "status": "done", "commit": "c68e6e1"},
-    {"id": "12-04/T2", "name": "Prova in auto", "status": "in_progress", "progress": "La v6 (spikePoi) provata in auto: numero spostato a destra per la card POI. Sul telefono ora c'e' la v2.2 (7) spikeNav, da provare in auto"}
+    {"id": "fast-261022-center", "name": "Numero velocita' centrato sull'intera Surface", "status": "done", "commit": "ed42d1d"},
+    {"id": "fast-261022-personal", "name": "Versione 2.2 (7); release firmata con chiave debug se keystore.properties ha segnaposto", "status": "done", "commit": "c68e6e1"},
+    {"id": "diag-261119-aa-sideload", "name": "Diagnosi: Android Auto (18.0) non mostra app Car App Library installate da adb anche con Origini sconosciute (doc ufficiale developer.android.com/training/cars/testing). Provati spikeNav e spikePoi via adb: nessuno compare in 'Personalizza Avvio app'. pm install -i / set-installer com.android.vending falliscono su OnePlus.", "status": "done", "commit": "-"},
+    {"id": "fast-261119-playstore-internal", "name": "playstore/README sezione 'Build di test interno 2.2' + release_notes_v2.2.txt", "status": "done", "commit": "d7e89d1"},
+    {"id": "fast-261119-appid", "name": "applicationId -> com.sed.tachimetro.personal (vecchia app eliminata da Play Console, nome non riutilizzabile)", "status": "done", "commit": "3783a5b"},
+    {"id": "fast-261119-privacy", "name": "Email nell'informativa + GitHub Pages su branch gh-pages: https://sed74.github.io/tachimetro/ (HTTP 200 verificato)", "status": "done", "commit": "afa28c0, 12d3400"},
+    {"id": "12-04/T2", "name": "Prova in auto", "status": "in_progress", "progress": "Utente sta creando la nuova app in Play Console e caricando l'AAB spikeNavRelease (gia' generato in app/spikeNav/release/) sul canale di TEST INTERNO"}
   ],
   "remaining_tasks": [
-    {"id": "car-test-v2.2", "name": "Prova in auto della v2.2 spikeNav: numero centrato, nessuna sovrapposizione con l'action strip, leggibilita'", "status": "not_started"},
-    {"id": "replan", "name": "Ripianificare fasi 12-15 per la decisione 'solo app personale' (12-05 di fatto deciso: NAVIGATION; 12-06 consolidamento su spikeNav e rimozione spikePoi; fase 15 senza Play Store)", "status": "not_started"}
+    {"id": "play-internal-upload", "name": "Utente: nuova app Play Console, fattore di forma Android Auto, test interno con solo se stesso, installazione da link", "status": "in_progress"},
+    {"id": "car-test-v2.2", "name": "Prova in auto della 2.2 da Play: app visibile, numero centrato, nessuna sovrapposizione con l'action strip", "status": "not_started"},
+    {"id": "replan", "name": "Ripianificare fasi 12-15 per 'solo app personale via Play test interno' (12-05 deciso NAVIGATION; 12-06 consolidamento su spikeNav e rimozione spikePoi; fase 15 = test interno)", "status": "not_started"}
   ],
-  "blockers": [],
+  "blockers": [
+    {"description": "Android Auto nasconde le app template installate da adb", "type": "external", "workaround": "Distribuzione via Play Console test interno (nessuna revisione)"}
+  ],
   "human_actions_pending": [
-    {"action": "Abilitare 'Origini sconosciute' nelle impostazioni sviluppatore di Android Auto e concedere il permesso di posizione alla v2.2", "context": "Build non dal Play Store: senza, l'app non compare sull'auto", "blocking": true},
-    {"action": "Prova in auto della v2.2 (7) con osservazioni/foto", "context": "Verificare la centratura", "blocking": true},
-    {"action": "Ritirare la pubblicazione dell'app da Play Console (Disponibilita' app -> Annulla pubblicazione)", "context": "La v6 e' 'Approved with Issues' (Parking and Charging Functionality, Visual info on phone); l'utente non vuole piu' distribuire", "blocking": false}
+    {"action": "Creare app in Play Console, attivare fattore di forma Android Auto, caricare AAB su test interno, installare dal link", "context": "Unico modo per far vedere l'app in auto", "blocking": true},
+    {"action": "Disinstallare dal telefono la vecchia com.sed.tachimetro (installata via adb, ora variante spikePoi)", "context": "Altrimenti due icone", "blocking": false},
+    {"action": "Push di master (2 commit non pushati: afa28c0, 12d3400)", "context": "Il sito Pages pubblica da gh-pages, non dipende da master", "blocking": false}
   ],
   "decisions": [
-    {"decision": "Niente Play Store: solo app personale su telefono + Android Auto (Origini sconosciute)", "rationale": "Google ha segnalato la v6 POI; un tachimetro non rientra in nessuna categoria Android Auto ammessa", "phase": "12"},
-    {"decision": "Percorso NAVIGATION (spikeNav/NavigationTemplate) per la build personale", "rationale": "Lascia quasi tutta la Surface libera; le policy Play non si applicano a una build non distribuita", "phase": "12"},
-    {"decision": "Cifre centrate sul centro della Surface, dimensionate nel rettangolo simmetrico contenuto nella stable area (fallback alla stable area se non contiene il centro)", "rationale": "Richiesta utente: numero centrato, senza finire sotto l'UI dell'host", "phase": "12"},
-    {"decision": "Release firmata con chiave debug locale quando keystore.properties contiene 'CHANGE_ME'", "rationale": "Credenziali reali non presenti nel file; per uso personale basta la chiave debug di questo PC (aggiornamenti solo da questo PC)", "phase": "12"},
-    {"decision": "Telefono con Android Auto connesso: comportamento invariato (messaggio neutro + max/distanza/controlli)", "rationale": "Il rilievo 'Visual info on phone' era solo di policy Play", "phase": "12"}
+    {"decision": "Uso personale ma distribuzione via Play Console TEST INTERNO (mai test chiuso/aperto/produzione)", "rationale": "Build da adb invisibili in Android Auto; test interno senza revisione Play", "phase": "12"},
+    {"decision": "applicationId com.sed.tachimetro.personal, namespace invariato", "rationale": "com.sed.tachimetro eliminato da Play Console", "phase": "12"},
+    {"decision": "Variante da caricare: spikeNavRelease; ripiego spikePoiRelease -PpoiCard=message se Play rifiuta NAVIGATION", "rationale": "NAVIGATION lascia la Surface libera per il numero centrato", "phase": "12"},
+    {"decision": "Privacy policy servita da GitHub Pages, branch gh-pages (copia di playstore/privacy_policy.html come index.html)", "rationale": "Repo gia' pubblico; Pages prima puntava a master senza pagina", "phase": "12"}
   ],
   "uncommitted_files": [
-    "gradle/libs.versions.toml (AGP 9.3.3 -> 9.4.1, modifica preesistente dell'utente)",
-    "gradle/wrapper/gradle-wrapper.properties (Gradle 9.5.0 -> 9.6.0, modifica preesistente dell'utente)",
-    ".idea/markdown.xml (non correlato)",
-    "app/spikePoi/ (AAB v6 firmato dall'utente, non va committato)"
+    "app/spikeNav/release/app-spikeNav-release.aab (AAB firmato dall'utente, non va committato)"
   ],
-  "next_action": "Chiedere l'esito della prova in auto della v2.2 (7). Se OK: ripianificare le fasi 12-15 per la decisione 'solo app personale'.",
-  "context_notes": "Installazione: ./gradlew.bat :app:assembleSpikeNavRelease poi adb install -r app/build/outputs/apk/spikeNav/release/app-spikeNav-release.apk (stessa firma debug, niente disinstallazione). La memoria project_personal_only.md sospende l'allineamento di playstore/. La build debug mostra l'overlay stable/visible: per l'auto usare la release."
+  "next_action": "Chiedere all'utente l'esito del caricamento su test interno e della prova in auto. Se l'app compare e il numero e' centrato: ripianificare fasi 12-15. Se Play rifiuta NAVIGATION: ripiego spikePoi.",
+  "context_notes": "L'utente genera e firma l'AAB da Android Studio; io preparo solo le info in playstore/. Se si modifica privacy_policy.html va ricopiata su gh-pages. Il telefono (OnePlus 8T, adb 359592a5) ha ancora com.sed.tachimetro spikePoi 2.2 installata via adb."
 }
