@@ -19,13 +19,16 @@ L'app deve arrivare da Google Play. Il canale di **test interno** non ha alcuna 
 nemmeno quella per l'auto ([Distribute to cars](https://developer.android.com/training/cars/distribute)):
 la v6 in test chiuso era stata segnalata perché il test chiuso ha una revisione (non bloccante).
 
+- **Nome pacchetto (applicationId): `com.sed.tachimetro.personal`** — l'app `com.sed.tachimetro`
+  è stata eliminata da Play Console e quel nome non è più riutilizzabile. Va creata una **nuova
+  app** in Play Console. Il package del codice (`namespace`) resta `com.sed.tachimetro`.
 - **Flavor:** `spikeNav` — `NavigationTemplate` con action strip minima (un'icona senza
   funzione); la velocità GPS reale è disegnata **al centro** della Surface.
 - **Categoria:** NAVIGATION (`androidx.car.app.category.NAVIGATION`), `minCarApiLevel` 7.
   Permessi Car App nel manifest: `ACCESS_SURFACE`, `NAVIGATION_TEMPLATES`. È un cambio di
   categoria rispetto alla v6 (POI); vedi "Se Play Console rifiuta l'AAB" sotto.
 - **Versione:** `versionCode = 7`, `versionName = "2.2"` (già in `app/build.gradle.kts`;
-  il 7 non è mai stato caricato).
+  essendo un'app nuova qualsiasi versionCode va bene).
 - **Canale:** **solo test interno**, con te come unico tester. Non promuovere a test chiuso,
   aperto o produzione: lì la revisione ricomincerebbe.
 - **Comando:**
@@ -44,19 +47,24 @@ la v6 in test chiuso era stata segnalata perché il test chiuso ha una revisione
 
 ### Passi in Play Console
 
+0. **Crea app** (nuova): nome "Tachimetro", lingua predefinita Italiano, tipo App, gratuita.
+   Il nome pacchetto viene fissato dal primo AAB caricato (`com.sed.tachimetro.personal`).
+   Quando la Dashboard li chiede, compila le dichiarazioni usando i file di questa cartella:
+   `data_safety.md`, `content_rating.md`, privacy policy (URL pubblico di
+   `privacy_policy.html`), nessuna pubblicità. In **Impostazioni avanzate → Fattori di forma**
+   aggiungi **Android Auto**: senza, l'auto potrebbe non mostrare l'app. Per il solo test
+   interno la scheda dello store completa e gli screenshot di solito non servono.
 1. **Test e rilascio → Test → Test interno → Tester:** crea (o riusa) un elenco con il solo
    account Google del telefono e salva.
 2. **Crea nuova release** sul test interno, carica l'AAB, incolla
    `release_notes/release_notes_v2.2.txt`, salva e **avvia l'implementazione**.
 3. Dalla scheda **Tester** copia il **link di partecipazione**, aprilo sul telefono con lo stesso
    account e accetta l'invito.
-4. **Sul telefono, prima di installare:** disinstalla la 2.2 attuale (installata da PC con la
-   chiave debug: la firma diversa impedisce l'aggiornamento dal Play Store). Velocità massima,
-   distanza e preferenze locali si perdono.
+4. **Sul telefono:** disinstalla la vecchia `com.sed.tachimetro` (installata da PC), altrimenti
+   avrai due icone Tachimetro. Velocità massima, distanza e preferenze locali non passano alla
+   nuova app.
 5. Installa Tachimetro dal Play Store (dal link del passo 3), concedi il permesso di posizione,
    poi collega l'auto. "Origini sconosciute" in Android Auto non serve più.
-6. Il canale di test chiuso con la v6 può restare in pausa o essere disattivato: non va toccato
-   per questo rilascio.
 
 ### Se Play Console rifiuta l'AAB
 

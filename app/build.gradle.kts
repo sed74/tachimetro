@@ -26,7 +26,10 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.sed.tachimetro"
+        // 2026-11-19: com.sed.tachimetro e' stato eliminato da Play Console e Google non permette di
+        // riusare il nome di pacchetto di un'app eliminata. Nuova app per il test interno personale.
+        // Il namespace (package del codice) resta com.sed.tachimetro.
+        applicationId = "com.sed.tachimetro.personal"
         minSdk = 30
         targetSdk = 36
         versionCode = 7
