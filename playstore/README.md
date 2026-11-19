@@ -50,7 +50,7 @@ la v6 in test chiuso era stata segnalata perché il test chiuso ha una revisione
 0. **Crea app** (nuova): nome "Tachimetro", lingua predefinita Italiano, tipo App, gratuita.
    Il nome pacchetto viene fissato dal primo AAB caricato (`com.sed.tachimetro.personal`).
    Quando la Dashboard li chiede, compila le dichiarazioni usando i file di questa cartella:
-   `data_safety.md`, `content_rating.md`, privacy policy (URL pubblico di
+   `data_safety.md`, `content_rating.md`, privacy policy `https://sed74.github.io/tachimetro/` (branch `gh-pages`, copia di
    `privacy_policy.html`), nessuna pubblicità. In **Impostazioni avanzate → Fattori di forma**
    aggiungi **Android Auto**: senza, l'auto potrebbe non mostrare l'app. Per il solo test
    interno la scheda dello store completa e gli screenshot di solito non servono.
