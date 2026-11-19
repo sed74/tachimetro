@@ -9,7 +9,64 @@ Aggiornato il 2026-09-29 per la build di test chiuso `versionCode = 6` / `versio
 
 **Stato in una riga:** i testi e la grafica sono pronti; i binari e gli screenshot no.
 
-## Build di test chiuso 2.1-beta (Fase 12, flavor spikePoi)
+## Build di test interno 2.2 (flavor spikeNav) — uso personale (2026-11-19)
+
+**Perché il Play Store serve ancora.** Dal 2026-10-22 l'app è solo per uso personale, ma una
+build installata da PC non compare in Android Auto (né in auto né in "Personalizza Avvio app"),
+anche con "Origini sconosciute" attivo: quell'opzione non vale per le app fatte con la Car App
+Library ([developer.android.com/training/cars/testing](https://developer.android.com/training/cars/testing)).
+L'app deve arrivare da Google Play. Il canale di **test interno** non ha alcuna revisione Play,
+nemmeno quella per l'auto ([Distribute to cars](https://developer.android.com/training/cars/distribute)):
+la v6 in test chiuso era stata segnalata perché il test chiuso ha una revisione (non bloccante).
+
+- **Flavor:** `spikeNav` — `NavigationTemplate` con action strip minima (un'icona senza
+  funzione); la velocità GPS reale è disegnata **al centro** della Surface.
+- **Categoria:** NAVIGATION (`androidx.car.app.category.NAVIGATION`), `minCarApiLevel` 7.
+  Permessi Car App nel manifest: `ACCESS_SURFACE`, `NAVIGATION_TEMPLATES`. È un cambio di
+  categoria rispetto alla v6 (POI); vedi "Se Play Console rifiuta l'AAB" sotto.
+- **Versione:** `versionCode = 7`, `versionName = "2.2"` (già in `app/build.gradle.kts`;
+  il 7 non è mai stato caricato).
+- **Canale:** **solo test interno**, con te come unico tester. Non promuovere a test chiuso,
+  aperto o produzione: lì la revisione ricomincerebbe.
+- **Comando:**
+  ```
+  ./gradlew.bat :app:bundleSpikeNavRelease
+  ```
+  (o da Android Studio: Build → Generate Signed App Bundle, variante `spikeNavRelease`)
+- **Output:** `app/build/outputs/bundle/spikeNavRelease/app-spikeNav-release.aab`
+- **Firma:** con la **chiave di caricamento vera** (keystore in
+  `C:\Users\fedes\AndroidStudioProjects\keystore\keystore`), la stessa della v6. Attenzione:
+  se `keystore.properties` contiene ancora `CHANGE_ME`, il Gradle firma con la chiave **debug**
+  e Play Console rifiuta l'AAB. Firmare da Android Studio o compilare `keystore.properties`.
+- **Note di rilascio:** `release_notes/release_notes_v2.2.txt` (file unico bilingue).
+- **Dati persistiti:** invariati rispetto alla 2.0/2.1-beta: `data_safety.md` e
+  `privacy_policy.html` restano validi.
+
+### Passi in Play Console
+
+1. **Test e rilascio → Test → Test interno → Tester:** crea (o riusa) un elenco con il solo
+   account Google del telefono e salva.
+2. **Crea nuova release** sul test interno, carica l'AAB, incolla
+   `release_notes/release_notes_v2.2.txt`, salva e **avvia l'implementazione**.
+3. Dalla scheda **Tester** copia il **link di partecipazione**, aprilo sul telefono con lo stesso
+   account e accetta l'invito.
+4. **Sul telefono, prima di installare:** disinstalla la 2.2 attuale (installata da PC con la
+   chiave debug: la firma diversa impedisce l'aggiornamento dal Play Store). Velocità massima,
+   distanza e preferenze locali si perdono.
+5. Installa Tachimetro dal Play Store (dal link del passo 3), concedi il permesso di posizione,
+   poi collega l'auto. "Origini sconosciute" in Android Auto non serve più.
+6. Il canale di test chiuso con la v6 può restare in pausa o essere disattivato: non va toccato
+   per questo rilascio.
+
+### Se Play Console rifiuta l'AAB
+
+Se al caricamento compare un errore legato alla categoria NAVIGATION o al fattore di forma
+Android Auto (per esempio un'iscrizione ad Android Auto da ripetere), il ripiego è il flavor POI
+già usato per la v6, che Android Auto mostrava: `./gradlew.bat :app:bundleSpikePoiRelease -PpoiCard=message`
+(output in `app/build/outputs/bundle/spikePoiRelease/`). Con la POI il numero resta spostato a
+destra per far posto alla scheda.
+
+## Build di test chiuso 2.1-beta (Fase 12, flavor spikePoi) — storico
 
 Su richiesta esplicita dell'utente (2026-09-24) la build del flavor **spikePoi** va caricata
 sul canale di **test chiuso** di Play Store. È una **deroga a D-05** della Fase 12 (che
@@ -100,7 +157,8 @@ copiata** in `listing/`, `release_notes/`, `data_safety.md`, `content_rating.md`
 | `privacy_policy.html` | Informativa privacy bilingue IT/EN | Testo allineato alla v2.0; **2 placeholder email da sostituire** e URL pubblico da creare (passi 2 e 4) |
 | `data_safety.md` | Bozza risposte per il form "Sicurezza dei dati" di Play Console | Verificata contro il codice v2.0 il 2026-09-02 (elenca le quattro voci persistite) |
 | `content_rating.md` | Bozza risposte per il questionario di classificazione contenuti (IARC) | Verificata contro il codice v2.0 il 2026-09-02 (risposte invariate) |
-| `release_notes/release_notes_v2.1-beta.txt` | File unico bilingue **2.1-beta** con tag `<it-IT>`/`<en-US>`, per la build di test chiuso spikePoi | Pronto (`versionCode` 6) |
+| `release_notes/release_notes_v2.2.txt` | File unico bilingue **2.2** con tag `<it-IT>`/`<en-US>`, per la build di test interno spikeNav | **Da usare ora** (`versionCode` 7) |
+| `release_notes/release_notes_v2.1-beta.txt` | File unico bilingue **2.1-beta** per la build di test chiuso spikePoi | Già usato (`versionCode` 6) |
 | `release_notes/it.txt`, `release_notes/en.txt` | Note di rilascio per la versione **2.0**, da incollare nel campo per-locale di Play Console | Riferite alla 2.0 (`versionCode` 4) |
 | `release_notes/release_notes_v2.0.txt` | File unico bilingue 2.0 con tag `<it-IT>`/`<en-US>`, per il copia-incolla in un'unica azione in Play Console | Riferito alla 2.0 (`versionCode` 4) |
 | `release_notes/release_notes_v1.1.txt` | File unico bilingue della 1.1 | **Archivio storico** — conservato per riferimento, non va caricato |
@@ -225,5 +283,5 @@ Storico: la 2.0 (supporto Android Auto) è stata pubblicata con `versionCode = 4
 incrementando da 3 a 4 **senza** cambiare il `versionName` (commit `b62b879`), perché Play
 Console rifiuta il caricamento di un `versionCode` già usato.
 
-Il **prossimo** caricamento su Play Console dovrà usare `versionCode = 7`, e aggiornare anche
-il `versionName` se il contenuto funzionale cambia.
+Il **prossimo** caricamento su Play Console usa `versionCode = 7` / `versionName = "2.2"`
+(test interno spikeNav, vedi la sezione in alto). Quello successivo dovrà usare `versionCode = 8`.
